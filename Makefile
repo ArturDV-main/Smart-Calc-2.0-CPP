@@ -30,8 +30,8 @@ clean:
 
 clang:
 	# cp -R materials/linters/.clang-format ./
-	clang-format -style=file:materials/linters/.clang-format -n src/*.h src/Google_tests/*.cc
-	clang-format -style=file:materials/linters/.clang-format -i src/*.h src/Google_tests/*.cc
+	clang-format -style=file:materials/linters/.clang-format -n src/*.h src/google_tests/*.cc
+	clang-format -style=file:materials/linters/.clang-format -i src/*.h src/google_tests/*.cc
 
 start:
 	./$(BUILD_DIR)/$(TARGET)
