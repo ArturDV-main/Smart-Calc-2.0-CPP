@@ -26,7 +26,7 @@ $(BUILD_DIR)/%.cc.o: %.cc
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILD_DIR)/* test.info report test.log
+	rm -rf $(BUILD_DIR)/* test.info report test.log RESULT_VALGRIND.txt
 
 clang:
 	# cp -R materials/linters/.clang-format ./
