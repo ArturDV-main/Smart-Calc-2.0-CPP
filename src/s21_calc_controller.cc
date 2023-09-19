@@ -1,7 +1,7 @@
 #include "s21_calc_controller.h"
 #include <stdexcept>
 
-void s21::CalcController::Reset() {}
+namespace s21 {
 
 double s21::CalcController::StartCalc(const char * a, const double x) { 
     try
@@ -12,5 +12,7 @@ double s21::CalcController::StartCalc(const char * a, const double x) {
     {
         throw std::runtime_error(e.what());
     }
-    return calc_model->getData();
+    return calc_model->GetData();
+}
+
 }

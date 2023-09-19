@@ -1,8 +1,4 @@
 #include "s21_calc_model.h"
-#include <memory>
-#include <cmath>
-#include <cstring>
-#include <stdexcept>
 
 namespace s21 {
 
@@ -287,6 +283,5 @@ double CalcModel::TrigonCalc(double x, char operation) {
   }
   return buf_num;
 }
-
 
 }  // namespase s21

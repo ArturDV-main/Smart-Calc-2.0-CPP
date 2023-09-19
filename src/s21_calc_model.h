@@ -1,7 +1,13 @@
 #ifndef SRC_S21_CALC_MODEL_H_
 #define SRC_S21_CALC_MODEL_H_
 
+#include <cmath>
+#include <cstring>
+#include <memory>
+#include <stdexcept>
+
 namespace s21 {
+
 class CalcModel {
 #define OPERATIONS ")+-/*M^@ABCDEFGH("
   enum truefalse {
@@ -29,7 +35,8 @@ class CalcModel {
   CalcModel(/* args */);
   ~CalcModel();
   double StartCalc(const char *src, double X_num);
-  double getData() { return result; }
+  double GetData() { return result; }
+  void Reset() { result = 0.0; }
 
  private:
   // std::string expression{};  //  TODO
@@ -51,6 +58,7 @@ class CalcModel {
   double TrigonCalc(double x, char operation);
   int Validator(const char *str);
 };
+
 }  // namespace s21
 
 #endif  // SRC_CALC_MODEL_H_
