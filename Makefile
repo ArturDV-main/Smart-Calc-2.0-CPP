@@ -1,28 +1,33 @@
 CXX = g++
 CPP_STD:=-std=c++17
+# CPPFLAGS = --coverage
 TARGET:=SmartCallc2.0
-CXXFLAGS = -g -Wall -Wextra --coverage -Werror #-lstdc++
+CXXFLAGS = -g -Wall -Wextra -Werror --coverage #-lstdc++
+GT_FLAGS = -lgtest -lgtest_main -lm
+#  Project directories
 BUILD_DIR := build
 SRC_DIRS := src src/s21_view_qt
+GT_DIRS := src src/google_tests
+#  Project sourses
 SRCS := $(shell find $(SRC_DIRS) -maxdepth 1 -name *.cc)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
-GT_SRCS := $(shell find $(SRC_DIRS) -maxdepth 1 -name *.cc)
+
+#  Google test sourses
+GT_SRCS := $(shell find $(GT_DIRS) -maxdepth 1 -name s21_*.cc)
 GT_OBJS := $(GT_SRCS:%=$(BUILD_DIR)/%.o)
-GT_FLAGS = -lgtest
 
 OS := $(shell uname -s)
 
-all: t
-
-
+all: app
 
 #  Google tests
-
+test:$(GT_OBJS)
+	$(CXX) $(CXXFLAGS) $(GT_OBJS) $(GT_FLAGS) -o $(BUILD_DIR)/gtest.out
+	./$(BUILD_DIR)/gtest.out
 
 #  SmartCallc2.0 application
-app: $(GT_OBJS)
-	$(CXX) $(CXXFLAGS) $(GT_OBJS) -o $(BUILD_DIR)/$(TARGET) $(GT_FLAGS)
-	./$(BUILD_DIR)/$(TARGET)
+app: $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(BUILD_DIR)/$(TARGET)
 
 # Build step for C++ source
 $(BUILD_DIR)/%.cc.o: %.cc
