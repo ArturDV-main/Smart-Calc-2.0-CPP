@@ -288,5 +288,4 @@ double CalcModel::TrigonCalc(double x, char operation) {
   return buf_num;
 }
 
-
 }  // namespase s21
