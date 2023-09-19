@@ -1,7 +1,13 @@
 #ifndef SRC_S21_CALC_MODEL_H_
 #define SRC_S21_CALC_MODEL_H_
 
+#include <cmath>
+#include <cstring>
+#include <memory>
+#include <stdexcept>
+
 namespace s21 {
+
 class CalcModel {
 #define OPERATIONS ")+-/*M^@ABCDEFGH("
   enum truefalse {
@@ -52,6 +58,7 @@ class CalcModel {
   double TrigonCalc(double x, char operation);
   int Validator(const char *str);
 };
+
 }  // namespace s21
 
 #endif  // SRC_CALC_MODEL_H_

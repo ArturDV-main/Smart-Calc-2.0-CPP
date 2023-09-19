@@ -1,8 +1,4 @@
 #include "s21_calc_model.h"
-#include <memory>
-#include <cmath>
-#include <cstring>
-#include <stdexcept>
 
 namespace s21 {
 
