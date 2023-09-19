@@ -1,2 +1,3 @@
 .vscode
 RESULT_VALGRIND.txt
+src/s21_view_qt/s21_view_qt.pro.user

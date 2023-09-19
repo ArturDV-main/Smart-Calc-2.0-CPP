@@ -1,6 +1,5 @@
-#include "credit.h"
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "s21_view_qt.h"
+#include "ui_s21_view_qt.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
