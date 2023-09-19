@@ -14,8 +14,13 @@ OS := $(shell uname -s)
 
 all: t
 
+
+
 #  Google tests
-test: $(GT_OBJS)
+
+
+#  SmartCallc2.0 application
+app: $(GT_OBJS)
 	$(CXX) $(CXXFLAGS) $(GT_OBJS) -o $(BUILD_DIR)/$(TARGET) $(GT_FLAGS)
 	./$(BUILD_DIR)/$(TARGET)
 
@@ -53,7 +58,7 @@ gcov_report: clean test
 	genhtml -o report $(BUILD_DIR)/src/Google_tests/test.info
 	open report/index.html
 
-t: clean clang test valgrind
+t: clean clang app valgrind
 
 
 # gcov_report: s21_containers_tests.o
