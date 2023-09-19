@@ -12,3 +12,10 @@ TEST(CalcTest, Simple) {
   s21::CalcModel a;
   EXPECT_EQ(a.StartCalc("2+2", 0), 4);
 }
+
+TEST(CalcTest, Reset) {
+  s21::CalcModel a;
+  EXPECT_EQ(a.StartCalc("2+2", 0), 4);
+  a.Reset();
+  EXPECT_EQ(a.GetData(), 0);
+}
