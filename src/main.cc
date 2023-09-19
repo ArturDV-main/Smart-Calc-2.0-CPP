@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     s21::CalcModel calc_model;
     s21::CalcController calc_controller(&calc_model);
     ConsoleView console_view(&calc_controller);
-    console_view.startEventLoop();
+    console_view.StartEventLoop();
     return 0;
   }
   return 1;

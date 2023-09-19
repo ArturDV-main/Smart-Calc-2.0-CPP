@@ -25,21 +25,21 @@ class CalcValid {
     LOG = 'H'
   };
   int last_is(char res);
-  int char_counter(const char* str_line, char res);
+  int CharCounter(const char* str_line, char res);
   int PositionCounter(char src_string);
-  int in_line_start(const char* str, int str_len);
-  int is_simp_oper(char oper);
-  int is_nums(char num);
-  int smart_bracket(const char* str_line);
-  int valid_simp_oper(const char* str_line);
-  int valid_func(const char* str_line);
-  int valid_nums(const char* str_line);
-  int valid_equals(const char* str_line);
-  int valid_unar(const char* str_line);
-  int valid_dot(const char* str_line);
-  int valid_input_line(double maxval, double minval, const char* str_line);
-  int valid_dot_line(const char* str_line);
-  int super_valid(double maxval, double minval, const char* str_line);
+  int InLineStart(const char* str, int str_len);
+  int IsSimpOper(char oper);
+  int IsNums(char num);
+  int SmartBracket(const char* str_line);
+  int ValidSimpOper(const char* str_line);
+  int ValidFunc(const char* str_line);
+  int ValidNums(const char* str_line);
+  int ValidEquals(const char* str_line);
+  int ValidUnar(const char* str_line);
+  int ValidDot(const char* str_line);
+  int ValidInputLine(double maxval, double minval, const char* str_line);
+  int ValidDotLine(const char* str_line);
+  int SuperValid(double maxval, double minval, const char* str_line);
 
  private:
 };

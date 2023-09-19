@@ -15,20 +15,20 @@ int CalcValid::PositionCounter(
   return counter;
 }
 
-int CalcValid::in_line_start(const char *str, int str_len) {
+int CalcValid::InLineStart(const char *str, int str_len) {
   int in_start = FALSE;
   if (str[0] == '0' && str_len == 1) in_start = TRUE;
   return in_start;
 }
 
-int CalcValid::is_simp_oper(char oper) {
+int CalcValid::IsSimpOper(char oper) {
   int it_oper = FALSE;
   int oper_string = PositionCounter(oper);
   if (oper_string > 0 && oper_string < 7) it_oper = TRUE;
   return it_oper;
 }
 
-int CalcValid::char_counter(const char *str_line, char res) {
+int CalcValid::CharCounter(const char *str_line, char res) {
   int counter = 0, i = 0;
   while (str_line[i]) {
     if (str_line[i] == res) counter++;
@@ -37,7 +37,7 @@ int CalcValid::char_counter(const char *str_line, char res) {
   return counter;
 }
 
-int CalcValid::is_nums(char num) {
+int CalcValid::IsNums(char num) {
   int is_num = FALSE;
   if (('0' <= num && num <= '9') || num == '.') is_num = TRUE;
   return is_num;
@@ -45,20 +45,20 @@ int CalcValid::is_nums(char num) {
 
 int CalcValid::last_is(char res) {
   int is_number = FALSE;
-  if (is_nums(res) || res == '.' || res == ')' || res == 'X') is_number = TRUE;
+  if (IsNums(res) || res == '.' || res == ')' || res == 'X') is_number = TRUE;
   return is_number;
 }
 
-int CalcValid::smart_bracket(const char *str_line) {
+int CalcValid::SmartBracket(const char *str_line) {
   int closed_bracket = FALSE;
   int len = strlen(str_line);
-  int open_bracket_val = char_counter(str_line, '(');
-  int close_bracket_val = char_counter(str_line, ')');
+  int open_bracket_val = CharCounter(str_line, '(');
+  int close_bracket_val = CharCounter(str_line, ')');
   int last_sym = last_is(str_line[len - 1]);
 
   if ((open_bracket_val > close_bracket_val) && last_sym) {
     closed_bracket = TRUE;
-  } else if (in_line_start(str_line, len) || is_simp_oper(str_line[len - 1]) ||
+  } else if (InLineStart(str_line, len) || IsSimpOper(str_line[len - 1]) ||
              str_line[len - 1] == '(') {
     closed_bracket = FALSE;
   } else {
@@ -67,57 +67,57 @@ int CalcValid::smart_bracket(const char *str_line) {
   return closed_bracket;
 }
 
-int CalcValid::valid_simp_oper(const char *str_line) {
+int CalcValid::ValidSimpOper(const char *str_line) {
   int valid_oper = FALSE;
   int len = strlen(str_line);
   char lastch = str_line[len - 1];
   int last = last_is(lastch);
-  if (last && !in_line_start(str_line, len)) valid_oper = TRUE;
+  if (last && !InLineStart(str_line, len)) valid_oper = TRUE;
   return valid_oper;
 }
 
-int CalcValid::valid_func(const char *str_line) {
+int CalcValid::ValidFunc(const char *str_line) {
   int validfunc = FALSE;
   int len = strlen(str_line);
-  if (is_simp_oper(str_line[len - 1]) || str_line[len - 1] == '(' ||
-      in_line_start(str_line, len))
+  if (IsSimpOper(str_line[len - 1]) || str_line[len - 1] == '(' ||
+      InLineStart(str_line, len))
     validfunc = TRUE;
   return validfunc;
 }
 
-int CalcValid::valid_nums(const char *str_line) {
+int CalcValid::ValidNums(const char *str_line) {
   int validfunc = FALSE;
   int len = strlen(str_line);
   char lastchar = str_line[len - 1];
-  if ((is_simp_oper(lastchar) || lastchar == '(' ||
-       in_line_start(str_line, len) || is_nums(lastchar)) &&
+  if ((IsSimpOper(lastchar) || lastchar == '(' ||
+       InLineStart(str_line, len) || IsNums(lastchar)) &&
       lastchar != 'X')
     validfunc = TRUE;
   return validfunc;
 }
 
-int CalcValid::valid_equals(const char *str_line) {
+int CalcValid::ValidEquals(const char *str_line) {
   int validequals = FALSE;
   int len = strlen(str_line);
   char lastchar = str_line[len - 1];
-  if (lastchar == ')' || is_nums(lastchar) || lastchar == 'X')
+  if (lastchar == ')' || IsNums(lastchar) || lastchar == 'X')
     validequals = TRUE;
   return validequals;
 }
 
-int CalcValid::valid_unar(const char *str_line) {
+int CalcValid::ValidUnar(const char *str_line) {
   int validunar = FALSE;
   int len = strlen(str_line);
   char lastchar = str_line[len - 1];
-  if (lastchar == '(' || in_line_start(str_line, len)) validunar = TRUE;
+  if (lastchar == '(' || InLineStart(str_line, len)) validunar = TRUE;
   return validunar;
 }
 
-int CalcValid::valid_dot(const char *str_line) {
+int CalcValid::ValidDot(const char *str_line) {
   int validdot = TRUE;
   int i = 0;
   int len = strlen(str_line);
-  while (is_nums(str_line[len - 1 - i])) {
+  while (IsNums(str_line[len - 1 - i])) {
     if (str_line[len - 1 - i] == '.') {
       validdot = FALSE;
       break;
@@ -127,11 +127,11 @@ int CalcValid::valid_dot(const char *str_line) {
   return validdot;
 }
 
-int CalcValid::valid_dot_line(const char *str_line) {
+int CalcValid::ValidDotLine(const char *str_line) {
   int validdot = TRUE;
   int i = 0;
   int len = strlen(str_line);
-  while (is_nums(str_line[len - 1 - i])) {
+  while (IsNums(str_line[len - 1 - i])) {
     if (str_line[len - 1 - i] == '.') {
       validdot++;
     }
@@ -141,16 +141,16 @@ int CalcValid::valid_dot_line(const char *str_line) {
   return validdot;
 }
 
-int CalcValid::valid_input_line(double maxval, double minval, const char *str_line) {
+int CalcValid::ValidInputLine(double maxval, double minval, const char *str_line) {
   int validline = TRUE;
   int len = strlen(str_line);
   char lastchar = str_line[len - 1];
   if (str_line[1] == '\0' && lastchar == '-') {
     validline = TRUE;
   } else if (lastchar == '.') {
-    validline = valid_dot_line(str_line);
+    validline = ValidDotLine(str_line);
   } else if (validline) {
-    validline = is_nums(lastchar);
+    validline = IsNums(lastchar);
   }
   if (validline) {
     double test = atof(str_line);
@@ -159,20 +159,20 @@ int CalcValid::valid_input_line(double maxval, double minval, const char *str_li
   return validline;
 }
 
-int CalcValid::super_valid(double maxval, double minval, const char *str_line) {
+int CalcValid::SuperValid(double maxval, double minval, const char *str_line) {
   int validline = TRUE;
   //    int len = strlen(str_line);
   int i = 0;
   if (str_line[0] == '-') i = 1;
   while (str_line[i]) {
-    if (is_nums(str_line[i]) != 1) {
+    if (IsNums(str_line[i]) != 1) {
       validline = FALSE;
       break;
     }
     i++;
   }
   if (validline) {
-    int validdot = valid_dot_line(str_line);
+    int validdot = ValidDotLine(str_line);
     if (!validdot) validline = FALSE;
   }
   if (validline) {

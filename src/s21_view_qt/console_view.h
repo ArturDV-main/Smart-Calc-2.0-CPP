@@ -22,6 +22,6 @@ class ConsoleView {
   void displayMenu();
   int performChoice();
   double performNumericInput();
-  void startEventLoop();
+  void StartEventLoop();
 };
 #endif
