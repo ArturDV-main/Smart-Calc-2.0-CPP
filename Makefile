@@ -65,23 +65,11 @@ gcov_report: clean test
 
 t: clean clang app valgrind
 
-
-# gcov_report: s21_containers_tests.o
-# ifeq ($(OS), Linux)
-# 	echo $(OS2)
-# ifeq ($(OS2), ID=alpine)
-# 	echo "For Alpine --------------------"
-# 	$(CC) $(CFLAGS) s21_containers_tests.o s21_vector.cc -o test.out $(GFLAGS)
-# else
-# 	echo "For Ubuntu --------------------"
-# 	$(CC) $(CFLAGS) s21_containers_tests.o s21_vector.cc -o test.out $(GFLAGS)
-# endif
-# else
-# 	echo "For Apple --------------------"
-# 	$(CC) $(CFLAGS) s21_containers_tests.o s21_vector.cc -o test.out -lgtest -lm --coverage
-# endif
-# 	./test.out
-# 	lcov -t "test" -o test.info -c -d .
-# 	genhtml -o report test.info
-# 	open report/index.html
-
+# Выполняются этапы для проекта s21_view_qt...
+# Запускается: «/lib/qt6/bin/qmake» /home/dandy/projects/SmartCalc2_0/src/s21_view_qt/s21_view_qt.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+# creating stash file /home/dandy/projects/SmartCalc2_0/src/build-s21_view_qt-Desktop-Debug/.qmake.stash
+# Процесс «/lib/qt6/bin/qmake» завершился успешно.
+# Запускается: «/usr/bin/make» -f /home/dandy/projects/SmartCalc2_0/src/build-s21_view_qt-Desktop-Debug/Makefile qmake_all
+# make: Цель «qmake_all» не требует выполнения команд.
+# Процесс «/usr/bin/make» завершился успешно.
+# Запускается: «/usr/bin/make» -j8
