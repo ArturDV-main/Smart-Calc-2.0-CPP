@@ -1,4 +1,4 @@
-#include "s21_model.h"
+#include "calc_model.h"
 #include <memory>
 #include <cmath>
 #include <cstring>
@@ -6,11 +6,11 @@
 
 namespace s21 {
 
-s21_model::s21_model(/* args */) {}
+CalcModel::CalcModel(/* args */) {}
 
-s21_model::~s21_model() {}
+CalcModel::~CalcModel() {}
 
-double s21_model::start_calc(const char *src, double X_num) {
+double CalcModel::start_calc(const char *src, double X_num) {
   double result = 0.0;
   if (validator(src) == 0)
     result = calc(src, X_num);
@@ -19,7 +19,7 @@ double s21_model::start_calc(const char *src, double X_num) {
   return result;
 }
 
-int s21_model::validator(const char *str) {
+int CalcModel::validator(const char *str) {
   int errcode = 0;
   int operand = 0, i = 0;
   while (str[i]) {
@@ -34,8 +34,7 @@ int s21_model::validator(const char *str) {
   return errcode;
 }
 
-
-double s21_model::calc(const char *calculation_src, double X_num) {
+double CalcModel::calc(const char *calculation_src, double X_num) {
   int position = 0;
   stack_type *st_oper = NULL;
   stack_type *st_num = NULL;
@@ -88,9 +87,9 @@ double s21_model::calc(const char *calculation_src, double X_num) {
   return result;
 }
 
-s21_model::stack_type s21_model::parser_uno(const char *calculation_src, int *position,
+CalcModel::stack_type CalcModel::parser_uno(const char *calculation_src, int *position,
                       double X_num) {  //  Парсер одной лексеммы
-  stack_type stack1 = {0};
+  stack_type stack1{};
   int prio = prio_check(calculation_src[*position]);
   if (prio) {
     stack1.prio = prio;
@@ -112,7 +111,7 @@ s21_model::stack_type s21_model::parser_uno(const char *calculation_src, int *po
   return stack1;
 }
 
-int s21_model::prio_check(char src_string) {  //  Определение приоритета опреатора
+int CalcModel::prio_check(char src_string) {  //  Определение приоритета опреатора
   int prior = 0;
   int position_num = position_counter(src_string);
   if (position_num > 16)
@@ -130,9 +129,9 @@ int s21_model::prio_check(char src_string) {  //  Определение при�
   return prior;
 }
 
-int s21_model::position_counter(
+int CalcModel::position_counter(
     char src_string) {  //  Подсчёт позиции операции строке приоритетов
-  char *operators = OPERATIONS;
+  const char *operators = OPERATIONS;
   int counter = 0;
   while (operators[counter]) {
     if (operators[counter] == src_string) {
@@ -143,7 +142,7 @@ int s21_model::position_counter(
   return counter;
 }
 
-int s21_model::buffering_number(
+int CalcModel::buffering_number(
     const char *src_string,
     char *out) {  //  Сборка числа в строку, возвращает длинну числа
   int i = 0;
@@ -159,20 +158,20 @@ int s21_model::buffering_number(
   return i;
 }
 
-int s21_model::bracket_finder(stack_type *oper) {
+int CalcModel::bracket_finder(stack_type *oper) {
   int finded = 0;
   if (oper != NULL)
     if (oper->val_dub == '(') finded = 1;
   return finded;
 }
 
-s21_model::stack_type *s21_model::del_point(stack_type *stack1) {  //  Удалит последний элемент списка
+CalcModel::stack_type *CalcModel::del_point(stack_type *stack1) {  //  Удалит последний элемент списка
   stack_type *Ptrack_bac = stack1->next;
   free(stack1);
   return Ptrack_bac;
 }
 
-int s21_model::unar_check(char check, const char *oper_st, int position) {
+int CalcModel::unar_check(char check, const char *oper_st, int position) {
   int unar_minus_find = 0;
   if ((check == '-' || check == '+') && !position) unar_minus_find = 1;
   if ((check == '-' || check == '+') && position > 0)
@@ -180,7 +179,7 @@ int s21_model::unar_check(char check, const char *oper_st, int position) {
   return unar_minus_find;
 }
 
-s21_model::stack_type * s21_model::push_sta(stack_type *plist, double val_dub, int prio) {
+CalcModel::stack_type * CalcModel::push_sta(stack_type *plist, double val_dub, int prio) {
   stack_type *Part = new(stack_type);
   if (Part == NULL) {
     exit(1);
@@ -192,7 +191,7 @@ s21_model::stack_type * s21_model::push_sta(stack_type *plist, double val_dub, i
   return Part;
 }
 
-double s21_model::math_operations(stack_type **num_sta, stack_type **oper_sta) {
+double CalcModel::math_operations(stack_type **num_sta, stack_type **oper_sta) {
   double buf_num = 0.0;
   if ((*oper_sta)->prio < 4) {
     double second = pop_val(num_sta);
@@ -207,7 +206,7 @@ double s21_model::math_operations(stack_type **num_sta, stack_type **oper_sta) {
   return buf_num;
 }
 
-void s21_model::destroy_node(stack_type *stack1) {
+void CalcModel::destroy_node(stack_type *stack1) {
   stack_type *Ptrack = stack1;
   while (Ptrack) {
     stack_type *Ptrack_bac = Ptrack->next;
@@ -217,7 +216,7 @@ void s21_model::destroy_node(stack_type *stack1) {
   delete(Ptrack);
 }
 
-double s21_model::pop_val(stack_type **stack) {
+double CalcModel::pop_val(stack_type **stack) {
   stack_type *oper_stack = *stack;
   double bufer = 0.0;
   if (oper_stack == NULL) {
@@ -231,7 +230,7 @@ double s21_model::pop_val(stack_type **stack) {
   return bufer;
 }
 
-double s21_model::simple_math(double second_num, double first_num, char operation) {
+double CalcModel::simple_math(double second_num, double first_num, char operation) {
   double out_num = 0.0;
   switch (operation) {
     case '+':
@@ -256,7 +255,7 @@ double s21_model::simple_math(double second_num, double first_num, char operatio
   return out_num;
 }
 
-double s21_model::trigon_calc(double x, char operation) {
+double CalcModel::trigon_calc(double x, char operation) {
   double buf_num = 0.0;
   switch (operation) {
     case COS:

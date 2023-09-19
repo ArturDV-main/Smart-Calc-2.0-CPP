@@ -1,8 +1,8 @@
-#ifndef SMARTCALC2_0_SRC_S21_MODEL_H_
-#define SMARTCALC2_0_SRC_S21_MODEL_H_
+#ifndef SRC_CALC_MODEL_H_
+#define SRC_CALC_MODEL_H_
 
 namespace s21 {
-class s21_model {
+class CalcModel {
 #define OPERATIONS ")+-/*M^@ABCDEFGH("
   enum truefalse {
     FALSE,
@@ -19,15 +19,15 @@ class s21_model {
     LOG = 'H'
   };
 
-  typedef struct Node_stack {
+  struct stack_type {
     double val_dub;
     int prio;
-    struct Node_stack *next;
-  } stack_type;
+    stack_type *next;
+  };
 
  public:
-  s21_model(/* args */);
-  ~s21_model();
+  CalcModel(/* args */);
+  ~CalcModel();
 
  private:
   // std::string expression{};  //  TODO
@@ -53,4 +53,4 @@ class s21_model {
 };
 }  // namespace s21
 
-#endif  // SMARTCALC2_0_SRC_S21_MODEL_H_
+#endif  // SRC_CALC_MODEL_H_
