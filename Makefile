@@ -1,9 +1,9 @@
 CXX = g++
 CPP_STD:=-std=c++17
 TARGET:=SmartCallc2.0
-CXXFLAGS = -g -lstdc++ -Wall -Wextra --coverage #-Werror
+CXXFLAGS = -g -Wall -Wextra --coverage -Werror #-lstdc++
 BUILD_DIR := build
-SRC_DIRS := src
+SRC_DIRS := src src/s21_view_qt
 SRCS := $(shell find $(SRC_DIRS) -maxdepth 1 -name *.cc)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 GT_SRCS := $(shell find $(SRC_DIRS) -maxdepth 1 -name *.cc)
@@ -26,12 +26,12 @@ $(BUILD_DIR)/%.cc.o: %.cc
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILD_DIR)/* test.info report test.log
+	rm -rf $(BUILD_DIR)/* test.info report test.log RESULT_VALGRIND.txt
 
 clang:
 	# cp -R materials/linters/.clang-format ./
-	clang-format -style=file:materials/linters/.clang-format -n src/*.h src/Google_tests/*.cc
-	clang-format -style=file:materials/linters/.clang-format -i src/*.h src/Google_tests/*.cc
+	clang-format -style=file:materials/linters/.clang-format -n src/*.h src/google_tests/*.cc
+	clang-format -style=file:materials/linters/.clang-format -i src/*.h src/google_tests/*.cc
 
 start:
 	./$(BUILD_DIR)/$(TARGET)
