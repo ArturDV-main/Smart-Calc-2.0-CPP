@@ -24,7 +24,7 @@ class CalcValid {
     LN = 'G',
     LOG = 'H'
   };
-  int last_is(char res);
+  int LastIs(char res);
   int CharCounter(const char* str_line, char res);
   int PositionCounter(char src_string);
   int InLineStart(const char* str, int str_len);

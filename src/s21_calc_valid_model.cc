@@ -43,7 +43,7 @@ int CalcValid::IsNums(char num) {
   return is_num;
 }
 
-int CalcValid::last_is(char res) {
+int CalcValid::LastIs(char res) {
   int is_number = FALSE;
   if (IsNums(res) || res == '.' || res == ')' || res == 'X') is_number = TRUE;
   return is_number;
@@ -54,7 +54,7 @@ int CalcValid::SmartBracket(const char *str_line) {
   int len = strlen(str_line);
   int open_bracket_val = CharCounter(str_line, '(');
   int close_bracket_val = CharCounter(str_line, ')');
-  int last_sym = last_is(str_line[len - 1]);
+  int last_sym = LastIs(str_line[len - 1]);
 
   if ((open_bracket_val > close_bracket_val) && last_sym) {
     closed_bracket = TRUE;
@@ -71,7 +71,7 @@ int CalcValid::ValidSimpOper(const char *str_line) {
   int valid_oper = FALSE;
   int len = strlen(str_line);
   char lastch = str_line[len - 1];
-  int last = last_is(lastch);
+  int last = LastIs(lastch);
   if (last && !InLineStart(str_line, len)) valid_oper = TRUE;
   return valid_oper;
 }
