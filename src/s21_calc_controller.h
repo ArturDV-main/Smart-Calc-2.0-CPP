@@ -7,6 +7,8 @@ namespace s21 {
 class CalcController {
  public:
   CalcController(s21::CalcModel *m) : calc_model(m){};
+  void Reset();
+  double StartCalc(const char *a, const double x);
 
  private:
   s21::CalcModel *calc_model;

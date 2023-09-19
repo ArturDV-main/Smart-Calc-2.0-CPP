@@ -11,7 +11,6 @@ CalcModel::CalcModel(/* args */) {}
 CalcModel::~CalcModel() {}
 
 double CalcModel::StartCalc(const char *src, double X_num) {
-  double result = 0.0;
   if (Validator(src) == 0)
     result = Calc(src, X_num);
   else

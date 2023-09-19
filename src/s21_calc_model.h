@@ -29,6 +29,7 @@ class CalcModel {
   CalcModel(/* args */);
   ~CalcModel();
   double StartCalc(const char *src, double X_num);
+  double getData() { return result; }
 
  private:
   // std::string expression{};  //  TODO
