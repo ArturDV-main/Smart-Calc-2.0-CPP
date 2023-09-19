@@ -225,7 +225,7 @@ double CalcModel::PopVal(StackType **stack) {
   } else {
     bufer = (double)oper_stack->val_dub;
     *stack = oper_stack->next;
-    free(oper_stack);
+    delete(oper_stack);
   }
   return bufer;
 }
