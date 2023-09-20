@@ -32,7 +32,7 @@ endif
 all: apple
 
 apple:
-	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=release CONFIG+=qml_release
 	make -f src/s21_view_qt/Makefile qmake_all
 	cd src/s21_view_qt && make -j8
 	mv src/s21_view_qt/$(APPLICATION) build/
