@@ -1,14 +1,14 @@
 CXX = g++
-CPP_STD:=-std=c++17
+CPP_STD = -std=c++17
 # CPPFLAGS = --coverage
-TARGET:=SmartCallc2.0
+TARGET = SmartCalc2_0
 CXXFLAGS = -g -Wall -Wextra -Werror --coverage #-lstdc++
 GT_FLAGS = -lgtest -lgtest_main -lm
+GCOV = --coverage
 #  Project directories
-BUILD_DIR := build
-SRC_DIRS := src src/s21_view_qt
-GT_DIRS := src src/google_tests
-INC=-I/usr/include/x86_64-linux-gnu/qt6 -I/lib/qt6
+BUILD_DIR = build
+SRC_DIRS = src src/s21_view_qt
+GT_DIRS = src src/google_tests
 #  Project sourses
 SRCS := $(shell find $(SRC_DIRS) -maxdepth 1 -name *.cc)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
@@ -19,16 +19,26 @@ GT_OBJS := $(GT_SRCS:%=$(BUILD_DIR)/%.o)
 
 OS := $(shell uname -s)
 
-all: app
+ifeq ($(OS), Darwin)
+    LIBS := -lcheck
+	APPLICATION := SmartCalc2_0.app
+	OPEN = open
+else
+    LIBS := -lcheck_pic -lpthread -lrt -lm -lsubunit -g
+	APPLICATION := SmartCalc2_0
+	OPEN = ./
+endif
+
+all: apple
 
 apple:
 	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 	make -f src/s21_view_qt/Makefile qmake_all
-	cd src/s21_view_qt && make -j8 && make clean
-	mv src/s21_view_qt/SmartCalc2_0 build/
+	cd src/s21_view_qt && make -j8
+	mv src/s21_view_qt/$(APPLICATION) build/
 
 #  Google tests
-test:$(GT_OBJS)
+test: clean $(GT_OBJS)
 	$(CXX) $(CXXFLAGS) $(GT_OBJS) $(GT_FLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
 
@@ -50,8 +60,8 @@ clang:
 	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
 	clang-format -style=file:materials/linters/.clang-format -i src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
 
-start:
-	./$(BUILD_DIR)/$(TARGET)
+open:
+	$(OPEN)$(BUILD_DIR)/$(APPLICATION)
 
 valgrind:
 ifeq ($(OS), Darwin)
