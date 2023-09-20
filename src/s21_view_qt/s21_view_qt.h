@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QVector>
+#include <QKeyEvent>
 #include "../s21_calc_controller.h"
 
 QT_BEGIN_NAMESPACE
@@ -17,13 +18,16 @@ class MainWindow : public QMainWindow {
  public:
   MainWindow(QWidget *parent = nullptr, s21::CalcController * calc_controller = nullptr);
   ~MainWindow();
-
+ protected:
+    void keyPressEvent(QKeyEvent * e) override;
  private:
   s21::CalcController * calc;
   Ui::MainWindow *ui;
-  double xBegin, xEnd, h, X;
+  //  TODO
+  double xBegin_, xEnd_, h_, x_;
   QVector<double> x, y;
   void ConnectsRelise();
+
  private slots:
   void digits_numbers();
   void AC_button();

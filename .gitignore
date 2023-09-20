@@ -1,3 +1,4 @@
 .vscode
 RESULT_VALGRIND.txt
 src/s21_view_qt/SmartCalc2_0.pro.user
+src/s21_view_qt/SmartCalc2_0

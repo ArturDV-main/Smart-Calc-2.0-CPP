@@ -6,10 +6,15 @@ MainWindow::MainWindow(QWidget *parent, s21::CalcController * calc_controller)
     : QMainWindow(parent),calc(calc_controller), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   ConnectsRelise();
+  x_ = ui->line_X->text().toDouble();
 //  calc = calc_controller;
 }
 
 MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::keyPressEvent(QKeyEvent * e) {
+    ui->line_X->setText(ui->line_X->text() + char(e->key()));
+}
 
 void MainWindow::x_button_push() {}
 
@@ -33,8 +38,9 @@ void MainWindow::AC_button() {
 }
 
 void MainWindow::equals_button() {
-    double x = ui->result->text().toDouble();
-    calc->StartCalc("2+2*X", x);
+    QByteArray ba = (ui->result->text() + "*X").toLocal8Bit();
+    const char * new_str = ba.data(); //  Преобразование в str* для СИ
+    calc->StartCalc(new_str, ui->line_X->text().toDouble());
     double result = calc->GetResult();
     ui->result->setText(QString::number(result, 'g', 15));
 }
@@ -94,7 +100,7 @@ void MainWindow::ConnectsRelise() {
     connect(ui->push_stepen, SIGNAL(clicked()), this, SLOT(simp_math_button()));
     //  Скобки
     connect(ui->push_scobka, SIGNAL(clicked()), this, SLOT(skobki()));
-    //  Точка
+    //  Точка  TODO
 //    connect(ui->push_dot, SIGNAL(clicked()), this, SLOT(digits_numbers()));
     //  Input lines
 
