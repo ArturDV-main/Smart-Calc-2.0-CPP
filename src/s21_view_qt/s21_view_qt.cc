@@ -1,4 +1,5 @@
 #include "s21_view_qt.h"
+
 #include "ui_s21_view_qt.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -44,76 +45,39 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->push_dot, SIGNAL(clicked()), this, SLOT(digits_numbers()));
   //  Input lines
 
-  connect(ui->line_Y_from, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(on_line_Y_to_cursorPositionChanged()));
-  connect(ui->line_Y_to, SIGNAL(cursorPositionChanged(int,int)), this, SLOT(on_line_Y_to_cursorPositionChanged()));
-
+  connect(ui->line_Y_from, SIGNAL(cursorPositionChanged(int, int)), this,
+          SLOT(on_line_Y_to_cursorPositionChanged()));
+  connect(ui->line_Y_to, SIGNAL(cursorPositionChanged(int, int)), this,
+          SLOT(on_line_Y_to_cursorPositionChanged()));
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::x_button_push() {
+void MainWindow::x_button_push() {}
 
-}
-
-void MainWindow::digits_numbers() {
-
-}
+void MainWindow::digits_numbers() {}
 
 //  Умные скобки, ставится та скобка, которая должна быть
-void MainWindow::skobki() {
+void MainWindow::skobki() {}
 
-  
-}
+void MainWindow::AC_button() {}
 
-void MainWindow::AC_button() {
+void MainWindow::equals_button() {}
 
-}
+void MainWindow::graf_button() {}
 
-void MainWindow::equals_button() {
+void MainWindow::func_button() {}
 
-}
+void MainWindow::simp_math_button() {}
 
-void MainWindow::graf_button() {
+void MainWindow::on_cred_Button_clicked() {}
 
-}
+void MainWindow::on_line_X_cursorPositionChanged() {}
 
-void MainWindow::func_button() {
+void MainWindow::on_line_X_from_cursorPositionChanged() {}
 
-  
-}
+void MainWindow::on_line_X_to_cursorPositionChanged() {}
 
-void MainWindow::simp_math_button() {
+void MainWindow::on_line_Y_from_cursorPositionChanged() {}
 
-}
-
-void MainWindow::on_cred_Button_clicked()
-{
-    
-}
-
-void MainWindow::on_line_X_cursorPositionChanged()
-{
-    
-}
-
-void MainWindow::on_line_X_from_cursorPositionChanged()
-{
-    
-}
-
-void MainWindow::on_line_X_to_cursorPositionChanged()
-{
-    
-}
-
-void MainWindow::on_line_Y_from_cursorPositionChanged()
-{
-    
-}
-
-
-
-void MainWindow::on_line_Y_to_cursorPositionChanged()
-{
-    
-}
+void MainWindow::on_line_Y_to_cursorPositionChanged() {}

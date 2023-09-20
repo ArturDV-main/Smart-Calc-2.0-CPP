@@ -47,9 +47,8 @@ clean:
 	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash
 
 clang:
-	# cp -R materials/linters/.clang-format ./
-	clang-format -style=file:materials/linters/.clang-format -n src/*.h src/google_tests/*.cc
-	clang-format -style=file:materials/linters/.clang-format -i src/*.h src/google_tests/*.cc
+	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
+	clang-format -style=file:materials/linters/.clang-format -i src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
 
 start:
 	./$(BUILD_DIR)/$(TARGET)

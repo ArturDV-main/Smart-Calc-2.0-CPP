@@ -89,8 +89,8 @@ int CalcValid::ValidNums(const char *str_line) {
   int validfunc = FALSE;
   int len = strlen(str_line);
   char lastchar = str_line[len - 1];
-  if ((IsSimpOper(lastchar) || lastchar == '(' ||
-       InLineStart(str_line, len) || IsNums(lastchar)) &&
+  if ((IsSimpOper(lastchar) || lastchar == '(' || InLineStart(str_line, len) ||
+       IsNums(lastchar)) &&
       lastchar != 'X')
     validfunc = TRUE;
   return validfunc;
@@ -141,7 +141,8 @@ int CalcValid::ValidDotLine(const char *str_line) {
   return validdot;
 }
 
-int CalcValid::ValidInputLine(double maxval, double minval, const char *str_line) {
+int CalcValid::ValidInputLine(double maxval, double minval,
+                              const char *str_line) {
   int validline = TRUE;
   int len = strlen(str_line);
   char lastchar = str_line[len - 1];
