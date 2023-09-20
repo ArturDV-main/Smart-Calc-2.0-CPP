@@ -54,7 +54,7 @@ $(BUILD_DIR)/%.cc.o: %.cc
 .PHONY: clean
 clean:
 	cd src/s21_view_qt && make clean
-	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash
+	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash src/build-SmartCalc2_0-Desktop-Debug
 
 clang:
 	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h

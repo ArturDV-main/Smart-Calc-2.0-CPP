@@ -197,7 +197,7 @@ QPushButton:pressed {
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="push_leftscob">
+   <widget class="QPushButton" name="push_scobka">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -671,38 +671,6 @@ QPushButton:pressed {
      <string>X</string>
     </property>
    </widget>
-   <widget class="QLabel" name="result_code">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>0</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QLabel {
-  qproperty-alignment: 'AlignVCenter | AlignRight';
-  border: 1px solid gray;
-}
-
-background-color : white;</string>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
    <widget class="QCustomPlot" name="widget_graf" native="true">
     <property name="geometry">
      <rect>
@@ -983,183 +951,10 @@ background-color : white;</string>
      </rect>
     </property>
     <property name="text">
-     <string>Кредитный калькулятор</string>
+     <string>Credit calculator</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="line_Y_to_bac">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>140</y>
-      <width>0</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>ArrowCursor</cursorShape>
-    </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::ClickFocus</enum>
-    </property>
-    <property name="inputMask">
-     <string/>
-    </property>
-    <property name="text">
-     <string>17</string>
-    </property>
-    <property name="maxLength">
-     <number>24</number>
-    </property>
-    <property name="dragEnabled">
-     <bool>false</bool>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-    <property name="clearButtonEnabled">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_Y_from_bac">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>140</y>
-      <width>0</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>ArrowCursor</cursorShape>
-    </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::ClickFocus</enum>
-    </property>
-    <property name="statusTip">
-     <string/>
-    </property>
-    <property name="inputMethodHints">
-     <set>Qt::ImhNone</set>
-    </property>
-    <property name="text">
-     <string>-15</string>
-    </property>
-    <property name="maxLength">
-     <number>24</number>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-    <property name="placeholderText">
-     <string/>
-    </property>
-    <property name="clearButtonEnabled">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_X_from_bac">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>110</y>
-      <width>0</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>ArrowCursor</cursorShape>
-    </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::ClickFocus</enum>
-    </property>
-    <property name="text">
-     <string>-17</string>
-    </property>
-    <property name="maxLength">
-     <number>24</number>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-    <property name="placeholderText">
-     <string/>
-    </property>
-    <property name="clearButtonEnabled">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_X_to_bac">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>110</y>
-      <width>0</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>ArrowCursor</cursorShape>
-    </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::ClickFocus</enum>
-    </property>
-    <property name="text">
-     <string>17</string>
-    </property>
-    <property name="maxLength">
-     <number>24</number>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-    <property name="clearButtonEnabled">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_X_bac">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>70</y>
-      <width>0</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::ClickFocus</enum>
-    </property>
-    <property name="acceptDrops">
-     <bool>true</bool>
-    </property>
-    <property name="inputMask">
-     <string/>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="maxLength">
-     <number>24</number>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-    <property name="clearButtonEnabled">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="result2">
+   <widget class="QLineEdit" name="result">
     <property name="geometry">
      <rect>
       <x>10</x>

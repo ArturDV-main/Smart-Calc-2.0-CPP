@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QVector>
+#include "../s21_calc_controller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -14,15 +15,15 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  MainWindow(QWidget *parent = nullptr);
+  MainWindow(QWidget *parent = nullptr, s21::CalcController * calc_controller = nullptr);
   ~MainWindow();
 
  private:
+  s21::CalcController * calc;
   Ui::MainWindow *ui;
   double xBegin, xEnd, h, X;
-  //    int N;
   QVector<double> x, y;
-
+  void ConnectsRelise();
  private slots:
   void digits_numbers();
   void AC_button();
