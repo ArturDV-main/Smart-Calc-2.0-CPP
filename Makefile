@@ -8,6 +8,7 @@ GT_FLAGS = -lgtest -lgtest_main -lm
 BUILD_DIR := build
 SRC_DIRS := src src/s21_view_qt
 GT_DIRS := src src/google_tests
+INC=-I/usr/include/x86_64-linux-gnu/qt6 -I/lib/qt6
 #  Project sourses
 SRCS := $(shell find $(SRC_DIRS) -maxdepth 1 -name *.cc)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
@@ -21,10 +22,9 @@ OS := $(shell uname -s)
 all: app
 
 apple:
-	cd src/s21_view_qt
-	/lib/qt6/bin/qmake s21_view_qt.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
-	make qmake_all
-	make -j8
+	cd src/s21_view_qt && /lib/qt6/bin/qmake s21_view_qt.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+	make -f src/s21_view_qt/Makefile qmake_all
+	cd src/s21_view_qt && make -j8
 
 #  Google tests
 test:$(GT_OBJS)
