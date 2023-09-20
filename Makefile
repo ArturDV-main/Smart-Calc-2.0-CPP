@@ -22,9 +22,9 @@ OS := $(shell uname -s)
 all: app
 
 apple:
-	cd src/s21_view_qt && /lib/qt6/bin/qmake s21_view_qt.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
-	make -f src/s21_view_qt/Makefile qmake_all
-	cd src/s21_view_qt && make -j8
+	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug -o MakefileQt
+	make -f src/s21_view_qt/MakefileQt qmake_all
+	cd build && make -j8 -f ../src/s21_view_qt/MakefileQt
 
 #  Google tests
 test:$(GT_OBJS)
@@ -71,4 +71,4 @@ gcov_report: clean test
 
 t: clean clang app valgrind
 
-
+# sudo update-alternatives --install /usr/bin/qmake qmake /lib/qt6/bin/qmake 100
