@@ -24,7 +24,7 @@ all: app
 apple:
 	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug -o MakefileQt
 	make -f src/s21_view_qt/MakefileQt qmake_all
-	cd build && make -j8 -f ../src/s21_view_qt/MakefileQt
+	cd src/s21_view_qt && make -j8 -f MakefileQt
 
 #  Google tests
 test:$(GT_OBJS)
