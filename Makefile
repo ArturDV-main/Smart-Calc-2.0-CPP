@@ -22,9 +22,10 @@ OS := $(shell uname -s)
 all: app
 
 apple:
-	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug -o MakefileQt
-	make -f src/s21_view_qt/MakefileQt qmake_all
-	cd src/s21_view_qt && make -j8 -f MakefileQt
+	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+	make -f src/s21_view_qt/Makefile qmake_all
+	cd src/s21_view_qt && make -j8 && make clean
+	mv src/s21_view_qt/SmartCalc2_0 build/
 
 #  Google tests
 test:$(GT_OBJS)
@@ -42,7 +43,8 @@ $(BUILD_DIR)/%.cc.o: %.cc
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILD_DIR)/* test.info report test.log RESULT_VALGRIND.txt
+	cd src/s21_view_qt && make clean
+	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash
 
 clang:
 	# cp -R materials/linters/.clang-format ./
@@ -60,7 +62,7 @@ ifeq ($(OS), Darwin)
 else
 	echo $(OS)
 	echo "For Ubuntu --------------------"
-	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=RESULT_VALGRIND.txt $(BUILD_DIR)/$(TARGET)
+	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=$(BUILD_DIR)/RESULT_VALGRIND.txt $(BUILD_DIR)/$(TARGET)
 	grep errors RESULT_VALGRIND.txt
 endif
 
