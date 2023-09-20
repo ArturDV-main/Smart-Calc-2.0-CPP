@@ -33,6 +33,10 @@ void MainWindow::AC_button() {
 }
 
 void MainWindow::equals_button() {
+    double x = ui->result->text().toDouble();
+    calc->StartCalc("2+2*X", x);
+    double result = calc->GetResult();
+    ui->result->setText(QString::number(result, 'g', 15));
 }
 
 void MainWindow::graf_button() {}
@@ -91,7 +95,7 @@ void MainWindow::ConnectsRelise() {
     //  Скобки
     connect(ui->push_scobka, SIGNAL(clicked()), this, SLOT(skobki()));
     //  Точка
-    connect(ui->push_dot, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+//    connect(ui->push_dot, SIGNAL(clicked()), this, SLOT(digits_numbers()));
     //  Input lines
 
     connect(ui->line_Y_from, SIGNAL(cursorPositionChanged(int, int)), this,

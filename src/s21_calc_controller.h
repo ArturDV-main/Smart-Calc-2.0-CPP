@@ -10,7 +10,7 @@ class CalcController {
   CalcController(s21::CalcModel *m) : calc_model(m){};
   void Reset() { calc_model->Reset(); }
   double StartCalc(const char *a, const double x);
-
+  double GetResult() {return calc_model->GetData();}
  private:
   s21::CalcModel *calc_model;
 };

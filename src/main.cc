@@ -6,20 +6,20 @@
 // #include "s21_view_qt/console_view.h"
 #include <iostream>
 
-int viewStart(int argc, char *argv[]);
+int viewStart(s21::CalcController * calc_controller, int argc, char *argv[]);
 
 int main(int argc, char *argv[]) {
   if (argc && argv) {
     s21::CalcModel calc_model;
     s21::CalcController calc_controller(&calc_model);
-    return viewStart(argc, argv);
+    return viewStart(&calc_controller, argc, argv);
   }
   return 1;
 }
 
-int viewStart(int argc, char *argv[]) {
+int viewStart(s21::CalcController * calc_controller, int argc, char *argv[]) {
   QApplication a(argc, argv);
-  MainWindow w;
+  MainWindow w(nullptr, calc_controller);
   w.setWindowTitle("S21 Smart Calculator");
   w.show();
   return a.exec();
