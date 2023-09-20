@@ -20,6 +20,12 @@ OS := $(shell uname -s)
 
 all: app
 
+apple:
+	cd src/s21_view_qt
+	/lib/qt6/bin/qmake s21_view_qt.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+	make qmake_all
+	make -j8
+
 #  Google tests
 test:$(GT_OBJS)
 	$(CXX) $(CXXFLAGS) $(GT_OBJS) $(GT_FLAGS) -o $(BUILD_DIR)/gtest.out
@@ -65,11 +71,4 @@ gcov_report: clean test
 
 t: clean clang app valgrind
 
-# Выполняются этапы для проекта s21_view_qt...
-# Запускается: «/lib/qt6/bin/qmake» /home/dandy/projects/SmartCalc2_0/src/s21_view_qt/s21_view_qt.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
-# creating stash file /home/dandy/projects/SmartCalc2_0/src/build-s21_view_qt-Desktop-Debug/.qmake.stash
-# Процесс «/lib/qt6/bin/qmake» завершился успешно.
-# Запускается: «/usr/bin/make» -f /home/dandy/projects/SmartCalc2_0/src/build-s21_view_qt-Desktop-Debug/Makefile qmake_all
-# make: Цель «qmake_all» не требует выполнения команд.
-# Процесс «/usr/bin/make» завершился успешно.
-# Запускается: «/usr/bin/make» -j8
+
