@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow {
   void ConnectsRelise();
   void DoubleValidInit();
  protected:
-  void keyPressEvent(QKeyEvent * e) override;
+  void keyPressEvent(QKeyEvent * event) override;
 
  private slots:
   void digits_numbers();

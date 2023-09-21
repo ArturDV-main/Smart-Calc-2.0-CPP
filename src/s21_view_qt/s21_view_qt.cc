@@ -24,10 +24,22 @@ void MainWindow::DoubleValidInit() {
 //  TODO
 }
 
-void MainWindow::keyPressEvent(QKeyEvent * e) {
+void MainWindow::keyPressEvent(QKeyEvent * event) {
     QString tmp_str("1234567890-+*/)(x");
-    if(tmp_str.contains(char(e->key())))
-    ui->result->setText(ui->result->text() + char(e->key()));
+    QString enter_button("\n");
+    if(tmp_str.contains(char(event->key()))) {
+      ui->result->setText(ui->result->text() + char(event->key()));
+    } else if ((event->key() == Qt::Key_Enter) || (event->key() == Qt::Key_Return)) {
+    equals_button();
+}
+}
+
+void MainWindow::equals_button() {
+    QByteArray ba = (ui->result->text()).toLocal8Bit();
+    const char * new_str = ba.data(); //  Преобразование в str* для СИ
+    calc->StartCalc(new_str, ui->line_X->text().toDouble());
+    double result = calc->GetResult();
+    ui->result->setText(QString::number(result, 'g', 15));
 }
 
 void MainWindow::x_button_push() {}
@@ -48,14 +60,6 @@ void MainWindow::skobki() {
 void MainWindow::AC_button() {
     ui->result->setText("0");
     calc->Reset();
-}
-
-void MainWindow::equals_button() {
-    QByteArray ba = (ui->result->text() + "*X").toLocal8Bit();
-    const char * new_str = ba.data(); //  Преобразование в str* для СИ
-    calc->StartCalc(new_str, ui->line_X->text().toDouble());
-    double result = calc->GetResult();
-    ui->result->setText(QString::number(result, 'g', 15));
 }
 
 void MainWindow::graf_button() {}
