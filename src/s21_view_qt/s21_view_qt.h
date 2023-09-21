@@ -18,8 +18,6 @@ class MainWindow : public QMainWindow {
  public:
   MainWindow(QWidget *parent = nullptr, s21::CalcController * calc_controller = nullptr);
   ~MainWindow();
- protected:
-    void keyPressEvent(QKeyEvent * e) override;
  private:
   s21::CalcController * calc;
   Ui::MainWindow *ui;

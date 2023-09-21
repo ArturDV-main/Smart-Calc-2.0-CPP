@@ -14,10 +14,6 @@ MainWindow::MainWindow(QWidget *parent, s21::CalcController * calc_controller)
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::keyPressEvent(QKeyEvent * e) {
-    ui->line_X->setText(ui->line_X->text() + char(e->key()));
-}
-
 void MainWindow::x_button_push() {}
 
 void MainWindow::digits_numbers() {
