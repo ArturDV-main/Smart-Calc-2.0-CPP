@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QVector>
+#include <QDoubleValidator>
+#include "../s21_calc_controller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -14,14 +16,18 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  MainWindow(QWidget *parent = nullptr);
+  MainWindow(QWidget *parent = nullptr, s21::CalcController * calc_controller = nullptr);
   ~MainWindow();
-
  private:
+  s21::CalcController * calc;
   Ui::MainWindow *ui;
-  double xBegin, xEnd, h, X;
-  //    int N;
-  QVector<double> x, y;
+  QDoubleValidator *double_valid;
+  double x_begin_, x_end_, h_;
+  QVector<double> x_{}, y_{};
+  void ConnectsRelise();
+  void DoubleValidInit();
+ protected:
+  void keyPressEvent(QKeyEvent * e) override;
 
  private slots:
   void digits_numbers();

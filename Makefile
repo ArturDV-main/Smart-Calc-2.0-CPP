@@ -32,7 +32,7 @@ endif
 all: apple
 
 apple:
-	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=release CONFIG+=qml_release
 	make -f src/s21_view_qt/Makefile qmake_all
 	cd src/s21_view_qt && make -j8
 	mv src/s21_view_qt/$(APPLICATION) build/
@@ -54,7 +54,7 @@ $(BUILD_DIR)/%.cc.o: %.cc
 .PHONY: clean
 clean:
 	cd src/s21_view_qt && make clean
-	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash
+	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash src/build-SmartCalc2_0-Desktop-Debug
 
 clang:
 	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
