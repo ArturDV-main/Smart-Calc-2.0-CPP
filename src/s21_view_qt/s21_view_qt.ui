@@ -709,6 +709,18 @@ QPushButton:pressed {
       <height>23</height>
      </rect>
     </property>
+    <property name="minimumSize">
+     <size>
+      <width>10</width>
+      <height>5</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>370</width>
+      <height>90</height>
+     </size>
+    </property>
     <property name="focusPolicy">
      <enum>Qt::ClickFocus</enum>
     </property>
@@ -722,7 +734,10 @@ QPushButton:pressed {
      <string>0</string>
     </property>
     <property name="maxLength">
-     <number>24</number>
+     <number>8</number>
+    </property>
+    <property name="cursorPosition">
+     <number>1</number>
     </property>
     <property name="readOnly">
      <bool>false</bool>

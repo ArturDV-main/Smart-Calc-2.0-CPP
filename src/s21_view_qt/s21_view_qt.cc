@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent, s21::CalcController * calc_controller)
   ui->setupUi(this);
   ConnectsRelise();
   x_ = ui->line_X->text().toDouble();
+  QDoubleValidator double_validator( 1.00, 16.00, 2, ui->line_X);
+  ui->line_X->setValidator(&double_validator);
 //  calc = calc_controller;
 }
 
