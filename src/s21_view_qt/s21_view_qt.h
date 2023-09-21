@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QDoubleValidator>
 #include "../s21_calc_controller.h"
+#include "../s21_calc_valid_model.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,13 +20,16 @@ class MainWindow : public QMainWindow {
   MainWindow(QWidget *parent = nullptr, s21::CalcController * calc_controller = nullptr);
   ~MainWindow();
  private:
-  s21::CalcController * calc;
+  s21::CalcValid calc_valid;
+  s21::CalcController * calc_;
   Ui::MainWindow *ui;
-  QDoubleValidator *double_valid;
+  QDoubleValidator *double_valid_;
   double x_begin_, x_end_, h_;
   QVector<double> x_{}, y_{};
+  QString result_code_;
   void ConnectsRelise();
   void DoubleValidInit();
+//  void LineEditEvent(QString key); // TODO
  protected:
   void keyPressEvent(QKeyEvent * event) override;
 

@@ -3,16 +3,16 @@
 
 
 MainWindow::MainWindow(QWidget *parent, s21::CalcController * calc_controller)
-    : QMainWindow(parent),calc(calc_controller), ui(new Ui::MainWindow) {
+    : QMainWindow(parent),calc_(calc_controller), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   ConnectsRelise();
-  double_valid = new QDoubleValidator(-10000000, 10000000, 8, ui->line_X);
-  double_valid->setNotation(QDoubleValidator::StandardNotation);
-  ui->line_X->setValidator(double_valid);
-  ui->line_X_from->setValidator(double_valid);
-  ui->line_X_to->setValidator(double_valid);
-  ui->line_Y_from->setValidator(double_valid);
-  ui->line_Y_to->setValidator(double_valid);
+  double_valid_ = new QDoubleValidator(-10000000, 10000000, 8, ui->line_X);
+  double_valid_->setNotation(QDoubleValidator::StandardNotation);
+  ui->line_X->setValidator(double_valid_);
+  ui->line_X_from->setValidator(double_valid_);
+  ui->line_X_to->setValidator(double_valid_);
+  ui->line_Y_from->setValidator(double_valid_);
+  ui->line_Y_to->setValidator(double_valid_);
 //  void DoubleValidInit();
 }
 
@@ -26,19 +26,27 @@ void MainWindow::DoubleValidInit() {
 
 void MainWindow::keyPressEvent(QKeyEvent * event) {
     QString tmp_str("1234567890-+*/)(x");
-    QString enter_button("\n");
+    QString tmp_oper_str("-+*/)(");
     if(tmp_str.contains(char(event->key()))) {
-      ui->result->setText(ui->result->text() + char(event->key()));
+        if(ui->result->text() == "0")
+            ui->result->setText((QString)char(event->key()));
+        else
+            ui->result->setText(ui->result->text() + char(event->key()));
     } else if ((event->key() == Qt::Key_Enter) || (event->key() == Qt::Key_Return)) {
     equals_button();
 }
 }
 
+//  TODO
+//void MainWindow::LineEditEvent(QString key) {
+
+//}
+
 void MainWindow::equals_button() {
     QByteArray ba = (ui->result->text()).toLocal8Bit();
     const char * new_str = ba.data(); //  Преобразование в str* для СИ
-    calc->StartCalc(new_str, ui->line_X->text().toDouble());
-    double result = calc->GetResult();
+    calc_->StartCalc(new_str, ui->line_X->text().toDouble());
+    double result = calc_->GetResult();
     ui->result->setText(QString::number(result, 'g', 15));
 }
 
@@ -59,7 +67,7 @@ void MainWindow::skobki() {
 
 void MainWindow::AC_button() {
     ui->result->setText("0");
-    calc->Reset();
+    calc_->Reset();
 }
 
 void MainWindow::graf_button() {}
@@ -93,7 +101,7 @@ void MainWindow::ConnectsRelise() {
     connect(ui->push_8, SIGNAL(clicked()), this, SLOT(digits_numbers()));
     connect(ui->push_9, SIGNAL(clicked()), this, SLOT(digits_numbers()));
     //  Кнопка Х
-    connect(ui->push_X, SIGNAL(clicked()), this, SLOT(x_button_push()));
+    connect(ui->push_X, SIGNAL(clicked()), this, SLOT(digits_numbers()));
     //  Рабочие кнопки
     connect(ui->push_AC, SIGNAL(clicked()), this, SLOT(AC_button()));
     connect(ui->push_ravno, SIGNAL(clicked()), this, SLOT(equals_button()));
