@@ -6,20 +6,33 @@ MainWindow::MainWindow(QWidget *parent, s21::CalcController * calc_controller)
     : QMainWindow(parent),calc(calc_controller), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   ConnectsRelise();
-  x_ = ui->line_X->text().toDouble();
-
-  QDoubleValidator* double_valid = new QDoubleValidator(-10000000, 10000000, 8, ui->line_X);
+  double_valid = new QDoubleValidator(-10000000, 10000000, 8, ui->line_X);
   double_valid->setNotation(QDoubleValidator::StandardNotation);
   ui->line_X->setValidator(double_valid);
+  ui->line_X_from->setValidator(double_valid);
+  ui->line_X_to->setValidator(double_valid);
+  ui->line_Y_from->setValidator(double_valid);
+  ui->line_Y_to->setValidator(double_valid);
+//  void DoubleValidInit();
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
+
+
+void MainWindow::DoubleValidInit() {
+//  TODO
+}
+
+void MainWindow::keyPressEvent(QKeyEvent * e) {
+    QString tmp_str("1234567890-+*/)(x");
+    if(tmp_str.contains(char(e->key())))
+    ui->result->setText(ui->result->text() + char(e->key()));
+}
+
 void MainWindow::x_button_push() {}
 
 void MainWindow::digits_numbers() {
-    QString str = ui->result->text();
-    QString new_str;
     QPushButton *button = (QPushButton *)sender();
     if(ui->result->text() != "0") {
       ui->result->setText(ui->result->text() + button->text());
@@ -34,6 +47,7 @@ void MainWindow::skobki() {
 
 void MainWindow::AC_button() {
     ui->result->setText("0");
+    calc->Reset();
 }
 
 void MainWindow::equals_button() {
@@ -100,7 +114,7 @@ void MainWindow::ConnectsRelise() {
     //  Скобки
     connect(ui->push_scobka, SIGNAL(clicked()), this, SLOT(skobki()));
     //  Точка  TODO
-//    connect(ui->push_dot, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+    connect(ui->push_dot, SIGNAL(clicked()), this, SLOT(digits_numbers()));
     //  Input lines
 
     connect(ui->line_Y_from, SIGNAL(cursorPositionChanged(int, int)), this,
