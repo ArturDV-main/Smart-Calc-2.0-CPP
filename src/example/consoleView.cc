@@ -34,7 +34,7 @@ double ConsoleView::performNumericInput()
     return number;
 } 
 
-void ConsoleView::startEventLoop()
+void ConsoleView::StartEventLoop()
 {
     while (true) 
     {

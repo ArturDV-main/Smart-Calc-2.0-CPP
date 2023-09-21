@@ -52,8 +52,8 @@ double CalcModel::Calc(const char *calculation_src, double X_num) {
           st_buf.val_dub = 0.0;
         } else if (st_buf.prio > st_oper->prio) {  //  Если приоритет опреации
           st_oper = PushSta(st_oper, st_buf.val_dub,
-                             st_buf.prio);  //  больше приоритета
-          st_buf.val_dub = 0.0;             //  в стеке
+                            st_buf.prio);  //  больше приоритета
+          st_buf.val_dub = 0.0;            //  в стеке
         } else {
           double buf_num = MathOperations(&st_num, &st_oper);
           st_num = PushSta(st_num, buf_num, 0);  //  Выполнить расчёт
@@ -82,8 +82,9 @@ double CalcModel::Calc(const char *calculation_src, double X_num) {
   return result;
 }
 
-CalcModel::StackType CalcModel::ParserUno(const char *calculation_src, int *position,
-                      double X_num) {  //  Парсер одной лексеммы
+CalcModel::StackType CalcModel::ParserUno(
+    const char *calculation_src, int *position,
+    double X_num) {  //  Парсер одной лексеммы
   StackType stack1{};
   int prio = PrioCheck(calculation_src[*position]);
   if (prio) {
@@ -96,8 +97,7 @@ CalcModel::StackType CalcModel::ParserUno(const char *calculation_src, int *posi
       *position += 1;
     } else {
       char buf[256] = {0};
-      *position =
-          *position + BufferingNumber(&calculation_src[*position], buf);
+      *position = *position + BufferingNumber(&calculation_src[*position], buf);
       double tess = atof(buf);
       stack1.prio = prio;
       stack1.val_dub = tess;
@@ -106,7 +106,8 @@ CalcModel::StackType CalcModel::ParserUno(const char *calculation_src, int *posi
   return stack1;
 }
 
-int CalcModel::PrioCheck(char src_string) {  //  Определение приоритета опреатора
+int CalcModel::PrioCheck(
+    char src_string) {  //  Определение приоритета опреатора
   int prior = 0;
   int position_num = PositionCounter(src_string);
   if (position_num > 16)
@@ -160,7 +161,8 @@ int CalcModel::BracketFinder(StackType *oper) {
   return finded;
 }
 
-CalcModel::StackType *CalcModel::DelPoint(StackType *stack1) {  //  Удалит последний элемент списка
+CalcModel::StackType *CalcModel::DelPoint(
+    StackType *stack1) {  //  Удалит последний элемент списка
   StackType *Ptrack_bac = stack1->next;
   free(stack1);
   return Ptrack_bac;
@@ -174,8 +176,9 @@ int CalcModel::UnarCheck(char check, const char *oper_st, int position) {
   return unar_minus_find;
 }
 
-CalcModel::StackType * CalcModel::PushSta(StackType *plist, double val_dub, int prio) {
-  StackType *Part = new(StackType);
+CalcModel::StackType *CalcModel::PushSta(StackType *plist, double val_dub,
+                                         int prio) {
+  StackType *Part = new (StackType);
   if (Part == NULL) {
     exit(1);
   } else {
@@ -205,10 +208,10 @@ void CalcModel::DestroyNode(StackType *stack1) {
   StackType *Ptrack = stack1;
   while (Ptrack) {
     StackType *Ptrack_bac = Ptrack->next;
-    delete(Ptrack);
+    delete (Ptrack);
     Ptrack = Ptrack_bac;
   }
-  delete(Ptrack);
+  delete (Ptrack);
 }
 
 double CalcModel::PopVal(StackType **stack) {
@@ -220,12 +223,13 @@ double CalcModel::PopVal(StackType **stack) {
   } else {
     bufer = (double)oper_stack->val_dub;
     *stack = oper_stack->next;
-    delete(oper_stack);
+    delete (oper_stack);
   }
   return bufer;
 }
 
-double CalcModel::SimpleMath(double second_num, double first_num, char operation) {
+double CalcModel::SimpleMath(double second_num, double first_num,
+                             char operation) {
   double out_num = 0.0;
   switch (operation) {
     case '+':
@@ -284,4 +288,4 @@ double CalcModel::TrigonCalc(double x, char operation) {
   return buf_num;
 }
 
-}  // namespase s21
+}  // namespace s21
