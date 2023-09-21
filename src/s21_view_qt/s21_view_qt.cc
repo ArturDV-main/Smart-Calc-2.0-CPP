@@ -7,9 +7,10 @@ MainWindow::MainWindow(QWidget *parent, s21::CalcController * calc_controller)
   ui->setupUi(this);
   ConnectsRelise();
   x_ = ui->line_X->text().toDouble();
-  QDoubleValidator double_validator( 1.00, 16.00, 2, ui->line_X);
-  ui->line_X->setValidator(&double_validator);
-//  calc = calc_controller;
+
+  QDoubleValidator* double_valid = new QDoubleValidator(-10000000, 10000000, 8, ui->line_X);
+  double_valid->setNotation(QDoubleValidator::StandardNotation);
+  ui->line_X->setValidator(double_valid);
 }
 
 MainWindow::~MainWindow() { delete ui; }
