@@ -21,10 +21,10 @@ OS := $(shell uname -s)
 
 ifeq ($(OS), Darwin)
 	APPLICATION := SmartCalc2_0.app
-	OPEN = open
+	OPEN = open $(BUILD_DIR)/$(APPLICATION)
 else
-	APPLICATION := s21_view_qt/SmartCalc2_0
-	OPEN = ./
+	APPLICATION := SmartCalc2_0
+	OPEN = ./$(BUILD_DIR)/$(APPLICATION)
 endif
 
 all: apple
@@ -58,7 +58,7 @@ clang:
 	clang-format -style=file:materials/linters/.clang-format -i src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
 
 open:
-	$(OPEN) $(BUILD_DIR)/$(APPLICATION)
+	$(OPEN)
 
 valgrind:
 ifeq ($(OS), Darwin)
