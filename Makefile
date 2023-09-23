@@ -20,26 +20,22 @@ GT_OBJS := $(GT_SRCS:%=$(BUILD_DIR)/%.o)
 OS := $(shell uname -s)
 
 ifeq ($(OS), Darwin)
-    LIBS := -lcheck
 	APPLICATION := SmartCalc2_0.app
 	OPEN = open
 else
-    LIBS := -lcheck_pic -lpthread -lrt -lm -lsubunit -g
-	APPLICATION := SmartCalc2_0
+	APPLICATION := s21_view_qt/SmartCalc2_0
 	OPEN = ./
 endif
 
 all: apple
 
 apple:
-	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=release CONFIG+=qml_release
-	make -f src/s21_view_qt/Makefile qmake_all
-	cd src/s21_view_qt && make -j8
+	cd src/s21_view_qt && qmake && make
 	mv src/s21_view_qt/$(APPLICATION) build/
 
 #  Google tests
 test: clean $(GT_OBJS)
-	$(CXX) $(CXXFLAGS) $(GT_OBJS) $(GT_FLAGS) -o $(BUILD_DIR)/gtest.out
+	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
 
 #  SmartCallc2.0 application
@@ -54,14 +50,15 @@ $(BUILD_DIR)/%.cc.o: %.cc
 .PHONY: clean
 clean:
 	cd src/s21_view_qt && make clean
-	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash src/build-SmartCalc2_0-Desktop-Debug
+	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash \
+	src/build-SmartCalc2_0-Desktop-Debug build-SmartCalc2_0-Desktop_x86_darwin_generic_mach_o_64bit-Debug
 
 clang:
 	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
 	clang-format -style=file:materials/linters/.clang-format -i src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
 
 open:
-	$(OPEN)$(BUILD_DIR)/$(APPLICATION)
+	$(OPEN) $(BUILD_DIR)/$(APPLICATION)
 
 valgrind:
 ifeq ($(OS), Darwin)
