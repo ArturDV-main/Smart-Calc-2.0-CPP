@@ -33,9 +33,10 @@ class MainWindow : public QMainWindow {
   bool calc_done_{};
   void ConnectsRelise();
   void DoubleValidInit();
-  void LineEditEvent(char key); // TODO
+  void LineEditEvent(char key);  // TODO
   void BackspaseLogic();
   void LineInput(QString str);
+
  protected:
   void keyPressEvent(QKeyEvent *event) override;
 

@@ -16,7 +16,10 @@ MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
   //  void DoubleValidInit();
 }
 
-MainWindow::~MainWindow() { delete ui; }
+MainWindow::~MainWindow() {
+  delete ui;
+  delete double_valid_;
+}
 
 void MainWindow::DoubleValidInit() {
   //  TODO
@@ -42,30 +45,31 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
   }
 }
 //  TODO
- void MainWindow::LineEditEvent(char key) {
-     QString tmp_str("1234567890-+*/.,");
-     if (tmp_str.contains(char(key))) {
-       LineInput((QString) key);
-     } else {
-        BackspaseLogic();
-     }
- }
+void MainWindow::LineEditEvent(char key) {
+  QString tmp_str("1234567890-+*/.,");
+  if (tmp_str.contains(char(key))) {
+    LineInput((QString)key);
+  } else {
+    BackspaseLogic();
+  }
+}
 
- void MainWindow::LineInput(QString str) {
+void MainWindow::LineInput(QString str) {
+  if (ui->result->text() == "0" || calc_done_)
+    ui->result->setText(str);
+  else
+    ui->result->setText(ui->result->text() + str);
+  calc_done_ = false;
+}
 
-     if (ui->result->text() == "0" || calc_done_)
-       ui->result->setText(str);
-     else
-       ui->result->setText(ui->result->text() + str);
-     calc_done_ = false;
- }
-
- void MainWindow::BackspaseLogic() {
-     if(ui->result->text() == "0") return;
-     else if(ui->result->text().size() == 1)
-         ui->result->setText("0");
-     else ui->result->backspace();
- }
+void MainWindow::BackspaseLogic() {
+  if (ui->result->text() == "0")
+    return;
+  else if (ui->result->text().size() == 1)
+    ui->result->setText("0");
+  else
+    ui->result->backspace();
+}
 
 void MainWindow::EqualsButton() {
   QByteArray ba = (ui->result->text()).toLocal8Bit();
@@ -91,9 +95,7 @@ void MainWindow::AC_button() {
   calc_->Reset();
 }
 
-void MainWindow::C_button() {
-    BackspaseLogic();
-}
+void MainWindow::C_button() { BackspaseLogic(); }
 
 void MainWindow::graf_button() {}
 

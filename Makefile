@@ -64,11 +64,11 @@ valgrind:
 ifeq ($(OS), Darwin)
 	echo $(OS)
 	echo "For Aple --------------------"
-	leaks -atExit -- ./$(BUILD_DIR)/$(TARGET)
+	leaks -atExit -- ./$(BUILD_DIR)/$(APPLICATION)
 else
 	echo $(OS)
 	echo "For Ubuntu --------------------"
-	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=$(BUILD_DIR)/RESULT_VALGRIND.txt $(BUILD_DIR)/$(TARGET)
+	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=$(BUILD_DIR)/RESULT_VALGRIND.txt $(BUILD_DIR)/$(APPLICATION)
 	grep errors RESULT_VALGRIND.txt
 endif
 
