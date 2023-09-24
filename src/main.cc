@@ -1,9 +1,9 @@
 #include <QApplication>
+#include <iostream>
 
 #include "s21_calc_controller.h"
 #include "s21_calc_model.h"
 #include "s21_view_qt/s21_view_qt.h"
-#include <iostream>
 
 int main(int argc, char *argv[]) {
   if (argc && argv) {
@@ -17,4 +17,3 @@ int main(int argc, char *argv[]) {
   }
   return 1;
 }
-
