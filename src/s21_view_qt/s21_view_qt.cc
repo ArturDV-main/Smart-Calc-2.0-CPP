@@ -67,8 +67,10 @@ void MainWindow::LineInput(QString str) {
 void MainWindow::BackspaseLogic() {
   if (ui->result->text() == "0")
     return;
-  else if (ui->result->text().size() == 1)
+  else if (ui->result->text().size() == 1 || error_) {
+    error_ = false;
     ui->result->setText("0");
+  }
   else
     ui->result->backspace();
 }
