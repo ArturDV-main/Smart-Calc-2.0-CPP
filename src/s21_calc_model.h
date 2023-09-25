@@ -10,6 +10,7 @@ namespace s21 {
 
 class CalcModel {
 #define OPERATIONS ")+-/*M^@ABCDEFGH("
+#define s21_NAN (0.0 / 0.0)
   enum truefalse {
     FALSE,
     TRUE,
@@ -35,12 +36,12 @@ class CalcModel {
   CalcModel(/* args */);
   ~CalcModel();
   double StartCalc(const char *src, double X_num);
-  double GetData() { return result; }
-  void Reset() { result = 0.0; }
+  double GetData() { return result_; }
+  void Reset() { result_ = 0.0; }
 
  private:
   // std::string expression{};  //  TODO
-  double result{};
+  double result_{};
   //  Metods
   double Calc(const char *calculation_src, double X_num);
   StackType ParserUno(const char *calculation_src, int *position, double X_num);

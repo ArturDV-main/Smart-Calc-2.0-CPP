@@ -55,11 +55,13 @@ void MainWindow::LineEditEvent(char key) {
 }
 
 void MainWindow::LineInput(QString str) {
-  if (ui->result->text() == "0" || calc_done_)
+  QString tmp_str("-+*/");
+  if (ui->result->text() == "0" || (calc_done_ && !tmp_str.contains(str)) || error_)
     ui->result->setText(str);
   else
     ui->result->setText(ui->result->text() + str);
   calc_done_ = false;
+  error_ = false;
 }
 
 void MainWindow::BackspaseLogic() {
@@ -74,9 +76,15 @@ void MainWindow::BackspaseLogic() {
 void MainWindow::EqualsButton() {
   QByteArray ba = (ui->result->text()).toLocal8Bit();
   const char *new_str = ba.data();  //  Преобразование в str* для СИ
-  calc_->StartCalc(new_str, ui->line_X->text().toDouble());
-  double result = calc_->GetResult();
-  ui->result->setText(QString::number(result, 'g', 15));
+
+  try {
+      calc_->StartCalc(new_str, ui->line_X->text().toDouble());
+      ui->result->setText(QString::number(calc_->GetResult(), 'g', 15));
+  }  catch (...) { // TODO
+      ui->result->setText("ERROR!");
+      error_ = true;
+      calc_done_ = true;
+  }
   calc_done_ = true;
 }
 

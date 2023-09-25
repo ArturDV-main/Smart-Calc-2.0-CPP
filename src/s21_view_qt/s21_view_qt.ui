@@ -1624,6 +1624,18 @@ QPushButton:pressed {
       <height>321</height>
      </rect>
     </property>
+    <property name="minimumSize">
+     <size>
+      <width>100</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>2500</width>
+      <height>2500</height>
+     </size>
+    </property>
     <property name="cursor">
      <cursorShape>ArrowCursor</cursorShape>
     </property>

@@ -7,11 +7,16 @@ CalcModel::CalcModel(/* args */) {}
 CalcModel::~CalcModel() {}
 
 double CalcModel::StartCalc(const char *src, double X_num) {
-  if (Validator(src) == 0)
-    result = Calc(src, X_num);
+  if (Validator(src) == 0) {
+    result_ = Calc(src, X_num);
+    if(result_ == INFINITY) {
+        result_ = 0.0;
+        throw std::runtime_error("Error: ");
+    }
+  }
   else
     throw std::runtime_error("Error: ");
-  return result;
+  return result_;
 }
 
 int CalcModel::Validator(const char *str) {
@@ -164,7 +169,7 @@ int CalcModel::BracketFinder(StackType *oper) {
 CalcModel::StackType *CalcModel::DelPoint(
     StackType *stack1) {  //  Удалит последний элемент списка
   StackType *Ptrack_bac = stack1->next;
-  free(stack1);
+  delete (stack1);
   return Ptrack_bac;
 }
 
@@ -242,6 +247,7 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
+      if(second_num == 0.0 || first_num == 0.0) throw std::runtime_error("Error: ");
       out_num = first_num / second_num;
       break;
     case '^':

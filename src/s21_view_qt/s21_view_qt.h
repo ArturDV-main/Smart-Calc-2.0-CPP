@@ -31,6 +31,7 @@ class MainWindow : public QMainWindow {
   QVector<double> x_{}, y_{};
   QString result_code_;
   bool calc_done_{};
+  bool error_{};
   void ConnectsRelise();
   void DoubleValidInit();
   void LineEditEvent(char key);  // TODO
