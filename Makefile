@@ -69,7 +69,7 @@ else
 	echo $(OS)
 	echo "For Ubuntu --------------------"
 	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=$(BUILD_DIR)/RESULT_VALGRIND.txt $(BUILD_DIR)/$(APPLICATION)
-	grep errors RESULT_VALGRIND.txt
+	grep errors $(BUILD_DIR)/RESULT_VALGRIND.txt
 endif
 
 gcov_report: clean test

@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef S21_VIEW_QT_H_
+#define S21_VIEW_QT_H_
 
 #include <QDoubleValidator>
 #include <QMainWindow>
@@ -52,4 +52,4 @@ class MainWindow : public QMainWindow {
   void x_button_push();
   void on_cred_Button_clicked();
 };
-#endif  // MAINWINDOW_H
+#endif  // S21_VIEW_QT_H_
