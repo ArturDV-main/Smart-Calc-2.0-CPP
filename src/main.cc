@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     s21::CalcController calc_controller(&calc_model);
     QApplication a(argc, argv);
     MainWindow w(nullptr, &calc_controller);
-    w.setWindowTitle("S21 Smart Calculator");
+//    w.setWindowTitle("S21 Smart Calculator");
     w.show();
     return a.exec();
   }
