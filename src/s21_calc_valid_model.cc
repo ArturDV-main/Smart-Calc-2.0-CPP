@@ -4,8 +4,9 @@ namespace s21 {
 
 bool CalcValid::ValidationEqual(const std::string & str) {
   bool valid(false);
-  std::string tmp(")+-/*M^@ABCDEFGH(1234567890");
-  for (const char c : str) {
+  std::string tmp("+-/*M^@ABCDEFGH)(1234567890");
+  for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+    const char c = *it;
     if(tmp.find(c) == tmp.npos) { 
       valid = false;
       break;
