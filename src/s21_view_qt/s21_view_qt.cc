@@ -1,6 +1,6 @@
 #include "s21_view_qt.h"
 
-#include "ui_s21_view_qt.h"
+#include "./ui_s21_view_qt.h"
 
 MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
     : QMainWindow(parent), calc_(calc_controller), ui(new Ui::MainWindow) {
@@ -67,8 +67,9 @@ void MainWindow::LineInput(QString str) {
 void MainWindow::BackspaseLogic() {
   if (ui->result->text() == "0")
     return;
-  else if (ui->result->text().size() == 1 || error_) {
+  else if (ui->result->text().size() == 1 || error_ || calc_done_) {
     error_ = false;
+    calc_done_ = false;
     ui->result->setText("0");
   }
   else
@@ -76,16 +77,12 @@ void MainWindow::BackspaseLogic() {
 }
 
 void MainWindow::EqualsButton() {
-  QByteArray ba = (ui->result->text()).toLocal8Bit();
-  const char *new_str = ba.data();  //  Преобразование в str* для СИ
-
   try {
-      calc_->StartCalc(new_str, ui->line_X->text().toDouble());
+      calc_->StartCalc(ui->result->text().toStdString(), ui->line_X->text().toDouble());
       ui->result->setText(QString::number(calc_->GetResult(), 'g', 15));
   }  catch (...) { // TODO
       ui->result->setText("ERROR!");
       error_ = true;
-      calc_done_ = true;
   }
   calc_done_ = true;
 }

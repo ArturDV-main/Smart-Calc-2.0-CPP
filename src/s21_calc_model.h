@@ -5,6 +5,7 @@
 #include <cstring>
 #include <memory>
 #include <stdexcept>
+#include "./s21_calc_valid_model.h"
 
 namespace s21 {
 
@@ -35,7 +36,7 @@ class CalcModel {
  public:
   CalcModel(/* args */);
   ~CalcModel();
-  double StartCalc(const char *src, double X_num);
+  double StartCalc(const std::string &src_str, double X_num);
   double GetData() { return result_; }
   void Reset() { result_ = 0.0; }
 

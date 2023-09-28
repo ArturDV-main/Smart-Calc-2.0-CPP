@@ -3,3 +3,7 @@ RESULT_VALGRIND.txt
 src/s21_view_qt/SmartCalc2_0.pro.user
 src/s21_view_qt/SmartCalc2_0
 src/s21_view_qt/Makefile
+src/s21_view_qt/palette.xml
+.gitignore
+src/s21_view_qt/palette2.xml
+build

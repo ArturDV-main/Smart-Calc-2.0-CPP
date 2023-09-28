@@ -2,8 +2,21 @@
 
 namespace s21 {
 
+bool CalcValid::ValidationEqual(const std::string & str) {
+  bool valid(false);
+  std::string tmp(")+-/*M^@ABCDEFGH(1234567890");
+  for (const char c : str) {
+    if(tmp.find(c) == tmp.npos) { 
+      valid = false;
+      break;
+    }
+    valid = true;
+  }
+  return valid;
+}
+
 int CalcValid::PositionCounter(
-    char src_string) {  //  Подсчёт позиции операции строке приоритетов
+    char src_string) {  //  Подсчёт позиции операции в строке приоритетов
   const char *operators = OPERATIONS;
   int counter = 0;
   while (operators[counter]) {

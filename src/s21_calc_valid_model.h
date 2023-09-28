@@ -1,9 +1,9 @@
 #ifndef SRC_S21_CALC_VALID_MODEL_H_
 #define SRC_S21_CALC_VALID_MODEL_H_
 
-// #include "s21_calc_model.h"
 #include <cmath>
 #include <cstring>
+#include <string>
 
 namespace s21 {
 
@@ -26,6 +26,7 @@ class CalcValid {
   };
   int LastIs(char res);
   int CharCounter(const char* str_line, char res);
+  static bool ValidationEqual(const std::string & str);
   int PositionCounter(char src_string);
   int InLineStart(const char* str, int str_len);
   int IsSimpOper(char oper);

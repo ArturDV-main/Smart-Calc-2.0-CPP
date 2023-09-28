@@ -6,16 +6,16 @@ CalcModel::CalcModel(/* args */) {}
 
 CalcModel::~CalcModel() {}
 
-double CalcModel::StartCalc(const char *src, double X_num) {
-  if (Validator(src) == 0) {
-    result_ = Calc(src, X_num);
-    if(result_ == INFINITY) {
-        result_ = 0.0;
-        throw std::runtime_error("Error: ");
-    }
+double CalcModel::StartCalc(const std::string &src_str, double X_num) {
+  // const char *src;
+  if (s21::CalcValid::ValidationEqual(src_str)) {
+    char *cstr = new char[src_str.length() + 1];
+    strcpy(cstr, src_str.c_str());  //  Преобразование в str* для СИ
+    result_ = Calc(cstr, X_num);
+    delete cstr;
   }
   else
-    throw std::runtime_error("Error: ");
+    throw std::runtime_error("expression error");
   return result_;
 }
 
