@@ -12,26 +12,10 @@ double CalcModel::StartCalc(const std::string &src_str, double X_num) {
     char *cstr = new char[src_str.length() + 1];
     strcpy(cstr, src_str.c_str());  //  Преобразование в str* для СИ
     result_ = Calc(cstr, X_num);
-    delete cstr;
-  }
-  else
+    delete[] cstr;
+  } else
     throw std::runtime_error("expression error");
   return result_;
-}
-
-int CalcModel::Validator(const char *str) {
-  int errcode = 0;
-  int operand = 0, i = 0;
-  while (str[i]) {
-    if (str[i] == 'Q') {
-      operand++;
-      if (std::strchr("+-/*^M@ABCDEFGHXe", str[i - 1]) == NULL) errcode = 1;
-    }
-    if (str[i] == 'Q') operand--;
-    i++;
-  }
-  if (operand != 0) errcode = 1;
-  return errcode;
 }
 
 double CalcModel::Calc(const char *calculation_src, double X_num) {
@@ -247,7 +231,8 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
-      if(second_num == 0.0 || first_num == 0.0) throw std::runtime_error("Error: ");
+      // if(second_num == 0.0 || first_num == 0.0) throw
+      // std::runtime_error("Error: ");
       out_num = first_num / second_num;
       break;
     case '^':

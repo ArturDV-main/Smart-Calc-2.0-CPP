@@ -26,7 +26,7 @@ class CalcValid {
   };
   int LastIs(char res);
   int CharCounter(const char* str_line, char res);
-  static bool ValidationEqual(const std::string & str);
+  static bool ValidationEqual(const std::string& str);
   int PositionCounter(char src_string);
   int InLineStart(const char* str, int str_len);
   int IsSimpOper(char oper);

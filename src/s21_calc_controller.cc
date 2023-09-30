@@ -4,7 +4,7 @@
 
 namespace s21 {
 
-double s21::CalcController::StartCalc(const std::string &a, const double x) {
+double s21::CalcController::StartCalc(const std::string& a, const double x) {
   try {
     calc_model->StartCalc(a, x);
   } catch (const std::exception& e) {

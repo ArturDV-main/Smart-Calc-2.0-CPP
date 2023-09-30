@@ -4,6 +4,7 @@
 #include <QDoubleValidator>
 #include <QMainWindow>
 #include <QVector>
+#include <exception>
 
 #include "../s21_calc_controller.h"
 #include "../s21_calc_valid_model.h"

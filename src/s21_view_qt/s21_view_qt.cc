@@ -56,7 +56,8 @@ void MainWindow::LineEditEvent(char key) {
 
 void MainWindow::LineInput(QString str) {
   QString tmp_str("-+*/");
-  if (ui->result->text() == "0" || (calc_done_ && !tmp_str.contains(str)) || error_)
+  if (ui->result->text() == "0" || (calc_done_ && !tmp_str.contains(str)) ||
+      error_)
     ui->result->setText(str);
   else
     ui->result->setText(ui->result->text() + str);
@@ -71,18 +72,18 @@ void MainWindow::BackspaseLogic() {
     error_ = false;
     calc_done_ = false;
     ui->result->setText("0");
-  }
-  else
+  } else
     ui->result->backspace();
 }
 
 void MainWindow::EqualsButton() {
   try {
-      calc_->StartCalc(ui->result->text().toStdString(), ui->line_X->text().toDouble());
-      ui->result->setText(QString::number(calc_->GetResult(), 'g', 15));
-  }  catch (...) { // TODO
-      ui->result->setText("ERROR!");
-      error_ = true;
+    calc_->StartCalc(ui->result->text().toStdString(),
+                     ui->line_X->text().toDouble());
+    ui->result->setText(QString::number(calc_->GetResult(), 'g', 15));
+  } catch (const std::exception &e) {  // TODO
+    ui->result->setText(e.what());
+    error_ = true;
   }
   calc_done_ = true;
 }

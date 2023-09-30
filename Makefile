@@ -31,6 +31,7 @@ all: apple
 
 apple:
 	cd src/s21_view_qt && qmake && make
+	rm -rf build/$(APPLICATION)
 	mv src/s21_view_qt/$(APPLICATION) build/
 
 #  Google tests
