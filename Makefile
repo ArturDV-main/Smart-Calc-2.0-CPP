@@ -36,6 +36,7 @@ apple:
 
 #  Google tests
 test: clean $(GT_OBJS)
+	mkdir -p $(BUILD_DIR)
 	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
 

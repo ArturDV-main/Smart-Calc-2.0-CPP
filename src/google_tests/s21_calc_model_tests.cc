@@ -11,6 +11,7 @@ TEST(CalcTest, GetData) {
 TEST(CalcTest, Simple) {
   s21::CalcModel a;
   EXPECT_EQ(a.StartCalc("2+2", 0), 4);
+  EXPECT_EQ(a.StartCalc("0.2/2", 0), 0.1);
 }
 
 TEST(CalcTest, Reset) {

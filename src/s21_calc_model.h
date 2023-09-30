@@ -5,7 +5,7 @@
 #include <cstring>
 #include <memory>
 #include <stdexcept>
-
+#include <iostream>
 #include "./s21_calc_valid_model.h"
 
 namespace s21 {
