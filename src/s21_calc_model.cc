@@ -38,36 +38,37 @@ double CalcModel::Calc(const char *calculation_src, double X_num) {
           // Если стэк пуст или в нём скобка
           oper_stack_.push({0.0, st_buf.oper_val, st_buf.prio});
           st_buf.oper_val = 0.0;
-        } else if (st_buf.prio > st_oper->prio) {  //  Если приоритет опреации
-          st_oper = PushSta(st_oper, 0.0, st_buf.oper_val,
-                            st_buf.prio);  //  больше приоритета
-          st_buf.oper_val = 0.0;            //  в стеке
+        } else if (st_buf.prio > oper_stack_.top().prio) {  //  Если приоритет опреации
+          oper_stack_.push({0.0, st_buf.oper_val,  //  больше приоритета
+                            st_buf.prio});           //  в стеке
+          st_buf.oper_val = 0.0;  
         } else {
-          double buf_num = MathOperations(&st_num, &st_oper);
-          st_num = PushSta(st_num, buf_num, '0', 0);  //  Выполнить расчёт
+          double buf_num = MathOperations(); //  Выполнить расчёт
+          num_stack_.push({buf_num, '0', 0});  
         }  //  т.к. остальные условия не прошли
       }
       position++;
     } else {  //  Если получили число
-      st_num = PushSta(st_num, st_buf.val_dub, '0', st_buf.prio);
+      num_stack_.push({st_buf.val_dub, '0', st_buf.prio});
     }
   }
-  while (st_oper != NULL) {  //  Расчёт оставшегося содержимого стеков
-    if (BracketFinder(st_oper)) {
-      st_oper = DelPoint(st_oper);
+  while (!oper_stack_.empty()) {  //  Расчёт оставшегося содержимого стеков
+    if (BracketFinder()) {
+      oper_stack_.pop();
       //  Если забыли поставить скобки в конце уравнения
       continue;
     }
     //  Если пришло число, просто отправляем в стек чисел
-    double buf_num = MathOperations(&st_num, &st_oper);
-    st_num = PushSta(st_num, buf_num, '0', 0);
+    double buf_num = MathOperations();
+    num_stack_.push({buf_num, '0', 0});
   }
 
   double result = 0.0;
-  if (st_num != NULL) {
-    result = st_num->val_dub;
+  if (!num_stack_.empty()) {
+    result = num_stack_.top().val_dub;
+    num_stack_.pop();
   }
-  DestroyNode(st_num);
+  if (!num_stack_.empty()) throw std::runtime_error("numbers stack invalid");
   return result;
 }
 
@@ -85,9 +86,11 @@ CalcModel::StackType CalcModel::ParserUno(
       stack1.val_dub = X_num;
       *position += 1;
     } else {
-      char buf[256] = {0};
+      std::string buf{};
       *position = *position + BufferingNumber(&calculation_src[*position], buf);
-      double tess = atof(buf);
+      double tess = std::stof(buf);
+      std::cout << buf << std::endl;
+      std::cout << tess << std::endl;
       stack1.prio = prio;
       stack1.val_dub = tess;
     }
@@ -129,15 +132,20 @@ int CalcModel::PositionCounter(
 
 int CalcModel::BufferingNumber(
     const char *src_string,
-    char *out) {  //  Сборка числа в строку, возвращает длинну числа
+    std::string &out) {  //  Сборка числа в строку, возвращает длинну числа
   int i = 0;
   while ((src_string[i] >= '0' && src_string[i] <= '9') ||
-         src_string[i] == '.' || src_string[i] == 'e') {
+         src_string[i] == '.' || src_string[i] == 'e' || src_string[i] == ',') {
     if (src_string[i] == 'e') {
-      out[i] = src_string[i];
+      out += src_string[i];
       i++;
     }
-    out[i] = src_string[i];
+    if (src_string[i] == '.') {
+      out += ',';
+      i++;
+      continue;
+    }
+    out += src_string[i];
     i++;
   }
   return i;
@@ -150,13 +158,6 @@ int CalcModel::BracketFinder() {
   return finded;
 }
 
-CalcModel::StackType *CalcModel::DelPoint(
-    StackType *stack1) {  //  Удалит последний элемент списка
-  StackType *Ptrack_bac = stack1->next;
-  delete (stack1);
-  return Ptrack_bac;
-}
-
 int CalcModel::UnarCheck(char check, const char *oper_st, int position) {
   int unar_minus_find = 0;
   if ((check == '-' || check == '+') && !position) unar_minus_find = 1;
@@ -165,59 +166,27 @@ int CalcModel::UnarCheck(char check, const char *oper_st, int position) {
   return unar_minus_find;
 }
 
-CalcModel::StackType *CalcModel::PushSta(StackType *plist, double val_dub, char oper_val,
-                                         int prio) {
-  StackType *Part = new (StackType);
-  if (Part == NULL) {
-    exit(1);
-  } else {
-    Part->next = plist;
-    Part->prio = prio;
-    Part->oper_val = oper_val;
-    Part->val_dub = val_dub;
-  }
-  return Part;
-}
-
-double CalcModel::MathOperations(StackType **num_sta, StackType **oper_sta) {
+double CalcModel::MathOperations() {
   double buf_num = 0.0;
-  if ((*oper_sta)->prio < 4) {
-    StackType tmp = 
-    double second = PopVal(num_sta);
-    double first = PopVal(num_sta);
-    char operat = (char)PopVal(oper_sta);
-
+  if (oper_stack_.empty()) throw std::runtime_error("Math operation err, expression error");
+  if (oper_stack_.top().prio < 4) {
+    if(num_stack_.size() < 2) throw std::runtime_error("Math operation err, expression error");
+    double second = num_stack_.top().val_dub;
+    num_stack_.pop();
+    double first = num_stack_.top().val_dub;
+    num_stack_.pop();
+    char operat = oper_stack_.top().oper_val;
+    oper_stack_.pop();
     buf_num = SimpleMath(second, first, operat);
-  } else if ((*oper_sta)->prio < 5) {
-    buf_num = PopVal(num_sta);
-    char oper_buf = PopVal(oper_sta);
+  } else if (oper_stack_.top().prio < 5) {
+    if(num_stack_.empty()) throw std::runtime_error("Math operation err, expression error");
+    buf_num = num_stack_.top().val_dub;
+    num_stack_.pop();
+    char oper_buf = oper_stack_.top().oper_val;
+    oper_stack_.pop();
     buf_num = TrigonCalc(buf_num, oper_buf);
   }
   return buf_num;
-}
-
-void CalcModel::DestroyNode(StackType *stack1) {
-  StackType *Ptrack = stack1;
-  while (Ptrack) {
-    StackType *Ptrack_bac = Ptrack->next;
-    delete (Ptrack);
-    Ptrack = Ptrack_bac;
-  }
-  delete (Ptrack);
-}
-
-double CalcModel::PopVal(StackType **stack) {
-  StackType *oper_stack_ = *stack;
-  StackType 
-  double bufer = 0.0;
-  if (oper_stack_ == NULL) {
-    oper_stack_ = NULL;
-  } else {
-    bufer = (double)oper_stack_->val_dub;
-    *stack = oper_stack_->next;
-    delete (oper_stack_);
-  }
-  return bufer;
 }
 
 double CalcModel::SimpleMath(double second_num, double first_num,
@@ -234,8 +203,8 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
-      // if(second_num == 0.0 || first_num == 0.0) throw
-      // std::runtime_error("Error: ");
+      if(second_num == 0.0 || first_num == 0.0) 
+      throw std::runtime_error("Error: 0/0");
       out_num = first_num / second_num;
       break;
     case '^':

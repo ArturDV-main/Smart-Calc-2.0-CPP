@@ -52,14 +52,10 @@ class CalcModel {
   StackType ParserUno(const char *calculation_src, int *position, double X_num);
   int PrioCheck(char src_string);
   int PositionCounter(char src_string);
-  int BufferingNumber(const char *src_string, char *out);
+  int BufferingNumber(const char *src_string, std::string &out);
   int BracketFinder();
-  StackType *DelPoint(StackType *stack1);
   int UnarCheck(char check, const char *oper_st, int position);
-  StackType *PushSta(StackType *plist, double val_dub, char oper_val, int prio);
-  double MathOperations(StackType **num_sta, StackType **oper_sta);
-  void DestroyNode(StackType *stack1);
-  double PopVal(StackType **stack);
+  double MathOperations();
   double SimpleMath(double second_num, double first_num, char operation);
   double TrigonCalc(double x, char operation);
 };
