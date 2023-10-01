@@ -59,7 +59,6 @@ class CalcModel {
   double PopVal(StackType **stack);
   double SimpleMath(double second_num, double first_num, char operation);
   double TrigonCalc(double x, char operation);
-  int Validator(const char *str);
 };
 
 }  // namespace s21

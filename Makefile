@@ -30,7 +30,7 @@ endif
 all: apple
 
 apple:
-	cd src/s21_view_qt && qmake && make
+	cd src/s21_view_qt && qmake6 CONFIG+=qtquickcompiler && make
 	rm -rf build/$(APPLICATION)
 	mv src/s21_view_qt/$(APPLICATION) build/
 
