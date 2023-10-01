@@ -30,10 +30,9 @@ class CalcModel {
   };
 
   struct StackType {
-    double val_dub;
-    char oper_val;
-    int prio;
-    StackType *next;
+    double val_dub{};
+    char oper_val{};
+    int prio{};
   };
 
  public:
@@ -45,8 +44,8 @@ class CalcModel {
 
  private:
   // std::string expression{};  //  TODO
-  std::stack<StackType> oper_stack{};
-  std::stack<StackType> num_stack{};
+  std::stack<StackType> oper_stack_{};
+  std::stack<StackType> num_stack_{};
   double result_{};
   //  Metods
   double Calc(const char *calculation_src, double X_num);

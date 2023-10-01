@@ -28,17 +28,15 @@ double CalcModel::Calc(const char *calculation_src, double X_num) {
       while (st_buf.oper_val) {
         if (st_buf.oper_val == ')' && BracketFinder()) {
           //  Если пришла скобка закр а в стеке скобка откр
-          oper_stack.pop();
+          oper_stack_.pop();
           st_buf.oper_val = 0.0;
         } else if (UnarCheck(st_buf.oper_val, calculation_src, position)) {
-
-          
-          st_oper = PushSta(st_oper, 0.0, st_buf.oper_val, st_buf.prio);
-          st_num = PushSta(st_num, 0.0, '0', 0);  //  Получили унарный знак
+          oper_stack_.push({0.0, st_buf.oper_val, st_buf.prio});
+          num_stack_.push({0.0, '0', 0});  //  Получили унарный знак
           st_buf.oper_val = 0.0;
-        } else if (st_oper == NULL || st_oper->oper_val == '(') {
+        } else if (oper_stack_.empty() || oper_stack_.top().oper_val == '(') {
           // Если стэк пуст или в нём скобка
-          st_oper = PushSta(st_oper, 0.0, st_buf.oper_val, st_buf.prio);
+          oper_stack_.push({0.0, st_buf.oper_val, st_buf.prio});
           st_buf.oper_val = 0.0;
         } else if (st_buf.prio > st_oper->prio) {  //  Если приоритет опреации
           st_oper = PushSta(st_oper, 0.0, st_buf.oper_val,
@@ -147,8 +145,8 @@ int CalcModel::BufferingNumber(
 
 int CalcModel::BracketFinder() {
   int finded = 0;
-  if (!oper_stack.empty())
-    if (oper_stack.top().oper_val == '(') finded = 1;
+  if (!oper_stack_.empty())
+    if (oper_stack_.top().oper_val == '(') finded = 1;
   return finded;
 }
 
@@ -209,15 +207,15 @@ void CalcModel::DestroyNode(StackType *stack1) {
 }
 
 double CalcModel::PopVal(StackType **stack) {
-  StackType *oper_stack = *stack;
+  StackType *oper_stack_ = *stack;
   StackType 
   double bufer = 0.0;
-  if (oper_stack == NULL) {
-    oper_stack = NULL;
+  if (oper_stack_ == NULL) {
+    oper_stack_ = NULL;
   } else {
-    bufer = (double)oper_stack->val_dub;
-    *stack = oper_stack->next;
-    delete (oper_stack);
+    bufer = (double)oper_stack_->val_dub;
+    *stack = oper_stack_->next;
+    delete (oper_stack_);
   }
   return bufer;
 }

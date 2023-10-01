@@ -16,15 +16,15 @@ int validator(const char *str) {
 }
 
 double pop_val(stack_type **stack) {
-  stack_type *oper_stack = *stack;
+  stack_type *oper_stack_ = *stack;
   double bufer = 0.0;
-  if (oper_stack == NULL) {
-    oper_stack = NULL;
+  if (oper_stack_ == NULL) {
+    oper_stack_ = NULL;
     //    exit(1);
   } else {
-    bufer = (double)oper_stack->val_dub;
-    *stack = oper_stack->next;
-    free(oper_stack);
+    bufer = (double)oper_stack_->val_dub;
+    *stack = oper_stack_->next;
+    free(oper_stack_);
   }
   return bufer;
 }
