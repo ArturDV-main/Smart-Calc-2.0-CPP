@@ -8,10 +8,10 @@ CalcModel::~CalcModel() {}
 
 double CalcModel::StartCalc(const std::string &src_str, double X_num) {
   // const char *src;
+  
   if (s21::CalcValid::ValidationEqual(src_str)) {
     char *cstr = new char[src_str.length() + 1];
     strcpy(cstr, src_str.c_str());  //  Преобразование в str* для СИ
-    std::cout << cstr << std::endl;
     result_ = Calc(cstr, X_num);
     delete[] cstr;
   } else
@@ -21,37 +21,37 @@ double CalcModel::StartCalc(const std::string &src_str, double X_num) {
 
 double CalcModel::Calc(const char *calculation_src, double X_num) {
   int position = 0;
-  StackType *st_oper = NULL;
-  StackType *st_num = NULL;
   while (calculation_src[position]) {  //  Главный цикл вычисления
     StackType st_buf =
         ParserUno(calculation_src, &position, X_num);  //  Парсим одну лексемму
     if (st_buf.prio) {  //  Если получили операцию или скобку
-      while (st_buf.val_dub) {
-        if (st_buf.val_dub == ')' && BracketFinder(st_oper)) {
+      while (st_buf.oper_val) {
+        if (st_buf.oper_val == ')' && BracketFinder()) {
           //  Если пришла скобка закр а в стеке скобка откр
-          st_oper = DelPoint(st_oper);
-          st_buf.val_dub = 0.0;
-        } else if (UnarCheck(st_buf.val_dub, calculation_src, position)) {
-          st_oper = PushSta(st_oper, st_buf.val_dub, st_buf.prio);
-          st_num = PushSta(st_num, 0.0, 0);  //  Получили унарный знак
-          st_buf.val_dub = 0.0;
-        } else if (st_oper == NULL || st_oper->val_dub == '(') {
+          oper_stack.pop();
+          st_buf.oper_val = 0.0;
+        } else if (UnarCheck(st_buf.oper_val, calculation_src, position)) {
+
+          
+          st_oper = PushSta(st_oper, 0.0, st_buf.oper_val, st_buf.prio);
+          st_num = PushSta(st_num, 0.0, '0', 0);  //  Получили унарный знак
+          st_buf.oper_val = 0.0;
+        } else if (st_oper == NULL || st_oper->oper_val == '(') {
           // Если стэк пуст или в нём скобка
-          st_oper = PushSta(st_oper, st_buf.val_dub, st_buf.prio);
-          st_buf.val_dub = 0.0;
+          st_oper = PushSta(st_oper, 0.0, st_buf.oper_val, st_buf.prio);
+          st_buf.oper_val = 0.0;
         } else if (st_buf.prio > st_oper->prio) {  //  Если приоритет опреации
-          st_oper = PushSta(st_oper, st_buf.val_dub,
+          st_oper = PushSta(st_oper, 0.0, st_buf.oper_val,
                             st_buf.prio);  //  больше приоритета
-          st_buf.val_dub = 0.0;            //  в стеке
+          st_buf.oper_val = 0.0;            //  в стеке
         } else {
           double buf_num = MathOperations(&st_num, &st_oper);
-          st_num = PushSta(st_num, buf_num, 0);  //  Выполнить расчёт
+          st_num = PushSta(st_num, buf_num, '0', 0);  //  Выполнить расчёт
         }  //  т.к. остальные условия не прошли
       }
       position++;
     } else {  //  Если получили число
-      st_num = PushSta(st_num, st_buf.val_dub, st_buf.prio);
+      st_num = PushSta(st_num, st_buf.val_dub, '0', st_buf.prio);
     }
   }
   while (st_oper != NULL) {  //  Расчёт оставшегося содержимого стеков
@@ -62,8 +62,9 @@ double CalcModel::Calc(const char *calculation_src, double X_num) {
     }
     //  Если пришло число, просто отправляем в стек чисел
     double buf_num = MathOperations(&st_num, &st_oper);
-    st_num = PushSta(st_num, buf_num, 0);
+    st_num = PushSta(st_num, buf_num, '0', 0);
   }
+
   double result = 0.0;
   if (st_num != NULL) {
     result = st_num->val_dub;
@@ -79,7 +80,7 @@ CalcModel::StackType CalcModel::ParserUno(
   int prio = PrioCheck(calculation_src[*position]);
   if (prio) {
     stack1.prio = prio;
-    stack1.val_dub = calculation_src[*position];
+    stack1.oper_val = calculation_src[*position];
   } else {
     if (calculation_src[*position] == 'X') {
       stack1.prio = 0;
@@ -144,10 +145,10 @@ int CalcModel::BufferingNumber(
   return i;
 }
 
-int CalcModel::BracketFinder(StackType *oper) {
+int CalcModel::BracketFinder() {
   int finded = 0;
-  if (oper != NULL)
-    if (oper->val_dub == '(') finded = 1;
+  if (!oper_stack.empty())
+    if (oper_stack.top().oper_val == '(') finded = 1;
   return finded;
 }
 
@@ -166,7 +167,7 @@ int CalcModel::UnarCheck(char check, const char *oper_st, int position) {
   return unar_minus_find;
 }
 
-CalcModel::StackType *CalcModel::PushSta(StackType *plist, double val_dub,
+CalcModel::StackType *CalcModel::PushSta(StackType *plist, double val_dub, char oper_val,
                                          int prio) {
   StackType *Part = new (StackType);
   if (Part == NULL) {
@@ -174,6 +175,7 @@ CalcModel::StackType *CalcModel::PushSta(StackType *plist, double val_dub,
   } else {
     Part->next = plist;
     Part->prio = prio;
+    Part->oper_val = oper_val;
     Part->val_dub = val_dub;
   }
   return Part;
@@ -182,9 +184,11 @@ CalcModel::StackType *CalcModel::PushSta(StackType *plist, double val_dub,
 double CalcModel::MathOperations(StackType **num_sta, StackType **oper_sta) {
   double buf_num = 0.0;
   if ((*oper_sta)->prio < 4) {
+    StackType tmp = 
     double second = PopVal(num_sta);
     double first = PopVal(num_sta);
     char operat = (char)PopVal(oper_sta);
+
     buf_num = SimpleMath(second, first, operat);
   } else if ((*oper_sta)->prio < 5) {
     buf_num = PopVal(num_sta);
@@ -206,10 +210,10 @@ void CalcModel::DestroyNode(StackType *stack1) {
 
 double CalcModel::PopVal(StackType **stack) {
   StackType *oper_stack = *stack;
+  StackType 
   double bufer = 0.0;
   if (oper_stack == NULL) {
     oper_stack = NULL;
-    //    exit(1);
   } else {
     bufer = (double)oper_stack->val_dub;
     *stack = oper_stack->next;
