@@ -11,7 +11,6 @@ double CalcModel::StartCalc(const std::string &src_str, double X_num) {
   if (s21::CalcValid::ValidationEqual(src_str)) {
     char *cstr = new char[src_str.length() + 1];
     strcpy(cstr, src_str.c_str());  //  Преобразование в str* для СИ
-    std::cout << cstr << std::endl;
     result_ = Calc(cstr, X_num);
     delete[] cstr;
   } else
@@ -20,9 +19,9 @@ double CalcModel::StartCalc(const std::string &src_str, double X_num) {
 }
 
 double CalcModel::Calc(const char *calculation_src, double X_num) {
-  int position = 0;
-  StackType *st_oper = NULL;
-  StackType *st_num = NULL;
+  int position{};
+  StackType *st_oper{};
+  StackType *st_num{};
   while (calculation_src[position]) {  //  Главный цикл вычисления
     StackType st_buf =
         ParserUno(calculation_src, &position, X_num);  //  Парсим одну лексемму
@@ -64,7 +63,7 @@ double CalcModel::Calc(const char *calculation_src, double X_num) {
     double buf_num = MathOperations(&st_num, &st_oper);
     st_num = PushSta(st_num, buf_num, 0);
   }
-  double result = 0.0;
+  double result{};
   if (st_num != NULL) {
     result = st_num->val_dub;
   }
@@ -98,7 +97,7 @@ CalcModel::StackType CalcModel::ParserUno(
 
 int CalcModel::PrioCheck(
     char src_string) {  //  Определение приоритета опреатора
-  int prior = 0;
+  int prior{};
   int position_num = PositionCounter(src_string);
   if (position_num > 16)
     prior = 0;
@@ -118,7 +117,7 @@ int CalcModel::PrioCheck(
 int CalcModel::PositionCounter(
     char src_string) {  //  Подсчёт позиции операции строке приоритетов
   const char *operators = OPERATIONS;
-  int counter = 0;
+  int counter{};
   while (operators[counter]) {
     if (operators[counter] == src_string) {
       break;
@@ -131,7 +130,7 @@ int CalcModel::PositionCounter(
 int CalcModel::BufferingNumber(
     const char *src_string,
     char *out) {  //  Сборка числа в строку, возвращает длинну числа
-  int i = 0;
+  int i{};
   while ((src_string[i] >= '0' && src_string[i] <= '9') ||
          src_string[i] == '.' || src_string[i] == 'e') {
     if (src_string[i] == 'e') {
@@ -145,7 +144,7 @@ int CalcModel::BufferingNumber(
 }
 
 int CalcModel::BracketFinder(StackType *oper) {
-  int finded = 0;
+  int finded{};
   if (oper != NULL)
     if (oper->val_dub == '(') finded = 1;
   return finded;
@@ -159,7 +158,7 @@ CalcModel::StackType *CalcModel::DelPoint(
 }
 
 int CalcModel::UnarCheck(char check, const char *oper_st, int position) {
-  int unar_minus_find = 0;
+  int unar_minus_find{};
   if ((check == '-' || check == '+') && !position) unar_minus_find = 1;
   if ((check == '-' || check == '+') && position > 0)
     if (oper_st[position - 1] == '(') unar_minus_find = 1;
@@ -170,7 +169,7 @@ CalcModel::StackType *CalcModel::PushSta(StackType *plist, double val_dub,
                                          int prio) {
   StackType *Part = new (StackType);
   if (Part == NULL) {
-    exit(1);
+    throw std::runtime_error("stack push error");
   } else {
     Part->next = plist;
     Part->prio = prio;
@@ -180,7 +179,7 @@ CalcModel::StackType *CalcModel::PushSta(StackType *plist, double val_dub,
 }
 
 double CalcModel::MathOperations(StackType **num_sta, StackType **oper_sta) {
-  double buf_num = 0.0;
+  double buf_num{};
   if ((*oper_sta)->prio < 4) {
     double second = PopVal(num_sta);
     double first = PopVal(num_sta);

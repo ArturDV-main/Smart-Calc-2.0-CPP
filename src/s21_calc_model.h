@@ -12,7 +12,6 @@ namespace s21 {
 
 class CalcModel {
 #define OPERATIONS ")+-/*M^@ABCDEFGH("
-#define s21_NAN (0.0 / 0.0)
   enum truefalse {
     FALSE,
     TRUE,
@@ -29,9 +28,9 @@ class CalcModel {
   };
 
   struct StackType {
-    double val_dub;
-    int prio;
-    StackType *next;
+    double val_dub{};
+    int prio{};
+    StackType *next{};
   };
 
  public:
