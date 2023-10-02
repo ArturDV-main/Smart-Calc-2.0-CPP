@@ -1,8 +1,8 @@
-CXX = g++
+CXX = gcc
 CPP_STD = -std=c++17
 # CPPFLAGS = --coverage
 TARGET = SmartCalc2_0
-CXXFLAGS = -g -Wall -Wextra -Werror --coverage #-lstdc++
+CXXFLAGS = -g -Wall -Wextra -Werror --coverage -lstdc++
 GT_FLAGS = -lgtest -lgtest_main -lm
 GCOV = --coverage
 #  Project directories

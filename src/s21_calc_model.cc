@@ -2,35 +2,34 @@
 
 namespace s21 {
 
-CalcModel::CalcModel(/* args */) {}
+CalcModel::CalcModel(/* args */) {setlocale(LC_ALL,"English");}
 
 CalcModel::~CalcModel() {}
 
 double CalcModel::StartCalc(const std::string &src_str, double X_num) {
-  // const char *src;
-  
+
   if (s21::CalcValid::ValidationEqual(src_str)) {
-    char *cstr = new char[src_str.length() + 1];
-    strcpy(cstr, src_str.c_str());  //  Преобразование в str* для СИ
-    result_ = Calc(cstr, X_num);
-    delete[] cstr;
+    // char *cstr = new char[src_str.length() + 1];
+    // strcpy(cstr, src_str.c_str());  //  Преобразование в str* для СИ
+    result_ = Calc(src_str, X_num);
+    // delete[] cstr;
   } else
     throw std::runtime_error("expression error");
   return result_;
 }
 
-double CalcModel::Calc(const char *calculation_src, double X_num) {
+double CalcModel::Calc(const std::string &calc_src, double X_num) {
   int position = 0;
-  while (calculation_src[position]) {  //  Главный цикл вычисления
+  while (calc_src[position]) {  //  Главный цикл вычисления
     StackType st_buf =
-        ParserUno(calculation_src, &position, X_num);  //  Парсим одну лексемму
+        ParserUno(calc_src, &position, X_num);  //  Парсим одну лексемму
     if (st_buf.prio) {  //  Если получили операцию или скобку
       while (st_buf.oper_val) {
         if (st_buf.oper_val == ')' && BracketFinder()) {
           //  Если пришла скобка закр а в стеке скобка откр
           oper_stack_.pop();
           st_buf.oper_val = 0.0;
-        } else if (UnarCheck(st_buf.oper_val, calculation_src, position)) {
+        } else if (UnarCheck(st_buf.oper_val, calc_src, position)) {
           oper_stack_.push({0.0, st_buf.oper_val, st_buf.prio});
           num_stack_.push({0.0, '0', 0});  //  Получили унарный знак
           st_buf.oper_val = 0.0;
@@ -73,24 +72,25 @@ double CalcModel::Calc(const char *calculation_src, double X_num) {
 }
 
 CalcModel::StackType CalcModel::ParserUno(
-    const char *calculation_src, int *position,
+    const std::string &calc_src, int *position,
     double X_num) {  //  Парсер одной лексеммы
   StackType stack1{};
-  int prio = PrioCheck(calculation_src[*position]);
+  int prio = PrioCheck(calc_src[*position]);
   if (prio) {
     stack1.prio = prio;
-    stack1.oper_val = calculation_src[*position];
+    stack1.oper_val = calc_src[*position];
   } else {
-    if (calculation_src[*position] == 'X') {
+    if (calc_src[*position] == 'X') {
       stack1.prio = 0;
       stack1.val_dub = X_num;
       *position += 1;
     } else {
       std::string buf{};
-      *position = *position + BufferingNumber(&calculation_src[*position], buf);
-      double tess = std::stof(buf);
-      std::cout << buf << std::endl;
-      std::cout << tess << std::endl;
+      *position = *position + BufferingNumber(&calc_src[*position], buf);
+      double tess;
+      tess = std::stod(buf);
+      // std::cout << buf << std::endl;
+      // std::cout << tess << std::endl;
       stack1.prio = prio;
       stack1.val_dub = tess;
     }
@@ -135,16 +135,17 @@ int CalcModel::BufferingNumber(
     std::string &out) {  //  Сборка числа в строку, возвращает длинну числа
   int i = 0;
   while ((src_string[i] >= '0' && src_string[i] <= '9') ||
-         src_string[i] == '.' || src_string[i] == 'e' || src_string[i] == ',') {
+         src_string[i] == '.' || src_string[i] == 'e') {
     if (src_string[i] == 'e') {
       out += src_string[i];
       i++;
     }
-    if (src_string[i] == '.') {
-      out += ',';
-      i++;
-      continue;
-    }
+    // TODO зависит от выбраной локали
+    // if (src_string[i] == '.') {
+    //   out += ',';
+    //   i++;
+    //   continue;
+    // }
     out += src_string[i];
     i++;
   }
@@ -158,19 +159,19 @@ int CalcModel::BracketFinder() {
   return finded;
 }
 
-int CalcModel::UnarCheck(char check, const char *oper_st, int position) {
+int CalcModel::UnarCheck(char check, const std::string &calc_str, int position) {
   int unar_minus_find{};
   if ((check == '-' || check == '+') && !position) unar_minus_find = 1;
   if ((check == '-' || check == '+') && position > 0)
-    if (oper_st[position - 1] == '(') unar_minus_find = 1;
+    if (calc_str[position - 1] == '(') unar_minus_find = 1;
   return unar_minus_find;
 }
 
 double CalcModel::MathOperations() {
   double buf_num = 0.0;
-  if (oper_stack_.empty()) throw std::runtime_error("Math operation err, expression error");
+  if (oper_stack_.empty()) throw std::runtime_error("Math err");
   if (oper_stack_.top().prio < 4) {
-    if(num_stack_.size() < 2) throw std::runtime_error("Math operation err, expression error");
+    if(num_stack_.size() < 2) throw std::runtime_error("Math err");
     double second = num_stack_.top().val_dub;
     num_stack_.pop();
     double first = num_stack_.top().val_dub;
