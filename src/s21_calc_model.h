@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdexcept>
 #include <iostream>
+#include <stack>
 #include "./s21_calc_valid_model.h"
 
 namespace s21 {
@@ -29,8 +30,8 @@ class CalcModel {
 
   struct StackType {
     double val_dub{};
+    char oper_val{};
     int prio{};
-    StackType *next{};
   };
 
  public:
@@ -42,20 +43,18 @@ class CalcModel {
 
  private:
   // std::string expression{};  //  TODO
+  std::stack<StackType> oper_stack_{};
+  std::stack<StackType> num_stack_{};
   double result_{};
   //  Metods
   double Calc(const char *calculation_src, double X_num);
   StackType ParserUno(const char *calculation_src, int *position, double X_num);
   int PrioCheck(char src_string);
   int PositionCounter(char src_string);
-  int BufferingNumber(const char *src_string, char *out);
-  int BracketFinder(StackType *oper);
-  StackType *DelPoint(StackType *stack1);
+  int BufferingNumber(const char *src_string, std::string &out);
+  int BracketFinder();
   int UnarCheck(char check, const char *oper_st, int position);
-  StackType *PushSta(StackType *plist, double val_dub, int prio);
-  double MathOperations(StackType **num_sta, StackType **oper_sta);
-  void DestroyNode(StackType *stack1);
-  double PopVal(StackType **stack);
+  double MathOperations();
   double SimpleMath(double second_num, double first_num, char operation);
   double TrigonCalc(double x, char operation);
 };

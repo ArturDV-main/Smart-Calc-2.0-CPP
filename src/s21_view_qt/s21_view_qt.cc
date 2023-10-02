@@ -26,7 +26,6 @@ void MainWindow::DoubleValidInit() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
-  qDebug() << event->key();
   switch (event->key()) {
     case Qt::Key_Space:
       BackspaseLogic();
