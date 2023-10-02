@@ -48,6 +48,7 @@ class MainWindow : public QMainWindow {
   void C_button();
   void func_button();
   void EqualsButton();
+  void EqualsLogic();
   void simp_math_button();
   void graf_button();
   void skobki();
