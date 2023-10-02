@@ -1,8 +1,8 @@
-CXX = g++
+CXX = gcc
 CPP_STD = -std=c++17
 # CPPFLAGS = --coverage
 TARGET = SmartCalc2_0
-CXXFLAGS = -g -Wall -Wextra -Werror --coverage #-lstdc++
+CXXFLAGS = -g -Wall -Wextra -Werror --coverage -lstdc++
 GT_FLAGS = -lgtest -lgtest_main -lm
 GCOV = --coverage
 #  Project directories
@@ -20,26 +20,24 @@ GT_OBJS := $(GT_SRCS:%=$(BUILD_DIR)/%.o)
 OS := $(shell uname -s)
 
 ifeq ($(OS), Darwin)
-    LIBS := -lcheck
 	APPLICATION := SmartCalc2_0.app
-	OPEN = open
+	OPEN = open $(BUILD_DIR)/$(APPLICATION)
 else
-    LIBS := -lcheck_pic -lpthread -lrt -lm -lsubunit -g
 	APPLICATION := SmartCalc2_0
-	OPEN = ./
+	OPEN = ./$(BUILD_DIR)/$(APPLICATION)
 endif
 
 all: apple
 
 apple:
-	cd src/s21_view_qt && qmake SmartCalc2_0.pro -spec linux-g++ CONFIG+=release CONFIG+=qml_release
-	make -f src/s21_view_qt/Makefile qmake_all
-	cd src/s21_view_qt && make -j8
+	cd src/s21_view_qt && qmake6 CONFIG+=qtquickcompiler && make
+	rm -rf build/$(APPLICATION)
 	mv src/s21_view_qt/$(APPLICATION) build/
 
 #  Google tests
 test: clean $(GT_OBJS)
-	$(CXX) $(CXXFLAGS) $(GT_OBJS) $(GT_FLAGS) -o $(BUILD_DIR)/gtest.out
+	mkdir -p $(BUILD_DIR)
+	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
 
 #  SmartCallc2.0 application
@@ -54,25 +52,26 @@ $(BUILD_DIR)/%.cc.o: %.cc
 .PHONY: clean
 clean:
 	cd src/s21_view_qt && make clean
-	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash src/build-SmartCalc2_0-Desktop-Debug
+	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash \
+	src/build-SmartCalc2_0-Desktop-Debug build-SmartCalc2_0-Desktop_x86_darwin_generic_mach_o_64bit-Debug
 
 clang:
 	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
 	clang-format -style=file:materials/linters/.clang-format -i src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
 
 open:
-	$(OPEN)$(BUILD_DIR)/$(APPLICATION)
+	$(OPEN)
 
 valgrind:
 ifeq ($(OS), Darwin)
 	echo $(OS)
 	echo "For Aple --------------------"
-	leaks -atExit -- ./$(BUILD_DIR)/$(TARGET)
+	leaks -atExit -- ./$(BUILD_DIR)/$(APPLICATION)
 else
 	echo $(OS)
 	echo "For Ubuntu --------------------"
-	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=$(BUILD_DIR)/RESULT_VALGRIND.txt $(BUILD_DIR)/$(TARGET)
-	grep errors RESULT_VALGRIND.txt
+	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=$(BUILD_DIR)/RESULT_VALGRIND.txt $(BUILD_DIR)/$(APPLICATION)
+	grep errors $(BUILD_DIR)/RESULT_VALGRIND.txt
 endif
 
 gcov_report: clean test
