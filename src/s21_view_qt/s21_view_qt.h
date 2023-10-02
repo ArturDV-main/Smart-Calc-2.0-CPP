@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private:
-  s21::CalcValid calc_valid;
+  s21::CalcValid calc_valid_;
   s21::CalcController *calc_;
   Ui::MainWindow *ui;
   QDoubleValidator *double_valid_;
