@@ -9,12 +9,10 @@ CalcModel::~CalcModel() {}
 double CalcModel::StartCalc(const std::string &src_str, double X_num) {
 
   if (s21::CalcValid::ValidationEqual(src_str)) {
-    // char *cstr = new char[src_str.length() + 1];
-    // strcpy(cstr, src_str.c_str());  //  Преобразование в str* для СИ
     result_ = Calc(src_str, X_num);
-    // delete[] cstr;
-  } else
+  } else {
     throw std::runtime_error("expression error");
+  }
   return result_;
 }
 
@@ -180,7 +178,7 @@ double CalcModel::MathOperations() {
     oper_stack_.pop();
     buf_num = SimpleMath(second, first, operat);
   } else if (oper_stack_.top().prio < 5) {
-    if(num_stack_.empty()) throw std::runtime_error("Math operation err, expression error");
+    if(num_stack_.empty()) throw std::runtime_error("Math err, expression error");
     buf_num = num_stack_.top().val_dub;
     num_stack_.pop();
     char oper_buf = oper_stack_.top().oper_val;
@@ -193,6 +191,7 @@ double CalcModel::MathOperations() {
 double CalcModel::SimpleMath(double second_num, double first_num,
                              char operation) {
   double out_num = 0.0;
+  double epsilon = 0.00000001;
   switch (operation) {
     case '+':
       out_num = first_num + second_num;
@@ -204,7 +203,7 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
-      if(second_num == 0.0 || first_num == 0.0) 
+      if(std::abs(second_num - 0.0) < epsilon || std::abs(first_num - 0.0) < epsilon) 
       throw std::runtime_error("Error: 0/0");
       out_num = first_num / second_num;
       break;
