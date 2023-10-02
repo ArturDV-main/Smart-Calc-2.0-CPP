@@ -2,12 +2,12 @@
 
 namespace s21 {
 
-CalcModel::CalcModel(/* args */) {setlocale(LC_ALL,"English");}
+CalcModel::CalcModel(/* args */) {}
 
 CalcModel::~CalcModel() {}
 
 double CalcModel::StartCalc(const std::string &src_str, double X_num) {
-
+  std::setlocale(LC_NUMERIC, "C");
   if (s21::CalcValid::ValidationEqual(src_str)) {
     result_ = Calc(src_str, X_num);
   } else {
@@ -35,13 +35,14 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
           // Если стэк пуст или в нём скобка
           oper_stack_.push({0.0, st_buf.oper_val, st_buf.prio});
           st_buf.oper_val = 0.0;
-        } else if (st_buf.prio > oper_stack_.top().prio) {  //  Если приоритет опреации
+        } else if (st_buf.prio >
+                   oper_stack_.top().prio) {  //  Если приоритет опреации
           oper_stack_.push({0.0, st_buf.oper_val,  //  больше приоритета
-                            st_buf.prio});           //  в стеке
-          st_buf.oper_val = 0.0;  
+                            st_buf.prio});  //  в стеке
+          st_buf.oper_val = 0.0;
         } else {
-          double buf_num = MathOperations(); //  Выполнить расчёт
-          num_stack_.push({buf_num, '0', 0});  
+          double buf_num = MathOperations();  //  Выполнить расчёт
+          num_stack_.push({buf_num, '0', 0});
         }  //  т.к. остальные условия не прошли
       }
       position++;
@@ -157,7 +158,8 @@ int CalcModel::BracketFinder() {
   return finded;
 }
 
-int CalcModel::UnarCheck(char check, const std::string &calc_str, int position) {
+int CalcModel::UnarCheck(char check, const std::string &calc_str,
+                         int position) {
   int unar_minus_find{};
   if ((check == '-' || check == '+') && !position) unar_minus_find = 1;
   if ((check == '-' || check == '+') && position > 0)
@@ -169,7 +171,7 @@ double CalcModel::MathOperations() {
   double buf_num = 0.0;
   if (oper_stack_.empty()) throw std::runtime_error("Math err");
   if (oper_stack_.top().prio < 4) {
-    if(num_stack_.size() < 2) throw std::runtime_error("Math err");
+    if (num_stack_.size() < 2) throw std::runtime_error("Math err");
     double second = num_stack_.top().val_dub;
     num_stack_.pop();
     double first = num_stack_.top().val_dub;
@@ -178,7 +180,8 @@ double CalcModel::MathOperations() {
     oper_stack_.pop();
     buf_num = SimpleMath(second, first, operat);
   } else if (oper_stack_.top().prio < 5) {
-    if(num_stack_.empty()) throw std::runtime_error("Math err, expression error");
+    if (num_stack_.empty())
+      throw std::runtime_error("Math err, expression error");
     buf_num = num_stack_.top().val_dub;
     num_stack_.pop();
     char oper_buf = oper_stack_.top().oper_val;
@@ -203,8 +206,9 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
-      if(std::abs(second_num - 0.0) < epsilon || std::abs(first_num - 0.0) < epsilon) 
-      throw std::runtime_error("Error: 0/0");
+      if (std::abs(second_num - 0.0) < epsilon ||
+          std::abs(first_num - 0.0) < epsilon)
+        throw std::runtime_error("Error: 0/0");
       out_num = first_num / second_num;
       break;
     case '^':

@@ -56,7 +56,8 @@ void MainWindow::LineEditEvent(char key) {
 void MainWindow::LineInput(QString str) {
   QString tmp_str("-+*/");
   if ((ui->result->text() == "0" || (calc_done_ && !tmp_str.contains(str)) ||
-      error_) && !(str == '.'))
+       error_) &&
+      !(str == '.'))
     ui->result->setText(str);
   else
     ui->result->setText(ui->result->text() + str);
@@ -75,13 +76,11 @@ void MainWindow::BackspaseLogic() {
     ui->result->backspace();
 }
 
-void MainWindow::EqualsButton() {
-  EqualsLogic();
-}
+void MainWindow::EqualsButton() { EqualsLogic(); }
 
 void MainWindow::EqualsLogic() {
-  if(error_) {
-    ui->result->setText("0"); 
+  if (error_) {
+    ui->result->setText("0");
     error_ = false;
     return;
   }

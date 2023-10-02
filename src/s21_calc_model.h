@@ -3,10 +3,11 @@
 
 #include <cmath>
 #include <cstring>
-#include <memory>
-#include <stdexcept>
 #include <iostream>
+#include <memory>
 #include <stack>
+#include <stdexcept>
+
 #include "./s21_calc_valid_model.h"
 
 namespace s21 {
@@ -48,8 +49,7 @@ class CalcModel {
   double result_{};
   //  Metods
   double Calc(const std::string &calc_src, double X_num);
-  StackType ParserUno(const std::string &calc_src,
-                                 int *position, double X_num);
+  StackType ParserUno(const std::string &calc_src, int *position, double X_num);
   int PrioCheck(char src_string);
   int PositionCounter(char src_string);
   int BufferingNumber(const char *src_string, std::string &out);
