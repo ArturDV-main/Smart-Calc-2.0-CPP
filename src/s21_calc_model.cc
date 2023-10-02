@@ -8,12 +8,26 @@ CalcModel::~CalcModel() {}
 
 double CalcModel::StartCalc(const std::string &src_str, double X_num) {
   std::setlocale(LC_NUMERIC, "C");
-  if (s21::CalcValid::ValidationEqual(src_str)) {
+  if (ValidationEqual(src_str)) {
     result_ = Calc(src_str, X_num);
   } else {
     throw std::runtime_error("expression error");
   }
   return result_;
+}
+
+bool CalcModel::ValidationEqual(const std::string &str) {
+  bool valid(false);
+  std::string tmp("+-/*M^@ABCDEFGH)(1234567890.eX");
+  for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+    const char c = *it;
+    if (tmp.find(c) == tmp.npos) {
+      valid = false;
+      break;
+    }
+    valid = true;
+  }
+  return valid;
 }
 
 double CalcModel::Calc(const std::string &calc_src, double X_num) {
@@ -29,7 +43,7 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
           st_buf.oper_val = 0.0;
         } else if (UnarCheck(st_buf.oper_val, calc_src, position)) {
           oper_stack_.push({0.0, st_buf.oper_val, st_buf.prio});
-          num_stack_.push({0.0, '0', 0});  //  Получили унарный знак
+          num_stack_.push(0.0);  //  Получили унарный знак
           st_buf.oper_val = 0.0;
         } else if (oper_stack_.empty() || oper_stack_.top().oper_val == '(') {
           // Если стэк пуст или в нём скобка
@@ -42,12 +56,12 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
           st_buf.oper_val = 0.0;
         } else {
           double buf_num = MathOperations();  //  Выполнить расчёт
-          num_stack_.push({buf_num, '0', 0});
+          num_stack_.push(buf_num);
         }  //  т.к. остальные условия не прошли
       }
       position++;
     } else {  //  Если получили число
-      num_stack_.push({st_buf.val_dub, '0', st_buf.prio});
+      num_stack_.push(st_buf.val_dub);
     }
   }
   while (!oper_stack_.empty()) {  //  Расчёт оставшегося содержимого стеков
@@ -57,13 +71,12 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
       continue;
     }
     //  Если пришло число, просто отправляем в стек чисел
-    double buf_num = MathOperations();
-    num_stack_.push({buf_num, '0', 0});
+    num_stack_.push(MathOperations());
   }
 
   double result = 0.0;
   if (!num_stack_.empty()) {
-    result = num_stack_.top().val_dub;
+    result = num_stack_.top();
     num_stack_.pop();
   }
   if (!num_stack_.empty()) throw std::runtime_error("numbers stack invalid");
@@ -86,12 +99,8 @@ CalcModel::StackType CalcModel::ParserUno(
     } else {
       std::string buf{};
       *position = *position + BufferingNumber(&calc_src[*position], buf);
-      double tess;
-      tess = std::stod(buf);
-      // std::cout << buf << std::endl;
-      // std::cout << tess << std::endl;
       stack1.prio = prio;
-      stack1.val_dub = tess;
+      stack1.val_dub = std::stod(buf);
     }
   }
   return stack1;
@@ -139,12 +148,6 @@ int CalcModel::BufferingNumber(
       out += src_string[i];
       i++;
     }
-    // TODO зависит от выбраной локали
-    // if (src_string[i] == '.') {
-    //   out += ',';
-    //   i++;
-    //   continue;
-    // }
     out += src_string[i];
     i++;
   }
@@ -172,9 +175,9 @@ double CalcModel::MathOperations() {
   if (oper_stack_.empty()) throw std::runtime_error("Math err");
   if (oper_stack_.top().prio < 4) {
     if (num_stack_.size() < 2) throw std::runtime_error("Math err");
-    double second = num_stack_.top().val_dub;
+    double second = num_stack_.top();
     num_stack_.pop();
-    double first = num_stack_.top().val_dub;
+    double first = num_stack_.top();
     num_stack_.pop();
     char operat = oper_stack_.top().oper_val;
     oper_stack_.pop();
@@ -182,7 +185,7 @@ double CalcModel::MathOperations() {
   } else if (oper_stack_.top().prio < 5) {
     if (num_stack_.empty())
       throw std::runtime_error("Math err, expression error");
-    buf_num = num_stack_.top().val_dub;
+    buf_num = num_stack_.top();
     num_stack_.pop();
     char oper_buf = oper_stack_.top().oper_val;
     oper_stack_.pop();
@@ -206,9 +209,10 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
-      if (std::abs(second_num - 0.0) < epsilon ||
-          std::abs(first_num - 0.0) < epsilon)
-        throw std::runtime_error("Error: 0/0");
+      if (std::abs(second_num - 0.0) < epsilon ) 
+        throw std::runtime_error("Error: /0");
+      if (std::abs(first_num - 0.0) < epsilon)  
+        throw std::runtime_error("Error: 0/");
       out_num = first_num / second_num;
       break;
     case '^':

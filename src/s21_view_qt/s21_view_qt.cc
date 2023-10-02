@@ -45,11 +45,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 }
 //  TODO
 void MainWindow::LineEditEvent(char key) {
-  QString tmp_str("1234567890-+*/.,");
+  QString tmp_str("1234567890-+*/.");
   if (tmp_str.contains(char(key))) {
     LineInput((QString)key);
   } else {
-    BackspaseLogic();
+    // BackspaseLogic();
   }
 }
 
