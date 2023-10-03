@@ -64,6 +64,7 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
       num_stack_.push(st_buf.val_dub);
     }
   }
+
   while (!oper_stack_.empty()) {  //  Расчёт оставшегося содержимого стеков
     if (BracketFinder()) {
       oper_stack_.pop();
@@ -78,8 +79,13 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
   if (!num_stack_.empty()) {
     result = num_stack_.top();
     num_stack_.pop();
+  } else {
+    throw std::runtime_error("numbers stack empty");
   }
-  if (!num_stack_.empty()) throw std::runtime_error("numbers stack invalid");
+  if (!num_stack_.empty()) {
+    throw std::runtime_error("numbers stack invalid");
+  }
+
   return result;
 }
 
@@ -172,9 +178,15 @@ int CalcModel::UnarCheck(char check, const std::string &calc_str,
 
 double CalcModel::MathOperations() {
   double buf_num = 0.0;
-  if (oper_stack_.empty()) throw std::runtime_error("Math err");
+  // if (oper_stack_.empty()) {
+  //   CleanStacks();
+  //   throw std::runtime_error("Math err");
+  // }
   if (oper_stack_.top().prio < 4) {
-    if (num_stack_.size() < 2) throw std::runtime_error("Math err");
+    if (num_stack_.size() < 2) {
+      CleanStacks();
+      throw std::runtime_error("Math err");
+    }
     double second = num_stack_.top();
     num_stack_.pop();
     double first = num_stack_.top();
@@ -183,8 +195,10 @@ double CalcModel::MathOperations() {
     oper_stack_.pop();
     buf_num = SimpleMath(second, first, operat);
   } else if (oper_stack_.top().prio < 5) {
-    if (num_stack_.empty())
+    if (num_stack_.empty()) {
+      CleanStacks();
       throw std::runtime_error("Math err, expression error");
+    }
     buf_num = num_stack_.top();
     num_stack_.pop();
     char oper_buf = oper_stack_.top().oper_val;
@@ -192,6 +206,15 @@ double CalcModel::MathOperations() {
     buf_num = TrigonCalc(buf_num, oper_buf);
   }
   return buf_num;
+}
+
+void CalcModel::CleanStacks() {
+  while (!num_stack_.empty()) {
+    num_stack_.pop();
+  }
+  while (!oper_stack_.empty()) {
+    oper_stack_.pop();
+  }
 }
 
 double CalcModel::SimpleMath(double second_num, double first_num,

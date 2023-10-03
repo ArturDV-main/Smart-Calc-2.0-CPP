@@ -55,6 +55,7 @@ class CalcModel {
   int BracketFinder();
   int UnarCheck(char check, const std::string &calc_str, int position);
   double MathOperations();
+  void CleanStacks();
   double SimpleMath(double second_num, double first_num, char operation);
   double TrigonCalc(double x, char operation);
 };
