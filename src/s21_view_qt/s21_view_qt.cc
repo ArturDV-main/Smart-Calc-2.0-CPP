@@ -106,34 +106,31 @@ void MainWindow::digits_numbers() {
 void MainWindow::skobki() {
   QString new_lable;
 
-//  Преобразование в str* для СИ
+  //  Преобразование в str* для СИ
   QByteArray ba = (ui->result->text()).toLocal8Bit();
 
-  const char *c_str2 = ba.data(); //  Преобразование в str* для СИ
+  const char *c_str2 = ba.data();  //  Преобразование в str* для СИ
 
-  int valid_line = calc_valid_.SmartBracket(c_str2); //  Валидация скобки
+  int valid_line = calc_valid_.SmartBracket(c_str2);  //  Валидация скобки
 
-  if (valid_line == true) { //  Если валидация вернула Тру, ставим закрывающую
+  if (valid_line == true) {  //  Если валидация вернула Тру, ставим закрывающую
     new_lable = ')';
-  } else if (valid_line == false) { //  Если Фолс, открывающую
+  } else if (valid_line == false) {  //  Если Фолс, открывающую
     new_lable = '(';
   }
 
   //  Если Эррор, установка скобки запрещена
   if (ui->result->text() == "0" && valid_line != 2) {
+    //  Запись в строку для передачи в бэкЭнд
 
-//  Запись в строку для передачи в бэкЭнд
-
-    ui->result->setText(new_lable); //  Запись для вывода на экран
+    ui->result->setText(new_lable);  //  Запись для вывода на экран
 
   } else if (valid_line != 2) {
     //  Запись в строку для передачи в бэкЭнд
 
- //  Запись для вывода на экран
+    //  Запись для вывода на экран
     ui->result->setText(ui->result->text() + new_lable);
-
   }
-
 }
 
 void MainWindow::AC_button() {

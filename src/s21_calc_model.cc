@@ -209,9 +209,9 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
-      if (std::abs(second_num - 0.0) < epsilon ) 
+      if (std::abs(second_num - 0.0) < epsilon)
         throw std::runtime_error("Error: /0");
-      if (std::abs(first_num - 0.0) < epsilon)  
+      if (std::abs(first_num - 0.0) < epsilon)
         throw std::runtime_error("Error: 0/");
       out_num = first_num / second_num;
       break;
