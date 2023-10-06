@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow {
  private:
   s21::CalcValid calc_valid_;
   s21::CalcController *calc_;
-  Ui::MainWindow *ui;
+  Ui::MainWindow *ui_;
   QDoubleValidator *double_valid_;
   double x_begin_, x_end_, h_;
   QVector<double> x_{}, y_{};
