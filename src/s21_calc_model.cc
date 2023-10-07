@@ -7,7 +7,7 @@ CalcModel::CalcModel(/* args */) {}
 CalcModel::~CalcModel() {}
 
 double CalcModel::StartCalc(const std::string &src_str, double X_num) {
-  std::setlocale(LC_NUMERIC, "C");
+  setlocale(LC_NUMERIC, "C");
   if (ValidationEqual(src_str)) {
     result_ = Calc(src_str, X_num);
   } else {

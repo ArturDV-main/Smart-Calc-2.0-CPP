@@ -63,11 +63,11 @@ clang:
 open:
 	$(OPEN)
 
-valgrind:
+leak:
 ifeq ($(OS), Darwin)
 	echo $(OS)
 	echo "For Aple --------------------"
-	leaks -atExit -- ./$(BUILD_DIR)/$(APPLICATION)
+	leaks -atExit -- ./$(BUILD_DIR)/$(APPLICATION)/Contents/MacOS/SmartCalc2_0
 else
 	echo $(OS)
 	echo "For Ubuntu --------------------"
