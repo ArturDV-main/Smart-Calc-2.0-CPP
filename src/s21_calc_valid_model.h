@@ -9,11 +9,10 @@ namespace s21 {
 
 class CalcValid {
  public:
-#define OPERATIONS ")+-/*M^@ABCDEFGH("
-  enum truefalse {
-    FALSE,
-    TRUE,
-    ERROR,
+  enum CodeSamples {
+    opened,
+    closed,
+    error,
     COS = '@',
     SIN = 'A',
     TAN = 'B',
@@ -28,12 +27,10 @@ class CalcValid {
   int CharCounter(const char* str_line, char res);
   static bool ValidationEqual(const std::string& str);
   int PositionCounter(char src_string);
-  int InLineStart(const char* str, int str_len);
   int IsSimpOper(char oper);
   int IsNums(char num);
   int SmartBracket(const char* str_line);
   int ValidSimpOper(const char* str_line);
-  int ValidFunc(const char* str_line);
   int ValidNums(const char* str_line);
   int ValidEquals(const char* str_line);
   int ValidUnar(const char* str_line);
@@ -42,7 +39,9 @@ class CalcValid {
   int ValidDotLine(const char* str_line);
   int SuperValid(double maxval, double minval, const char* str_line);
 
- private:
+  int ValidFunc(const std::string str_line);
+  int InLineStart(const std::string &str);
+private:
 };
 
 }  // namespace s21

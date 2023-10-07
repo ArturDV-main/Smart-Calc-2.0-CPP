@@ -28,11 +28,17 @@ class MainWindow : public QMainWindow {
   s21::CalcController *calc_;
   Ui::MainWindow *ui_;
   QDoubleValidator *double_valid_;
+
+  //  for QCustomplot
   double x_begin_, x_end_, h_;
   QVector<double> x_{}, y_{};
+
+  //  cod on enum from model
   QString result_code_;
+  QString reserv_;
   bool calc_done_{};
   bool error_{};
+
   void ConnectsRelise();
   void DoubleValidInit();
   void LineEditEvent(char key);  // TODO

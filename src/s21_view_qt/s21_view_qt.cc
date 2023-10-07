@@ -46,10 +46,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 //  TODO
 void MainWindow::LineEditEvent(char key) {
   QString tmp_str("1234567890-+*/.");
-  if (tmp_str.contains(char(key))) {
+  if (tmp_str.contains(key)) {
     LineInput((QString)key);
-  } else {
-    // BackspaseLogic();
+  } else if (key == '(' || key == ')'){
+    skobki();
   }
 }
 
@@ -57,10 +57,13 @@ void MainWindow::LineInput(QString str) {
   QString tmp_str("-+*/");
   if ((ui_->result->text() == "0" || (calc_done_ && !tmp_str.contains(str)) ||
        error_) &&
-      !(str == '.'))
+      !(str == '.')) {
     ui_->result->setText(str);
-  else
+    result_code_ = str;
+  } else {
+    result_code_ = result_code_ + str;
     ui_->result->setText(ui_->result->text() + str);
+  }
   calc_done_ = false;
   error_ = false;
 }
@@ -85,7 +88,7 @@ void MainWindow::EqualsLogic() {
     return;
   }
   try {
-    calc_->StartCalc(ui_->result->text().toStdString(),
+    calc_->StartCalc(result_code_.toStdString(),
                      ui_->line_X->text().toDouble());
     ui_->result->setText(QString::number(calc_->GetResult(), 'g', 15));
   } catch (const std::exception &e) {  // TODO
@@ -113,9 +116,9 @@ void MainWindow::skobki() {
 
   int valid_line = calc_valid_.SmartBracket(c_str2);  //  Валидация скобки
 
-  if (valid_line == true) {  //  Если валидация вернула Тру, ставим закрывающую
+  if (valid_line == s21::CalcValid::closed) {  //  Если валидация вернула Тру, ставим закрывающую
     new_lable = ')';
-  } else if (valid_line == false) {  //  Если Фолс, открывающую
+  } else if (valid_line == s21::CalcValid::opened) {  //  Если Фолс, открывающую
     new_lable = '(';
   }
 
@@ -142,7 +145,29 @@ void MainWindow::C_button() { BackspaseLogic(); }
 
 void MainWindow::graf_button() {}
 
-void MainWindow::func_button() {}
+void MainWindow::func_button() {
+    QPushButton *button = (QPushButton *)sender();
+
+//    QByteArray ba = result_code_.toLocal8Bit();
+
+//    const char *c_str2 = ba.data(); //  Преобразование в str* для СИ
+
+//    int validfunc = calc_valid_.ValidFunc(c_str2); //  Валидация операции
+
+    bool validfunc = true;
+
+    if (ui_->result->text() == "0" && validfunc) {
+
+      ui_->result->setText(button->text() + '(');
+      result_code_ = button->whatsThis() + '(';
+
+    } else if (validfunc){
+
+      ui_->result->setText(ui_->result->text() + button->text() + '(');
+
+      result_code_ = result_code_ + button->whatsThis() + '(';
+    }
+}
 
 void MainWindow::simp_math_button() {}
 
