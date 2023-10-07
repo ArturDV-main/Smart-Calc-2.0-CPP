@@ -29,9 +29,9 @@ int CalcValid::PositionCounter(
   return counter;
 }
 
-int CalcValid::InLineStart(const std::string &str) {
+bool CalcValid::InLineStart(const std::string &str) {
   bool in_start = false;
-  if (str[0] == '0' && str.length() == 1) in_start = true;
+  if (str.length() == 2) in_start = true;
   return in_start;
 }
 
@@ -42,7 +42,7 @@ int CalcValid::IsSimpOper(char oper) {
   return it_oper;
 }
 
-int CalcValid::CharCounter(const char *str_line, char res) {
+size_t CalcValid::CharCounter(const std::string &str_line, char res) {
   int counter = 0, i = 0;
   while (str_line[i]) {
     if (str_line[i] == res) counter++;
@@ -63,9 +63,9 @@ int CalcValid::LastIs(char res) {
   return is_number;
 }
 
-int CalcValid::SmartBracket(const char *str_line) {
+int CalcValid::SmartBracket(const std::string &str_line) {
   int bracket = opened;
-  int len = strlen(str_line);
+  int len = str_line.length();
   int open_bracket_val = CharCounter(str_line, '(');
   int close_bracket_val = CharCounter(str_line, ')');
   int last_sym = LastIs(str_line[len - 1]);
@@ -90,7 +90,7 @@ int CalcValid::ValidSimpOper(const char *str_line) {
   return valid_oper;
 }
 
-int CalcValid::ValidFunc(const std::string str_line) {
+bool CalcValid::ValidFunc(const std::string str_line) {
   int validfunc = false;
   int len = str_line.length();
   if (IsSimpOper(str_line[len - 1]) || str_line[len - 1] == '(' ||

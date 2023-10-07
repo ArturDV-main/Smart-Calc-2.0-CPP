@@ -24,12 +24,11 @@ class CalcValid {
     LOG = 'H'
   };
   int LastIs(char res);
-  int CharCounter(const char* str_line, char res);
   static bool ValidationEqual(const std::string& str);
   int PositionCounter(char src_string);
   int IsSimpOper(char oper);
   int IsNums(char num);
-  int SmartBracket(const char* str_line);
+  int SmartBracket(const std::string &str_line);
   int ValidSimpOper(const char* str_line);
   int ValidNums(const char* str_line);
   int ValidEquals(const char* str_line);
@@ -39,8 +38,9 @@ class CalcValid {
   int ValidDotLine(const char* str_line);
   int SuperValid(double maxval, double minval, const char* str_line);
 
-  int ValidFunc(const std::string str_line);
-  int InLineStart(const std::string &str);
+  bool ValidFunc(const std::string str_line);
+  bool InLineStart(const std::string &str);
+  size_t CharCounter(const std::string &str_line, char res);
 private:
 };
 

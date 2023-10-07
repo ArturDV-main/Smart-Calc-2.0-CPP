@@ -5,6 +5,8 @@
 MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
     : QMainWindow(parent), calc_(calc_controller), ui_(new Ui::MainWindow) {
   ui_->setupUi(this);
+  ui_->result->setText("0");
+  result_code_ = ui_->result->text();
   ConnectsRelise();
   double_valid_ = new QDoubleValidator(-10000000, 10000000, 8, ui_->line_X);
   double_valid_->setNotation(QDoubleValidator::StandardNotation);
@@ -53,19 +55,24 @@ void MainWindow::LineEditEvent(char key) {
   }
 }
 
-void MainWindow::LineInput(QString str) {
-  QString tmp_str("-+*/");
-  if ((ui_->result->text() == "0" || (calc_done_ && !tmp_str.contains(str)) ||
-       error_) &&
-      !(str == '.')) {
+void MainWindow::LineInput(QString str, QString code_str) {
+  QString tmp_str("-+*/.");
+  if(code_str.isEmpty()) code_str = str;
+  if (error_ && !(str == ".")) {
     ui_->result->setText(str);
-    result_code_ = str;
-  } else {
-    result_code_ = result_code_ + str;
+    result_code_ = code_str;
+  } else if (calc_done_ && tmp_str.contains(code_str)) {
     ui_->result->setText(ui_->result->text() + str);
+    result_code_ = result_code_ + code_str;
+  } else if (calc_done_){
+     ui_->result->setText(str);
+     result_code_ = code_str;
+  } else {
+     ui_->result->setText(ui_->result->text() + str);
+     result_code_ = result_code_ + code_str;
   }
-  calc_done_ = false;
   error_ = false;
+  calc_done_ = false;
 }
 
 void MainWindow::BackspaseLogic() {
@@ -75,8 +82,10 @@ void MainWindow::BackspaseLogic() {
     error_ = false;
     calc_done_ = false;
     ui_->result->setText("0");
+    result_code_ = 0;
   } else
     ui_->result->backspace();
+    result_code_.chop(1);
 }
 
 void MainWindow::EqualsButton() { EqualsLogic(); }
@@ -107,14 +116,9 @@ void MainWindow::digits_numbers() {
 
 //  Умные скобки, ставится та скобка, которая должна быть
 void MainWindow::skobki() {
-  QString new_lable;
+  QString new_lable;  //  Преобразование в str* для СИ
 
-  //  Преобразование в str* для СИ
-  QByteArray ba = (ui_->result->text()).toLocal8Bit();
-
-  const char *c_str2 = ba.data();  //  Преобразование в str* для СИ
-
-  int valid_line = calc_valid_.SmartBracket(c_str2);  //  Валидация скобки
+  int valid_line = calc_valid_.SmartBracket(result_code_.toStdString());  //  Валидация скобки
 
   if (valid_line == s21::CalcValid::closed) {  //  Если валидация вернула Тру, ставим закрывающую
     new_lable = ')';
@@ -138,6 +142,7 @@ void MainWindow::skobki() {
 
 void MainWindow::AC_button() {
   ui_->result->setText("0");
+  result_code_ = 0;
   calc_->Reset();
 }
 
@@ -148,25 +153,10 @@ void MainWindow::graf_button() {}
 void MainWindow::func_button() {
     QPushButton *button = (QPushButton *)sender();
 
-//    QByteArray ba = result_code_.toLocal8Bit();
+    bool validfunc = calc_valid_.ValidFunc(result_code_.toStdString());
 
-//    const char *c_str2 = ba.data(); //  Преобразование в str* для СИ
-
-//    int validfunc = calc_valid_.ValidFunc(c_str2); //  Валидация операции
-
-    bool validfunc = true;
-
-    if (ui_->result->text() == "0" && validfunc) {
-
-      ui_->result->setText(button->text() + '(');
-      result_code_ = button->whatsThis() + '(';
-
-    } else if (validfunc){
-
-      ui_->result->setText(ui_->result->text() + button->text() + '(');
-
-      result_code_ = result_code_ + button->whatsThis() + '(';
-    }
+    if (validfunc)
+      LineInput(button->text() + '(');
 }
 
 void MainWindow::simp_math_button() {}
