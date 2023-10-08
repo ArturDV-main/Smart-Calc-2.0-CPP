@@ -24,20 +24,26 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private:
-  s21::CalcValid calc_valid;
+  s21::CalcValid calc_valid_;
   s21::CalcController *calc_;
-  Ui::MainWindow *ui;
+  Ui::MainWindow *ui_;
   QDoubleValidator *double_valid_;
+
+  //  for QCustomplot
   double x_begin_, x_end_, h_;
   QVector<double> x_{}, y_{};
-  QString result_code_;
-  bool calc_done_{};
-  bool error_{};
+
+  //  cod on enum from model
+  QString result_code_{};
+  QString reserv_{};
+  bool calc_done_ = true;
+  bool error_ = true;
+
   void ConnectsRelise();
   void DoubleValidInit();
   void LineEditEvent(char key);  // TODO
   void BackspaseLogic();
-  void LineInput(QString str);
+  void LineInput(QString str, QString code_str = 0);
 
  protected:
   void keyPressEvent(QKeyEvent *event) override;

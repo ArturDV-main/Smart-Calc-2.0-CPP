@@ -3,11 +3,10 @@
 
 #include <cmath>
 #include <cstring>
-#include <memory>
-#include <stdexcept>
 #include <iostream>
+#include <memory>
 #include <stack>
-#include "./s21_calc_valid_model.h"
+#include <stdexcept>
 
 namespace s21 {
 
@@ -38,24 +37,25 @@ class CalcModel {
   CalcModel(/* args */);
   ~CalcModel();
   double StartCalc(const std::string &src_str, double X_num);
+  bool ValidationEqual(const std::string &str);
   double GetData() { return result_; }
   void Reset() { result_ = 0.0; }
 
  private:
   // std::string expression{};  //  TODO
   std::stack<StackType> oper_stack_{};
-  std::stack<StackType> num_stack_{};
+  std::stack<double> num_stack_{};
   double result_{};
   //  Metods
   double Calc(const std::string &calc_src, double X_num);
-  StackType ParserUno(const std::string &calc_src,
-                                 int *position, double X_num);
+  StackType ParserUno(const std::string &calc_src, int *position, double X_num);
   int PrioCheck(char src_string);
   int PositionCounter(char src_string);
   int BufferingNumber(const char *src_string, std::string &out);
   int BracketFinder();
   int UnarCheck(char check, const std::string &calc_str, int position);
   double MathOperations();
+  void CleanStacks();
   double SimpleMath(double second_num, double first_num, char operation);
   double TrigonCalc(double x, char operation);
 };

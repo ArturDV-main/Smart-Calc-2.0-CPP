@@ -2,18 +2,32 @@
 
 namespace s21 {
 
-CalcModel::CalcModel(/* args */) {setlocale(LC_ALL,"English");}
+CalcModel::CalcModel(/* args */) {}
 
 CalcModel::~CalcModel() {}
 
 double CalcModel::StartCalc(const std::string &src_str, double X_num) {
-
-  if (s21::CalcValid::ValidationEqual(src_str)) {
+  setlocale(LC_NUMERIC, "C");
+  if (ValidationEqual(src_str)) {
     result_ = Calc(src_str, X_num);
   } else {
     throw std::runtime_error("expression error");
   }
   return result_;
+}
+
+bool CalcModel::ValidationEqual(const std::string &str) {
+  bool valid(false);
+  std::string tmp("+-/*M^@ABCDEFGH)(1234567890.eX");
+  for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+    const char c = *it;
+    if (tmp.find(c) == std::string::npos) {
+      valid = false;
+      break;
+    }
+    valid = true;
+  }
+  return valid;
 }
 
 double CalcModel::Calc(const std::string &calc_src, double X_num) {
@@ -29,26 +43,28 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
           st_buf.oper_val = 0.0;
         } else if (UnarCheck(st_buf.oper_val, calc_src, position)) {
           oper_stack_.push({0.0, st_buf.oper_val, st_buf.prio});
-          num_stack_.push({0.0, '0', 0});  //  Получили унарный знак
+          num_stack_.push(0.0);  //  Получили унарный знак
           st_buf.oper_val = 0.0;
         } else if (oper_stack_.empty() || oper_stack_.top().oper_val == '(') {
           // Если стэк пуст или в нём скобка
           oper_stack_.push({0.0, st_buf.oper_val, st_buf.prio});
           st_buf.oper_val = 0.0;
-        } else if (st_buf.prio > oper_stack_.top().prio) {  //  Если приоритет опреации
+        } else if (st_buf.prio >
+                   oper_stack_.top().prio) {  //  Если приоритет опреации
           oper_stack_.push({0.0, st_buf.oper_val,  //  больше приоритета
-                            st_buf.prio});           //  в стеке
-          st_buf.oper_val = 0.0;  
+                            st_buf.prio});  //  в стеке
+          st_buf.oper_val = 0.0;
         } else {
-          double buf_num = MathOperations(); //  Выполнить расчёт
-          num_stack_.push({buf_num, '0', 0});  
+          double buf_num = MathOperations();  //  Выполнить расчёт
+          num_stack_.push(buf_num);
         }  //  т.к. остальные условия не прошли
       }
       position++;
     } else {  //  Если получили число
-      num_stack_.push({st_buf.val_dub, '0', st_buf.prio});
+      num_stack_.push(st_buf.val_dub);
     }
   }
+
   while (!oper_stack_.empty()) {  //  Расчёт оставшегося содержимого стеков
     if (BracketFinder()) {
       oper_stack_.pop();
@@ -56,16 +72,20 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
       continue;
     }
     //  Если пришло число, просто отправляем в стек чисел
-    double buf_num = MathOperations();
-    num_stack_.push({buf_num, '0', 0});
+    num_stack_.push(MathOperations());
   }
 
   double result = 0.0;
   if (!num_stack_.empty()) {
-    result = num_stack_.top().val_dub;
+    result = num_stack_.top();
     num_stack_.pop();
+  } else {
+    throw std::runtime_error("numbers stack empty");
   }
-  if (!num_stack_.empty()) throw std::runtime_error("numbers stack invalid");
+  if (!num_stack_.empty()) {
+    throw std::runtime_error("numbers stack invalid");
+  }
+
   return result;
 }
 
@@ -85,12 +105,8 @@ CalcModel::StackType CalcModel::ParserUno(
     } else {
       std::string buf{};
       *position = *position + BufferingNumber(&calc_src[*position], buf);
-      double tess;
-      tess = std::stod(buf);
-      // std::cout << buf << std::endl;
-      // std::cout << tess << std::endl;
       stack1.prio = prio;
-      stack1.val_dub = tess;
+      stack1.val_dub = std::stod(buf);
     }
   }
   return stack1;
@@ -138,12 +154,6 @@ int CalcModel::BufferingNumber(
       out += src_string[i];
       i++;
     }
-    // TODO зависит от выбраной локали
-    // if (src_string[i] == '.') {
-    //   out += ',';
-    //   i++;
-    //   continue;
-    // }
     out += src_string[i];
     i++;
   }
@@ -157,7 +167,8 @@ int CalcModel::BracketFinder() {
   return finded;
 }
 
-int CalcModel::UnarCheck(char check, const std::string &calc_str, int position) {
+int CalcModel::UnarCheck(char check, const std::string &calc_str,
+                         int position) {
   int unar_minus_find{};
   if ((check == '-' || check == '+') && !position) unar_minus_find = 1;
   if ((check == '-' || check == '+') && position > 0)
@@ -167,25 +178,39 @@ int CalcModel::UnarCheck(char check, const std::string &calc_str, int position) 
 
 double CalcModel::MathOperations() {
   double buf_num = 0.0;
-  if (oper_stack_.empty()) throw std::runtime_error("Math err");
   if (oper_stack_.top().prio < 4) {
-    if(num_stack_.size() < 2) throw std::runtime_error("Math err");
-    double second = num_stack_.top().val_dub;
+    if (num_stack_.size() < 2) {
+      CleanStacks();
+      throw std::runtime_error("Math err");
+    }
+    double second = num_stack_.top();
     num_stack_.pop();
-    double first = num_stack_.top().val_dub;
+    double first = num_stack_.top();
     num_stack_.pop();
     char operat = oper_stack_.top().oper_val;
     oper_stack_.pop();
     buf_num = SimpleMath(second, first, operat);
   } else if (oper_stack_.top().prio < 5) {
-    if(num_stack_.empty()) throw std::runtime_error("Math err, expression error");
-    buf_num = num_stack_.top().val_dub;
+    if (num_stack_.empty()) {
+      CleanStacks();
+      throw std::runtime_error("Math err, expression error");
+    }
+    buf_num = num_stack_.top();
     num_stack_.pop();
     char oper_buf = oper_stack_.top().oper_val;
     oper_stack_.pop();
     buf_num = TrigonCalc(buf_num, oper_buf);
   }
   return buf_num;
+}
+
+void CalcModel::CleanStacks() {
+  while (!num_stack_.empty()) {
+    num_stack_.pop();
+  }
+  while (!oper_stack_.empty()) {
+    oper_stack_.pop();
+  }
 }
 
 double CalcModel::SimpleMath(double second_num, double first_num,
@@ -203,8 +228,10 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
-      if(std::abs(second_num - 0.0) < epsilon || std::abs(first_num - 0.0) < epsilon) 
-      throw std::runtime_error("Error: 0/0");
+      if (std::abs(second_num - 0.0) < epsilon)
+        throw std::runtime_error("Error: /0");
+      if (std::abs(first_num - 0.0) < epsilon)
+        throw std::runtime_error("Error: 0/");
       out_num = first_num / second_num;
       break;
     case '^':
