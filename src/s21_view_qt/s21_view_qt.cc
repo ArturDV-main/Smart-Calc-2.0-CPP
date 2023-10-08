@@ -72,9 +72,10 @@ void MainWindow::LineInput(QString str, QString code_str) {
 void MainWindow::BackspaseLogic() {
   if (error_ || calc_done_) {
     AC_button();
-  } else if (result_code_.size() > 2) {
+  } else if (result_code_.size() > 1) {
     if (result_code_.back() == '(') {
       size_t t = TrigonCheck();
+      if(t > 1) result_code_.chop(1);
       while (t) {
         ui_->result->backspace();
         --t;
@@ -106,7 +107,6 @@ void MainWindow::EqualsLogic() {
                        ui_->line_X->text().toDouble());
       ui_->result->setText(QString::number(calc_->GetResult(), 'g', 15));
       result_code_ = ui_->result->text();
-      calc_done_ = false;
     } catch (const std::exception &e) {  // TODO
       AC_button();
       error_ = true;
@@ -125,6 +125,7 @@ void MainWindow::digits_numbers() {
 
 //  Умные скобки, ставится та скобка, которая должна быть
 void MainWindow::skobki() {
+  if(calc_done_ || error_) AC_button();
   int valid_line = calc_valid_.SmartBracket(
       result_code_.toStdString());  //  Валидация скобки
   if (valid_line == s21::CalcValid::closed) {  //  Если валидация вернула Тру,
@@ -148,6 +149,7 @@ void MainWindow::C_button() { BackspaseLogic(); }
 void MainWindow::graf_button() {}
 
 void MainWindow::func_button() {
+  if(calc_done_ || error_) AC_button();
   QPushButton *button = (QPushButton *)sender();
 
   bool validfunc = calc_valid_.ValidFunc(result_code_.toStdString());
