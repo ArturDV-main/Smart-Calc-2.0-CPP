@@ -11,7 +11,7 @@ double CalcModel::StartCalc(const std::string &src_str, double X_num) {
   if (ValidationEqual(src_str)) {
     result_ = Calc(src_str, X_num);
   } else {
-    throw std::runtime_error("expression error" + src_str);
+    throw std::runtime_error("expression error");
   }
   return result_;
 }
@@ -21,7 +21,7 @@ bool CalcModel::ValidationEqual(const std::string &str) {
   std::string tmp("+-/*M^@ABCDEFGH)(1234567890.eX");
   for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
     const char c = *it;
-    if (tmp.find(c) == tmp.npos) {
+    if (tmp.find(c) == std::string::npos) {
       valid = false;
       break;
     }
