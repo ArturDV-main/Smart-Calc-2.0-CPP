@@ -36,14 +36,15 @@ class MainWindow : public QMainWindow {
   //  cod on enum from model
   QString result_code_{};
   QString reserv_{};
-  bool calc_done_ = true;
-  bool error_ = true;
+  bool calc_done_ = false;
+  bool error_ = false;
 
   void ConnectsRelise();
   void DoubleValidInit();
   void LineEditEvent(char key);  // TODO
   void BackspaseLogic();
   void LineInput(QString str, QString code_str = 0);
+  size_t TrigonCheck();
 
  protected:
   void keyPressEvent(QKeyEvent *event) override;
