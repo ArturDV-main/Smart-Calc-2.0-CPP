@@ -11,7 +11,7 @@ double CalcModel::StartCalc(const std::string &src_str, double X_num) {
   if (ValidationEqual(src_str)) {
     result_ = Calc(src_str, X_num);
   } else {
-    throw std::runtime_error("expression error");
+    throw std::runtime_error("expression error" + src_str);
   }
   return result_;
 }
@@ -178,10 +178,6 @@ int CalcModel::UnarCheck(char check, const std::string &calc_str,
 
 double CalcModel::MathOperations() {
   double buf_num = 0.0;
-  // if (oper_stack_.empty()) {
-  //   CleanStacks();
-  //   throw std::runtime_error("Math err");
-  // }
   if (oper_stack_.top().prio < 4) {
     if (num_stack_.size() < 2) {
       CleanStacks();

@@ -31,7 +31,7 @@ int CalcValid::PositionCounter(
 
 bool CalcValid::InLineStart(const std::string &str) {
   bool in_start = false;
-  if (str.length() == 2) in_start = true;
+  if (str.length() == 1 || str.length() == 0) in_start = true;
   return in_start;
 }
 

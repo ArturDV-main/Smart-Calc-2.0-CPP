@@ -58,6 +58,7 @@ void MainWindow::LineEditEvent(char key) {
 void MainWindow::LineInput(QString str, QString code_str) {
   QString tmp_str("-+*/.");
   if(code_str.isEmpty()) code_str = str;
+//  if (str.size() == 1 && str)
   if (error_ && !(str == ".")) {
     ui_->result->setText(str);
     result_code_ = code_str;
@@ -79,32 +80,31 @@ void MainWindow::BackspaseLogic() {
   if (ui_->result->text() == "0")
     return;
   else if (ui_->result->text().size() == 1 || error_ || calc_done_) {
-    error_ = false;
-    calc_done_ = false;
-    ui_->result->setText("0");
-    result_code_ = 0;
-  } else
+    AC_button();
+  } else {
     ui_->result->backspace();
     result_code_.chop(1);
+  }
 }
 
 void MainWindow::EqualsButton() { EqualsLogic(); }
 
 void MainWindow::EqualsLogic() {
   if (error_) {
-    ui_->result->setText("0");
-    error_ = false;
-    return;
-  }
+    AC_button();
+  } else {
   try {
     calc_->StartCalc(result_code_.toStdString(),
                      ui_->line_X->text().toDouble());
     ui_->result->setText(QString::number(calc_->GetResult(), 'g', 15));
+    result_code_ = ui_->result->text();
+    calc_done_ = false;
   } catch (const std::exception &e) {  // TODO
-    ui_->result->setText(e.what());
+    AC_button();
     error_ = true;
+    ui_->result->setText(e.what());
   }
-  calc_done_ = true;
+  }
 }
 
 void MainWindow::x_button_push() {}
@@ -116,34 +116,20 @@ void MainWindow::digits_numbers() {
 
 //  Умные скобки, ставится та скобка, которая должна быть
 void MainWindow::skobki() {
-  QString new_lable;  //  Преобразование в str* для СИ
-
   int valid_line = calc_valid_.SmartBracket(result_code_.toStdString());  //  Валидация скобки
-
   if (valid_line == s21::CalcValid::closed) {  //  Если валидация вернула Тру, ставим закрывающую
-    new_lable = ')';
+      LineInput(")");
   } else if (valid_line == s21::CalcValid::opened) {  //  Если Фолс, открывающую
-    new_lable = '(';
-  }
-
-  //  Если Эррор, установка скобки запрещена
-  if (ui_->result->text() == "0" && valid_line != 2) {
-    //  Запись в строку для передачи в бэкЭнд
-
-    ui_->result->setText(new_lable);  //  Запись для вывода на экран
-
-  } else if (valid_line != 2) {
-    //  Запись в строку для передачи в бэкЭнд
-
-    //  Запись для вывода на экран
-    ui_->result->setText(ui_->result->text() + new_lable);
+      LineInput("(");
   }
 }
 
 void MainWindow::AC_button() {
   ui_->result->setText("0");
-  result_code_ = 0;
+  result_code_ = "0";
   calc_->Reset();
+  calc_done_ = false;
+  error_ = false;
 }
 
 void MainWindow::C_button() { BackspaseLogic(); }
@@ -156,7 +142,7 @@ void MainWindow::func_button() {
     bool validfunc = calc_valid_.ValidFunc(result_code_.toStdString());
 
     if (validfunc)
-      LineInput(button->text() + '(');
+      LineInput(button->text() + '(', button->whatsThis() + '(');
 }
 
 void MainWindow::simp_math_button() {}

@@ -12,23 +12,13 @@ class CalcValid {
   enum CodeSamples {
     opened,
     closed,
-    error,
-    COS = '@',
-    SIN = 'A',
-    TAN = 'B',
-    ACOS = 'C',
-    ASIN = 'D',
-    ATAN = 'E',
-    SQRT = 'F',
-    LN = 'G',
-    LOG = 'H'
+    error
   };
   int LastIs(char res);
   static bool ValidationEqual(const std::string& str);
   int PositionCounter(char src_string);
   int IsSimpOper(char oper);
   int IsNums(char num);
-  int SmartBracket(const std::string &str_line);
   int ValidSimpOper(const char* str_line);
   int ValidNums(const char* str_line);
   int ValidEquals(const char* str_line);
@@ -38,6 +28,7 @@ class CalcValid {
   int ValidDotLine(const char* str_line);
   int SuperValid(double maxval, double minval, const char* str_line);
 
+  int SmartBracket(const std::string &str_line);
   bool ValidFunc(const std::string str_line);
   bool InLineStart(const std::string &str);
   size_t CharCounter(const std::string &str_line, char res);
