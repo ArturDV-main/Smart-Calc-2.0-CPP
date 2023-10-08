@@ -3,7 +3,9 @@
 
 #include <cmath>
 #include <cstring>
+#include <iostream>
 #include <memory>
+#include <stack>
 #include <stdexcept>
 
 namespace s21 {
@@ -26,37 +28,36 @@ class CalcModel {
   };
 
   struct StackType {
-    double val_dub;
-    int prio;
-    StackType *next;
+    double val_dub{};
+    char oper_val{};
+    int prio{};
   };
 
  public:
   CalcModel(/* args */);
   ~CalcModel();
-  double StartCalc(const char *src, double X_num);
-  double GetData() { return result; }
-  void Reset() { result = 0.0; }
+  double StartCalc(const std::string &src_str, double X_num);
+  bool ValidationEqual(const std::string &str);
+  double GetData() { return result_; }
+  void Reset() { result_ = 0.0; }
 
  private:
   // std::string expression{};  //  TODO
-  double result{};
+  std::stack<StackType> oper_stack_{};
+  std::stack<double> num_stack_{};
+  double result_{};
   //  Metods
-  double Calc(const char *calculation_src, double X_num);
-  StackType ParserUno(const char *calculation_src, int *position, double X_num);
+  double Calc(const std::string &calc_src, double X_num);
+  StackType ParserUno(const std::string &calc_src, int *position, double X_num);
   int PrioCheck(char src_string);
   int PositionCounter(char src_string);
-  int BufferingNumber(const char *src_string, char *out);
-  int BracketFinder(StackType *oper);
-  StackType *DelPoint(StackType *stack1);
-  int UnarCheck(char check, const char *oper_st, int position);
-  StackType *PushSta(StackType *plist, double val_dub, int prio);
-  double MathOperations(StackType **num_sta, StackType **oper_sta);
-  void DestroyNode(StackType *stack1);
-  double PopVal(StackType **stack);
+  int BufferingNumber(const char *src_string, std::string &out);
+  int BracketFinder();
+  int UnarCheck(char check, const std::string &calc_str, int position);
+  double MathOperations();
+  void CleanStacks();
   double SimpleMath(double second_num, double first_num, char operation);
   double TrigonCalc(double x, char operation);
-  int Validator(const char *str);
 };
 
 }  // namespace s21

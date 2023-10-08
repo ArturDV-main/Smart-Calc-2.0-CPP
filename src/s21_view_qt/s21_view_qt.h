@@ -1,10 +1,13 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef S21_VIEW_QT_H_
+#define S21_VIEW_QT_H_
 
+#include <QDoubleValidator>
 #include <QMainWindow>
 #include <QVector>
-#include <QDoubleValidator>
+#include <exception>
+
 #include "../s21_calc_controller.h"
+#include "../s21_calc_valid_model.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -16,33 +19,46 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  MainWindow(QWidget *parent = nullptr, s21::CalcController * calc_controller = nullptr);
+  MainWindow(QWidget *parent = nullptr,
+             s21::CalcController *calc_controller = nullptr);
   ~MainWindow();
+
  private:
-  s21::CalcController * calc;
-  Ui::MainWindow *ui;
-  QDoubleValidator *double_valid;
+  s21::CalcValid calc_valid_;
+  s21::CalcController *calc_;
+  Ui::MainWindow *ui_;
+  QDoubleValidator *double_valid_;
+
+  //  for QCustomplot
   double x_begin_, x_end_, h_;
   QVector<double> x_{}, y_{};
+
+  //  cod on enum from model
+  QString result_code_{};
+  QString reserv_{};
+  bool calc_done_ = true;
+  bool error_ = true;
+
   void ConnectsRelise();
   void DoubleValidInit();
+  void LineEditEvent(char key);  // TODO
+  void BackspaseLogic();
+  void LineInput(QString str, QString code_str = 0);
+
  protected:
-  void keyPressEvent(QKeyEvent * e) override;
+  void keyPressEvent(QKeyEvent *event) override;
 
  private slots:
   void digits_numbers();
   void AC_button();
+  void C_button();
   void func_button();
-  void equals_button();
+  void EqualsButton();
+  void EqualsLogic();
   void simp_math_button();
   void graf_button();
   void skobki();
   void x_button_push();
   void on_cred_Button_clicked();
-  void on_line_X_cursorPositionChanged();
-  void on_line_X_from_cursorPositionChanged();
-  void on_line_X_to_cursorPositionChanged();
-  void on_line_Y_from_cursorPositionChanged();
-  void on_line_Y_to_cursorPositionChanged();
 };
-#endif  // MAINWINDOW_H
+#endif  // S21_VIEW_QT_H_

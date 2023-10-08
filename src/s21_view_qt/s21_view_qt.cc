@@ -1,124 +1,193 @@
 #include "s21_view_qt.h"
-#include "ui_s21_view_qt.h"
 
+#include "./ui_s21_view_qt.h"
 
-MainWindow::MainWindow(QWidget *parent, s21::CalcController * calc_controller)
-    : QMainWindow(parent),calc(calc_controller), ui(new Ui::MainWindow) {
-  ui->setupUi(this);
+MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
+    : QMainWindow(parent), calc_(calc_controller), ui_(new Ui::MainWindow) {
+  ui_->setupUi(this);
+  ui_->result->setText("0");
+  result_code_ = ui_->result->text();
   ConnectsRelise();
-  double_valid = new QDoubleValidator(-10000000, 10000000, 8, ui->line_X);
-  double_valid->setNotation(QDoubleValidator::StandardNotation);
-  ui->line_X->setValidator(double_valid);
-  ui->line_X_from->setValidator(double_valid);
-  ui->line_X_to->setValidator(double_valid);
-  ui->line_Y_from->setValidator(double_valid);
-  ui->line_Y_to->setValidator(double_valid);
-//  void DoubleValidInit();
+  double_valid_ = new QDoubleValidator(-10000000, 10000000, 8, ui_->line_X);
+  double_valid_->setNotation(QDoubleValidator::StandardNotation);
+  ui_->line_X->setValidator(double_valid_);
+  ui_->line_X_from->setValidator(double_valid_);
+  ui_->line_X_to->setValidator(double_valid_);
+  ui_->line_Y_from->setValidator(double_valid_);
+  ui_->line_Y_to->setValidator(double_valid_);
+  //  void DoubleValidInit();
 }
 
-MainWindow::~MainWindow() { delete ui; }
-
-
+MainWindow::~MainWindow() {
+  delete ui_;
+  delete double_valid_;
+}
 
 void MainWindow::DoubleValidInit() {
-//  TODO
+  //  TODO
 }
 
-void MainWindow::keyPressEvent(QKeyEvent * e) {
-    QString tmp_str("1234567890-+*/)(x");
-    if(tmp_str.contains(char(e->key())))
-    ui->result->setText(ui->result->text() + char(e->key()));
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+  switch (event->key()) {
+    case Qt::Key_Space:
+      BackspaseLogic();
+      break;
+    case Qt::Key_Backspace:
+      BackspaseLogic();
+      break;
+    case Qt::Key_Enter:
+      EqualsButton();
+      break;
+    case Qt::Key_Return:
+      EqualsButton();
+      break;
+    default:
+      LineEditEvent(char(event->key()));
+  }
+}
+//  TODO
+void MainWindow::LineEditEvent(char key) {
+  QString tmp_str("1234567890-+*/.");
+  if (tmp_str.contains(key)) {
+    LineInput((QString)key);
+  } else if (key == '(' || key == ')'){
+    skobki();
+  }
+}
+
+void MainWindow::LineInput(QString str, QString code_str) {
+  QString tmp_str("-+*/.");
+  if(code_str.isEmpty()) code_str = str;
+//  if (str.size() == 1 && str)
+  if (error_ && !(str == ".")) {
+    ui_->result->setText(str);
+    result_code_ = code_str;
+  } else if (calc_done_ && tmp_str.contains(code_str)) {
+    ui_->result->setText(ui_->result->text() + str);
+    result_code_ = result_code_ + code_str;
+  } else if (calc_done_){
+     ui_->result->setText(str);
+     result_code_ = code_str;
+  } else {
+     ui_->result->setText(ui_->result->text() + str);
+     result_code_ = result_code_ + code_str;
+  }
+  error_ = false;
+  calc_done_ = false;
+}
+
+void MainWindow::BackspaseLogic() {
+  if (ui_->result->text() == "0")
+    return;
+  else if (ui_->result->text().size() == 1 || error_ || calc_done_) {
+    AC_button();
+  } else {
+    ui_->result->backspace();
+    result_code_.chop(1);
+  }
+}
+
+void MainWindow::EqualsButton() { EqualsLogic(); }
+
+void MainWindow::EqualsLogic() {
+  if (error_) {
+    AC_button();
+  } else {
+  try {
+    calc_->StartCalc(result_code_.toStdString(),
+                     ui_->line_X->text().toDouble());
+    ui_->result->setText(QString::number(calc_->GetResult(), 'g', 15));
+    result_code_ = ui_->result->text();
+    calc_done_ = false;
+  } catch (const std::exception &e) {  // TODO
+    AC_button();
+    error_ = true;
+    ui_->result->setText(e.what());
+  }
+  }
 }
 
 void MainWindow::x_button_push() {}
 
 void MainWindow::digits_numbers() {
-    QPushButton *button = (QPushButton *)sender();
-    if(ui->result->text() != "0") {
-      ui->result->setText(ui->result->text() + button->text());
-    } else {
-      ui->result->setText(button->text());
-    }
+  QPushButton *button = (QPushButton *)sender();
+  LineInput(button->text());
 }
 
 //  Умные скобки, ставится та скобка, которая должна быть
 void MainWindow::skobki() {
+  int valid_line = calc_valid_.SmartBracket(result_code_.toStdString());  //  Валидация скобки
+  if (valid_line == s21::CalcValid::closed) {  //  Если валидация вернула Тру, ставим закрывающую
+      LineInput(")");
+  } else if (valid_line == s21::CalcValid::opened) {  //  Если Фолс, открывающую
+      LineInput("(");
+  }
 }
 
 void MainWindow::AC_button() {
-    ui->result->setText("0");
-    calc->Reset();
+  ui_->result->setText("0");
+  result_code_ = "0";
+  calc_->Reset();
+  calc_done_ = false;
+  error_ = false;
 }
 
-void MainWindow::equals_button() {
-    QByteArray ba = (ui->result->text() + "*X").toLocal8Bit();
-    const char * new_str = ba.data(); //  Преобразование в str* для СИ
-    calc->StartCalc(new_str, ui->line_X->text().toDouble());
-    double result = calc->GetResult();
-    ui->result->setText(QString::number(result, 'g', 15));
-}
+void MainWindow::C_button() { BackspaseLogic(); }
 
 void MainWindow::graf_button() {}
 
-void MainWindow::func_button() {}
+void MainWindow::func_button() {
+    QPushButton *button = (QPushButton *)sender();
+
+    bool validfunc = calc_valid_.ValidFunc(result_code_.toStdString());
+
+    if (validfunc)
+      LineInput(button->text() + '(', button->whatsThis() + '(');
+}
 
 void MainWindow::simp_math_button() {}
 
 void MainWindow::on_cred_Button_clicked() {}
 
-void MainWindow::on_line_X_cursorPositionChanged() {}
-
-void MainWindow::on_line_X_from_cursorPositionChanged() {}
-
-void MainWindow::on_line_X_to_cursorPositionChanged() {}
-
-void MainWindow::on_line_Y_from_cursorPositionChanged() {}
-
-void MainWindow::on_line_Y_to_cursorPositionChanged() {}
-
 void MainWindow::ConnectsRelise() {
-    //  Кнопки с цифрами
-    connect(ui->push_0, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_1, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_2, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_3, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_4, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_5, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_6, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_7, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_8, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    connect(ui->push_9, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    //  Кнопка Х
-    connect(ui->push_X, SIGNAL(clicked()), this, SLOT(x_button_push()));
-    //  Рабочие кнопки
-    connect(ui->push_AC, SIGNAL(clicked()), this, SLOT(AC_button()));
-    connect(ui->push_ravno, SIGNAL(clicked()), this, SLOT(equals_button()));
-    connect(ui->push_graf, SIGNAL(clicked()), this, SLOT(graf_button()));
-    //  Тригонометрия
-    connect(ui->push_cos, SIGNAL(clicked()), this, SLOT(func_button()));
-    connect(ui->push_sin, SIGNAL(clicked()), this, SLOT(func_button()));
-    connect(ui->push_tan, SIGNAL(clicked()), this, SLOT(func_button()));
-    connect(ui->push_acos, SIGNAL(clicked()), this, SLOT(func_button()));
-    connect(ui->push_asin, SIGNAL(clicked()), this, SLOT(func_button()));
-    connect(ui->push_atan, SIGNAL(clicked()), this, SLOT(func_button()));
-    connect(ui->push_log, SIGNAL(clicked()), this, SLOT(func_button()));
-    connect(ui->push_ln, SIGNAL(clicked()), this, SLOT(func_button()));
-    connect(ui->push_sqrt, SIGNAL(clicked()), this, SLOT(func_button()));
-    //  Простые операции
-    connect(ui->push_plus, SIGNAL(clicked()), this, SLOT(simp_math_button()));
-    connect(ui->push_minus, SIGNAL(clicked()), this, SLOT(simp_math_button()));
-    connect(ui->push_mult, SIGNAL(clicked()), this, SLOT(simp_math_button()));
-    connect(ui->push_div, SIGNAL(clicked()), this, SLOT(simp_math_button()));
-    connect(ui->push_mod, SIGNAL(clicked()), this, SLOT(simp_math_button()));
-    connect(ui->push_stepen, SIGNAL(clicked()), this, SLOT(simp_math_button()));
-    //  Скобки
-    connect(ui->push_scobka, SIGNAL(clicked()), this, SLOT(skobki()));
-    //  Точка  TODO
-    connect(ui->push_dot, SIGNAL(clicked()), this, SLOT(digits_numbers()));
-    //  Input lines
-
-    connect(ui->line_Y_from, SIGNAL(cursorPositionChanged(int, int)), this,
-            SLOT(on_line_Y_to_cursorPositionChanged()));
-    connect(ui->line_Y_to, SIGNAL(cursorPositionChanged(int, int)), this,
-            SLOT(on_line_Y_to_cursorPositionChanged()));
+  //  Кнопки с цифрами
+  connect(ui_->push_0, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_1, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_2, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_3, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_4, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_5, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_6, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_7, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_8, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_9, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  //  Кнопка Х
+  connect(ui_->push_X, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  //  Рабочие кнопки
+  connect(ui_->push_AC, SIGNAL(clicked()), this, SLOT(AC_button()));
+  connect(ui_->push_AC_2, SIGNAL(clicked()), this, SLOT(C_button()));
+  connect(ui_->push_ravno, SIGNAL(clicked()), this, SLOT(EqualsButton()));
+  connect(ui_->push_graf, SIGNAL(clicked()), this, SLOT(graf_button()));
+  //  Тригонометрия
+  connect(ui_->push_cos, SIGNAL(clicked()), this, SLOT(func_button()));
+  connect(ui_->push_sin, SIGNAL(clicked()), this, SLOT(func_button()));
+  connect(ui_->push_tan, SIGNAL(clicked()), this, SLOT(func_button()));
+  connect(ui_->push_acos, SIGNAL(clicked()), this, SLOT(func_button()));
+  connect(ui_->push_asin, SIGNAL(clicked()), this, SLOT(func_button()));
+  connect(ui_->push_atan, SIGNAL(clicked()), this, SLOT(func_button()));
+  connect(ui_->push_log, SIGNAL(clicked()), this, SLOT(func_button()));
+  connect(ui_->push_ln, SIGNAL(clicked()), this, SLOT(func_button()));
+  connect(ui_->push_sqrt, SIGNAL(clicked()), this, SLOT(func_button()));
+  //  Простые операции
+  connect(ui_->push_plus, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_minus, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_mult, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_div, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  connect(ui_->push_mod, SIGNAL(clicked()), this, SLOT(simp_math_button()));
+  connect(ui_->push_stepen, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  //  Скобки
+  connect(ui_->push_scobka, SIGNAL(clicked()), this, SLOT(skobki()));
+  //  Точка  TODO
+  connect(ui_->push_dot, SIGNAL(clicked()), this, SLOT(digits_numbers()));
+  //  Input lines
 }
