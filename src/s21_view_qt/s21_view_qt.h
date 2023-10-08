@@ -44,6 +44,7 @@ class MainWindow : public QMainWindow {
   void LineEditEvent(char key);  // TODO
   void BackspaseLogic();
   void LineInput(QString str, QString code_str = 0);
+  size_t TrigonCheck();
 
  protected:
   void keyPressEvent(QKeyEvent *event) override;

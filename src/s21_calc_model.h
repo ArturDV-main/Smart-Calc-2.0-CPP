@@ -13,9 +13,6 @@ namespace s21 {
 class CalcModel {
 #define OPERATIONS ")+-/*M^@ABCDEFGH("
   enum truefalse {
-    FALSE,
-    TRUE,
-    ERROR,
     COS = '@',
     SIN = 'A',
     TAN = 'B',

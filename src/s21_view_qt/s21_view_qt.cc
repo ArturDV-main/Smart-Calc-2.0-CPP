@@ -48,16 +48,17 @@ void MainWindow::LineEditEvent(char key) {
   QString tmp_str("1234567890-+*/.");
   if (tmp_str.contains(key)) {
     LineInput((QString)key);
-  } else if (key == '(' || key == ')'){
+  } else if (key == '(' || key == ')') {
     skobki();
   }
 }
 
 void MainWindow::LineInput(QString str, QString code_str) {
-  QString tmp_str("-+*/.");
-  if(code_str.isEmpty()) code_str = str;
+  QString tmp_str("-+*/");
+  if (code_str.isEmpty()) code_str = str;
 
-  if ((error_ || calc_done_ || result_code_.isEmpty()) && !tmp_str.contains(str)) {
+  if ((error_ || calc_done_ || result_code_.isEmpty()) &&
+      !tmp_str.contains(str)) {
     ui_->result->setText(str);
     result_code_ = code_str;
   } else {
@@ -71,10 +72,27 @@ void MainWindow::LineInput(QString str, QString code_str) {
 void MainWindow::BackspaseLogic() {
   if (error_ || calc_done_) {
     AC_button();
-  } else if (ui_->result->text().size() > 0){
+  } else if (result_code_.size() > 2) {
+    if (result_code_.back() == '(') {
+      size_t t = TrigonCheck();
+      while (t) {
+        ui_->result->backspace();
+        --t;
+      }
+    }
+    ui_->result->backspace();
+    result_code_.chop(1);
+  } else if (result_code_.size() > 0) {
     ui_->result->backspace();
     result_code_.chop(1);
   }
+}
+
+size_t MainWindow::TrigonCheck() {
+  size_t count = 0;
+  QString ch3 = "@ABH";
+  if (ch3.contains(result_code_.at(result_code_.size() - 2))) count = 3;
+  return count;
 }
 
 void MainWindow::EqualsButton() { EqualsLogic(); }
@@ -83,17 +101,17 @@ void MainWindow::EqualsLogic() {
   if (error_ || ui_->result->text().isEmpty()) {
     AC_button();
   } else {
-  try {
-    calc_->StartCalc(result_code_.toStdString(),
-                     ui_->line_X->text().toDouble());
-    ui_->result->setText(QString::number(calc_->GetResult(), 'g', 15));
-    result_code_ = ui_->result->text();
-    calc_done_ = false;
-  } catch (const std::exception &e) {  // TODO
-    AC_button();
-    error_ = true;
-    ui_->result->setText(e.what());
-  }
+    try {
+      calc_->StartCalc(result_code_.toStdString(),
+                       ui_->line_X->text().toDouble());
+      ui_->result->setText(QString::number(calc_->GetResult(), 'g', 15));
+      result_code_ = ui_->result->text();
+      calc_done_ = false;
+    } catch (const std::exception &e) {  // TODO
+      AC_button();
+      error_ = true;
+      ui_->result->setText(e.what());
+    }
   }
   calc_done_ = true;
 }
@@ -107,11 +125,13 @@ void MainWindow::digits_numbers() {
 
 //  Умные скобки, ставится та скобка, которая должна быть
 void MainWindow::skobki() {
-  int valid_line = calc_valid_.SmartBracket(result_code_.toStdString());  //  Валидация скобки
-  if (valid_line == s21::CalcValid::closed) {  //  Если валидация вернула Тру, ставим закрывающую
-      LineInput(")");
+  int valid_line = calc_valid_.SmartBracket(
+      result_code_.toStdString());  //  Валидация скобки
+  if (valid_line == s21::CalcValid::closed) {  //  Если валидация вернула Тру,
+                                               //  ставим закрывающую
+    LineInput(")");
   } else if (valid_line == s21::CalcValid::opened) {  //  Если Фолс, открывающую
-      LineInput("(");
+    LineInput("(");
   }
 }
 
@@ -128,12 +148,11 @@ void MainWindow::C_button() { BackspaseLogic(); }
 void MainWindow::graf_button() {}
 
 void MainWindow::func_button() {
-    QPushButton *button = (QPushButton *)sender();
+  QPushButton *button = (QPushButton *)sender();
 
-    bool validfunc = calc_valid_.ValidFunc(result_code_.toStdString());
+  bool validfunc = calc_valid_.ValidFunc(result_code_.toStdString());
 
-    if (validfunc)
-      LineInput(button->text() + '(', button->whatsThis() + '(');
+  if (validfunc) LineInput(button->text() + '(', button->whatsThis() + '(');
 }
 
 void MainWindow::simp_math_button() {}
