@@ -29,7 +29,7 @@ class CalcValid {
   int SuperValid(double maxval, double minval, const char* str_line);
 
   int SmartBracket(const std::string &str_line);
-  bool ValidFunc(const std::string str_line);
+  bool ValidFunc(const std::string &str_line);
   bool InLineStart(const std::string &str);
   size_t CharCounter(const std::string &str_line, char res);
 private:

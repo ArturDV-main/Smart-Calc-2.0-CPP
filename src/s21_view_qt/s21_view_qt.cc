@@ -5,8 +5,6 @@
 MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
     : QMainWindow(parent), calc_(calc_controller), ui_(new Ui::MainWindow) {
   ui_->setupUi(this);
-  ui_->result->setText("0");
-  result_code_ = ui_->result->text();
   ConnectsRelise();
   double_valid_ = new QDoubleValidator(-10000000, 10000000, 8, ui_->line_X);
   double_valid_->setNotation(QDoubleValidator::StandardNotation);
@@ -58,30 +56,22 @@ void MainWindow::LineEditEvent(char key) {
 void MainWindow::LineInput(QString str, QString code_str) {
   QString tmp_str("-+*/.");
   if(code_str.isEmpty()) code_str = str;
-//  if (str.size() == 1 && str)
-  if (error_ && !(str == ".")) {
+
+  if ((error_ || calc_done_ || result_code_.isEmpty()) && !tmp_str.contains(str)) {
     ui_->result->setText(str);
     result_code_ = code_str;
-  } else if (calc_done_ && tmp_str.contains(code_str)) {
+  } else {
     ui_->result->setText(ui_->result->text() + str);
     result_code_ = result_code_ + code_str;
-  } else if (calc_done_){
-     ui_->result->setText(str);
-     result_code_ = code_str;
-  } else {
-     ui_->result->setText(ui_->result->text() + str);
-     result_code_ = result_code_ + code_str;
   }
   error_ = false;
   calc_done_ = false;
 }
 
 void MainWindow::BackspaseLogic() {
-  if (ui_->result->text() == "0")
-    return;
-  else if (ui_->result->text().size() == 1 || error_ || calc_done_) {
+  if (error_ || calc_done_) {
     AC_button();
-  } else {
+  } else if (ui_->result->text().size() > 0){
     ui_->result->backspace();
     result_code_.chop(1);
   }
@@ -90,7 +80,7 @@ void MainWindow::BackspaseLogic() {
 void MainWindow::EqualsButton() { EqualsLogic(); }
 
 void MainWindow::EqualsLogic() {
-  if (error_) {
+  if (error_ || ui_->result->text().isEmpty()) {
     AC_button();
   } else {
   try {
@@ -105,6 +95,7 @@ void MainWindow::EqualsLogic() {
     ui_->result->setText(e.what());
   }
   }
+  calc_done_ = true;
 }
 
 void MainWindow::x_button_push() {}
@@ -125,8 +116,8 @@ void MainWindow::skobki() {
 }
 
 void MainWindow::AC_button() {
-  ui_->result->setText("0");
-  result_code_ = "0";
+  ui_->result->setText("");
+  result_code_ = "";
   calc_->Reset();
   calc_done_ = false;
   error_ = false;

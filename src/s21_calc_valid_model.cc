@@ -90,7 +90,7 @@ int CalcValid::ValidSimpOper(const char *str_line) {
   return valid_oper;
 }
 
-bool CalcValid::ValidFunc(const std::string str_line) {
+bool CalcValid::ValidFunc(const std::string &str_line) {
   int validfunc = false;
   int len = str_line.length();
   if (IsSimpOper(str_line[len - 1]) || str_line[len - 1] == '(' ||
