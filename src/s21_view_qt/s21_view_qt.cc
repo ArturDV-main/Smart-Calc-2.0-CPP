@@ -149,12 +149,44 @@ void MainWindow::ACButton() {
   calc_->Reset();
   calc_done_ = false;
   error_ = false;
+  ui_->widget_graf->replot();
 }
 
 void MainWindow::CButton() { BackspaseLogic(); }
 
 void MainWindow::GrafButton() { // TODO
-  
+  if (calc_done_ || error_) ACButton();
+  if (ui_->result->text() != '0') {
+    x_.clear();
+    y_.clear();
+    h_ = 0.03;
+    x_begin_ = ui_->line_X_from->text().toDouble();
+    x_end_ = ui_->line_X_to->text().toDouble();
+    double Y_from = ui_->line_Y_from->text().toDouble();
+    double X_from = ui_->line_Y_to->text().toDouble();
+    ui_->widget_graf->xAxis->setRange(x_begin_, x_end_);
+    ui_->widget_graf->yAxis->setRange(Y_from, X_from);
+    try
+    {
+      for (x2_ = x_begin_; x2_ <= x_end_; x2_ += h_) { //  Заполняем координаты
+      x_.push_back(x2_);
+      y_.push_back(calc_->StartCalc(result_code_.toStdString(), x2_)); //  Формула для заполнения у
+    }
+    }
+    catch(const std::exception& e)
+    {
+      ui_->result->setText(e.what());
+      error_ = true;
+    }
+    ui_->widget_graf->addGraph();
+    ui_->widget_graf->graph(0)->addData(x_, y_);
+    ui_->widget_graf->replot();
+    ui_->widget_graf->graph(0)->data()->clear();
+    //  Очищаем координаты
+    x_.clear();
+    y_.clear();
+    calc_done_ = true;
+  }
 }
 
 void MainWindow::FuncButton() {

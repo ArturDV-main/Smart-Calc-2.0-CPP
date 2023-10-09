@@ -30,14 +30,14 @@ class MainWindow : public QMainWindow {
   QDoubleValidator double_valid_;
 
   //  for QCustomplot
-  double x_begin_, x_end_, h_;
+  double x_begin_{}, x_end_{}, h_{}, x2_{};
   QVector<double> x_{}, y_{};
 
   //  cod on enum from model
   QString result_code_{};
   QString reserv_{};
-  bool calc_done_ = false;
-  bool error_ = false;
+  bool calc_done_{};
+  bool error_{};
 
   void ConnectsRelise();
   void DoubleValidInit();
