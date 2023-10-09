@@ -2,18 +2,25 @@
 
 namespace s21 {
 
-CalcModel::CalcModel(/* args */) {}
+CalcModel::CalcModel() {}
 
 CalcModel::~CalcModel() {}
 
-double CalcModel::StartCalc(const std::string &src_str, double X_num) {
+void CalcModel::StartCalc(const std::string &src_str, double X_num) {
+  expression = src_str;
+  CleanStacks();
   setlocale(LC_NUMERIC, "C");
   if (ValidationEqual(src_str)) {
-    result_ = Calc(src_str, X_num);
+    try {
+      result_ = Calc(src_str, X_num);
+      if (std::isnan(result_)) PushError("error: undefined");
+    } catch (const std::exception &e) {
+      PushError(e.what());
+    }
   } else {
-    throw std::runtime_error("expression error");
+    std::cout << expression << std::endl;
+    throw std::invalid_argument("expression error");
   }
-  return result_;
 }
 
 bool CalcModel::ValidationEqual(const std::string &str) {
@@ -80,12 +87,9 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
     result = num_stack_.top();
     num_stack_.pop();
   } else {
-    throw std::runtime_error("numbers stack empty");
+    PushError("numbers stack empty");
   }
-  if (!num_stack_.empty()) {
-    throw std::runtime_error("numbers stack invalid");
-  }
-
+  if (!num_stack_.empty()) PushError("numbers stack invalid");
   return result;
 }
 
@@ -179,10 +183,7 @@ int CalcModel::UnarCheck(char check, const std::string &calc_str,
 double CalcModel::MathOperations() {
   double buf_num = 0.0;
   if (oper_stack_.top().prio < 4) {
-    if (num_stack_.size() < 2) {
-      CleanStacks();
-      throw std::runtime_error("Math err");
-    }
+    if (num_stack_.size() < 2) PushError("Math err, nums empty");
     double second = num_stack_.top();
     num_stack_.pop();
     double first = num_stack_.top();
@@ -191,10 +192,7 @@ double CalcModel::MathOperations() {
     oper_stack_.pop();
     buf_num = SimpleMath(second, first, operat);
   } else if (oper_stack_.top().prio < 5) {
-    if (num_stack_.empty()) {
-      CleanStacks();
-      throw std::runtime_error("Math err, expression error");
-    }
+    if (num_stack_.empty()) PushError("Math err, expression");
     buf_num = num_stack_.top();
     num_stack_.pop();
     char oper_buf = oper_stack_.top().oper_val;
@@ -202,15 +200,6 @@ double CalcModel::MathOperations() {
     buf_num = TrigonCalc(buf_num, oper_buf);
   }
   return buf_num;
-}
-
-void CalcModel::CleanStacks() {
-  while (!num_stack_.empty()) {
-    num_stack_.pop();
-  }
-  while (!oper_stack_.empty()) {
-    oper_stack_.pop();
-  }
 }
 
 double CalcModel::SimpleMath(double second_num, double first_num,
@@ -228,10 +217,8 @@ double CalcModel::SimpleMath(double second_num, double first_num,
       out_num = first_num * second_num;
       break;
     case '/':
-      if (std::abs(second_num - 0.0) < epsilon)
-        throw std::runtime_error("Error: /0");
-      if (std::abs(first_num - 0.0) < epsilon)
-        throw std::runtime_error("Error: 0/");
+      if (std::abs(second_num - 0.0) < epsilon) PushError("Error: /0");
+      if (std::abs(first_num - 0.0) < epsilon) PushError("Error: 0/");
       out_num = first_num / second_num;
       break;
     case '^':
@@ -276,6 +263,20 @@ double CalcModel::TrigonCalc(double x, char operation) {
       break;
   }
   return buf_num;
+}
+
+void CalcModel::CleanStacks() {
+  while (!num_stack_.empty()) {
+    num_stack_.pop();
+  }
+  while (!oper_stack_.empty()) {
+    oper_stack_.pop();
+  }
+}
+
+void CalcModel::PushError(std::string error) {
+  std::cout << expression << std::endl;
+  throw std::runtime_error(error);
 }
 
 }  // namespace s21

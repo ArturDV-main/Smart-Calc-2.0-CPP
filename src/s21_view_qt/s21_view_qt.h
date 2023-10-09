@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow {
   s21::CalcValid calc_valid_;
   s21::CalcController *calc_;
   Ui::MainWindow *ui_;
-  QDoubleValidator *double_valid_;
+  QDoubleValidator double_valid_;
 
   //  for QCustomplot
   double x_begin_, x_end_, h_;
@@ -50,16 +50,16 @@ class MainWindow : public QMainWindow {
   void keyPressEvent(QKeyEvent *event) override;
 
  private slots:
-  void digits_numbers();
-  void AC_button();
-  void C_button();
-  void func_button();
+  void DigitNumbers();
+  void ACButton();
+  void CButton();
+  void FuncButton();
   void EqualsButton();
   void EqualsLogic();
-  void simp_math_button();
-  void graf_button();
-  void skobki();
-  void x_button_push();
-  void on_cred_Button_clicked();
+  void SimpMathButton();
+  void GrafButton();
+  void Skobki();
+  void XButtonPush();
+  void OnCredButtonClicked();
 };
 #endif  // S21_VIEW_QT_H_
