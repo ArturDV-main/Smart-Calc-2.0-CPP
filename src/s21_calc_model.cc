@@ -244,21 +244,26 @@ double CalcModel::TrigonCalc(double x, char operation) {
       buf_num = tan(x);
       break;
     case ACOS:
+      if (x < -1 || x > 1) PushError("error: interval [-1,+1]");
       buf_num = acos(x);
       break;
     case ASIN:
+      if (x < -1 || x > 1) PushError("error: interval [-1,+1]");
       buf_num = asin(x);
       break;
     case ATAN:
       buf_num = atan(x);
       break;
     case SQRT:
+      if (x < -1 || x > 1) PushError("error: interval > 1");
       buf_num = sqrt(x);
       break;
     case LN:
+      if (x < 1) PushError("error: interval > 1");
       buf_num = log(x);
       break;
     case LOG:
+      if (x < 1) PushError("error: interval > 1");
       buf_num = log10(x);
       break;
   }

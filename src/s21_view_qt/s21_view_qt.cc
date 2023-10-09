@@ -153,7 +153,9 @@ void MainWindow::ACButton() {
 
 void MainWindow::CButton() { BackspaseLogic(); }
 
-void MainWindow::GrafButton() {}
+void MainWindow::GrafButton() { // TODO
+  
+}
 
 void MainWindow::FuncButton() {
   if (calc_done_ || error_) ACButton();
