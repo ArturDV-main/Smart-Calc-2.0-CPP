@@ -33,13 +33,13 @@ class CalcModel {
  public:
   CalcModel(/* args */);
   ~CalcModel();
-  double StartCalc(const std::string &src_str, double X_num);
+  void StartCalc(const std::string &src_str, double X_num);
   bool ValidationEqual(const std::string &str);
   double GetData() { return result_; }
   void Reset() { result_ = 0.0; }
 
  private:
-  // std::string expression{};  //  TODO
+  std::string expression{};  //  TODO
   std::stack<StackType> oper_stack_{};
   std::stack<double> num_stack_{};
   double result_{};
@@ -53,6 +53,7 @@ class CalcModel {
   int UnarCheck(char check, const std::string &calc_str, int position);
   double MathOperations();
   void CleanStacks();
+  void PushError(std::string error);
   double SimpleMath(double second_num, double first_num, char operation);
   double TrigonCalc(double x, char operation);
 };
