@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
   ui_->setupUi(this);
   ConnectsRelise();
   DoubleValidInit();
+  ui_->widget_graf->addGraph();
 }
 
 MainWindow::~MainWindow() { delete ui_; }
@@ -155,8 +156,8 @@ void MainWindow::ACButton() {
 void MainWindow::CButton() { BackspaseLogic(); }
 
 void MainWindow::GrafButton() { // TODO
-  if (calc_done_ || error_) ACButton();
-  if (ui_->result->text() != '0') {
+  if (error_ || ui_->result->text().isEmpty()) ACButton();
+  else if (ui_->result->text() != '0') {
     x_.clear();
     y_.clear();
     h_ = 0.03;
@@ -172,20 +173,17 @@ void MainWindow::GrafButton() { // TODO
       x_.push_back(x2_);
       y_.push_back(calc_->StartCalc(result_code_.toStdString(), x2_)); //  Формула для заполнения у
     }
+      ui_->widget_graf->graph(0)->addData(x_, y_);
+      calc_done_ = true;
     }
     catch(const std::exception& e)
     {
       ui_->result->setText(e.what());
       error_ = true;
     }
-    ui_->widget_graf->addGraph();
-    ui_->widget_graf->graph(0)->addData(x_, y_);
     ui_->widget_graf->replot();
     ui_->widget_graf->graph(0)->data()->clear();
     //  Очищаем координаты
-    x_.clear();
-    y_.clear();
-    calc_done_ = true;
   }
 }
 
