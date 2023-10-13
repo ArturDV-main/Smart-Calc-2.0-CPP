@@ -1,6 +1,7 @@
 #include "s21_view_qt.h"
-
+#include "s21_credit_view_qt.h"
 #include "./ui_s21_view_qt.h"
+
 
 MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
     : QMainWindow(parent), calc_(calc_controller), ui_(new Ui::MainWindow) {
@@ -205,7 +206,11 @@ void MainWindow::SimpMathButton() {
   }
 }
 
-void MainWindow::OnCredButtonClicked() {}
+void MainWindow::OnCredButtonClicked() {
+  Credit credit_okno;
+  credit_okno.setModal(true);
+  credit_okno.exec();
+}
 
 void MainWindow::ConnectsRelise() {
   //  Кнопки с цифрами
@@ -248,4 +253,5 @@ void MainWindow::ConnectsRelise() {
   //  Точка
   connect(ui_->push_dot, SIGNAL(clicked()), this, SLOT(DigitNumbers()));
   //  Input lines
+  connect(ui_->cred_Button, SIGNAL(clicked()), this, SLOT(OnCredButtonClicked()));
 }
