@@ -11,8 +11,8 @@
 namespace s21 {
 
 class CalcModel {
-#define OPERATIONS ")+-/*M^@ABCDEFGH("
-  enum truefalse {
+// #define OPERATIONS ")+-/*M^@ABCDEFGH("
+  enum TrigonCode {
     COS = '@',
     SIN = 'A',
     TAN = 'B',
@@ -31,23 +31,22 @@ class CalcModel {
   };
 
  public:
-  CalcModel(/* args */);
+  CalcModel();
   ~CalcModel();
   void StartCalc(const std::string &src_str, double X_num);
-  bool ValidationEqual(const std::string &str);
-  double GetData() { return result_; }
-  void Reset() { result_ = 0.0; }
+  bool ValidationEqual(const std::string &str) const noexcept;
+  double GetData() const noexcept { return result_; }
+  void Reset() noexcept { result_ = 0.0; }
 
  private:
-  std::string expression{};  //  TODO
   std::stack<StackType> oper_stack_{};
   std::stack<double> num_stack_{};
   double result_{};
   //  Metods
   double Calc(const std::string &calc_src, double X_num);
-  StackType ParserUno(const std::string &calc_src, int *position, double X_num);
-  int PrioCheck(char src_string);
-  int PositionCounter(char src_string);
+  StackType ParserUno (const std::string &calc_src, int *position, double X_num);
+  int PrioCheck(char src_string) const noexcept;
+  int PositionCounter(char src_string) const noexcept;
   int BufferingNumber(const char *src_string, std::string &out);
   int BracketFinder();
   int UnarCheck(char check, const std::string &calc_str, int position);

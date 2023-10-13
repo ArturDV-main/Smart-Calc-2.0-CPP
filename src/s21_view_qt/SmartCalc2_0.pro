@@ -16,6 +16,7 @@ SOURCES += \
     ../s21_calc_model.cc \
     ../s21_calc_valid_model.cc \
     qcustomplot.cpp \
+    s21_credit_view_qt.cc \
     s21_view_qt.cc
 
 HEADERS += \
@@ -23,9 +24,11 @@ HEADERS += \
     ../s21_calc_model.h \
     ../s21_calc_valid_model.h \
     qcustomplot.h \
+    s21_credit_view_qt.h \
     s21_view_qt.h
 
 FORMS += \
+    s21_credit_view_qt.ui \
     s21_view_qt.ui
 
 # Default rules for deployment.

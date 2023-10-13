@@ -8,9 +8,9 @@ namespace s21 {
 class CalcController {
  public:
   CalcController(s21::CalcModel *m) : calc_model(m){};
-  void Reset() { calc_model->Reset(); }
+  void Reset() noexcept { calc_model->Reset(); }
   double StartCalc(const std::string &a, const double x);
-  double GetResult() { return calc_model->GetData(); }
+  double GetResult() const noexcept { return calc_model->GetData(); }
 
  private:
   s21::CalcModel *calc_model;

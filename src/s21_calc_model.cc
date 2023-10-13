@@ -7,7 +7,6 @@ CalcModel::CalcModel() {}
 CalcModel::~CalcModel() {}
 
 void CalcModel::StartCalc(const std::string &src_str, double X_num) {
-  expression = src_str;
   CleanStacks();
   setlocale(LC_NUMERIC, "C");
   if (ValidationEqual(src_str)) {
@@ -18,12 +17,11 @@ void CalcModel::StartCalc(const std::string &src_str, double X_num) {
       PushError(e.what());
     }
   } else {
-    std::cout << expression << std::endl;
     throw std::invalid_argument("expression error");
   }
 }
 
-bool CalcModel::ValidationEqual(const std::string &str) {
+bool CalcModel::ValidationEqual(const std::string &str) const noexcept {
   bool valid(false);
   std::string tmp("+-/*M^@ABCDEFGH)(1234567890.eX");
   for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
@@ -93,9 +91,10 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
   return result;
 }
 
+//  Парсер одной лексеммы
 CalcModel::StackType CalcModel::ParserUno(
     const std::string &calc_src, int *position,
-    double X_num) {  //  Парсер одной лексеммы
+    double X_num) {
   StackType stack1{};
   int prio = PrioCheck(calc_src[*position]);
   if (prio) {
@@ -116,8 +115,8 @@ CalcModel::StackType CalcModel::ParserUno(
   return stack1;
 }
 
-int CalcModel::PrioCheck(
-    char src_string) {  //  Определение приоритета опреатора
+//  Определение приоритета опреатора
+int CalcModel::PrioCheck( const char src_string) const noexcept {
   int prior{};
   int position_num = PositionCounter(src_string);
   if (position_num > 16)
@@ -136,8 +135,8 @@ int CalcModel::PrioCheck(
 }
 
 int CalcModel::PositionCounter(
-    char src_string) {  //  Подсчёт позиции операции строке приоритетов
-  const char *operators = OPERATIONS;
+    char src_string) const noexcept {  //  Подсчёт позиции операции строке приоритетов
+  const char *operators = ")+-/*M^@ABCDEFGH(";
   int counter{};
   while (operators[counter]) {
     if (operators[counter] == src_string) {
@@ -280,7 +279,6 @@ void CalcModel::CleanStacks() {
 }
 
 void CalcModel::PushError(std::string error) {
-  std::cout << expression << std::endl;
   throw std::runtime_error(error);
 }
 
