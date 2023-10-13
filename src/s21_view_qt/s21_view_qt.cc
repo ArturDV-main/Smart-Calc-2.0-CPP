@@ -40,7 +40,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
   }
 }
 
-void MainWindow::LineEditEvent(char key) {
+void MainWindow::LineEditEvent(const char key) {
   QString tmp_str("1234567890-+*/.");
   if (tmp_str.contains(key)) {
     LineInput((QString)key);
@@ -155,7 +155,7 @@ void MainWindow::ACButton() {
 
 void MainWindow::CButton() { BackspaseLogic(); }
 
-void MainWindow::GrafButton() { // TODO
+void MainWindow::GrafButton() {
   if (error_ || ui_->result->text().isEmpty()) ACButton();
   else if (ui_->result->text() != '0') {
     x_.clear();
