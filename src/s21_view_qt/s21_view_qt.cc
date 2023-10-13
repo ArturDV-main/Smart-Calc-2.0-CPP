@@ -90,7 +90,7 @@ void MainWindow::BackspaseLogic() {
   }
 }
 
-size_t MainWindow::TrigonCheck() {
+size_t MainWindow::TrigonCheck() const noexcept {
   size_t count = 0;
   QString ch3 = "@ABM";
   QString ch4 = "CDEF";

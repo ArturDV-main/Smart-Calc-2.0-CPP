@@ -41,10 +41,10 @@ class MainWindow : public QMainWindow {
 
   void ConnectsRelise();
   void DoubleValidInit();
-  void LineEditEvent(const char key);  // TODO
+  void LineEditEvent(const char key);
   void BackspaseLogic();
   void LineInput(QString str, QString code_str = 0);
-  size_t TrigonCheck();
+  size_t TrigonCheck() const noexcept;
 
  protected:
   void keyPressEvent(QKeyEvent *event) override;
