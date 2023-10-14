@@ -2,6 +2,7 @@
 #define SRC_S21_CALC_MODEL_H_
 
 #include <array>
+#include <vector>
 #include <cmath>
 #include <cstring>
 #include <iostream>
@@ -28,6 +29,13 @@ class CalcModel {
   enum ForData { summa = 0, srok, percent };
   enum ForItog { monthly = 0, itog, pereplata };
 
+  struct DifferentCredit
+  {
+    std::vector<double> monthly;
+    double itogo;
+    double pereplat;
+  };
+  
   struct StackType {
     double val_dub{};
     char oper_val{};
@@ -43,6 +51,8 @@ class CalcModel {
   double GetData() const noexcept { return result_; }
   std::array<double, 3> GetCredit() { return credit_data_; }
   void Reset() noexcept { result_ = 0.0; }
+  void DifferenCalc();
+
 
  private:
   std::stack<StackType> oper_stack_{};

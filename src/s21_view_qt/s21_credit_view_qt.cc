@@ -14,36 +14,40 @@ void Credit::on_credcalc_Button_clicked() {
   data[summa] = ui->sumcredit->text().toDouble();
   data[srok] = ui->srokcredit->text().toInt();
   data[percent] = ui->percentcredit->text().toDouble();
-
+  std::array<double, 3> itog;
   if (ui->annuit->isChecked()) {
-    calc_->CalcCredit(data);
-
-    std::array<double, 3> itog = calc_->GetCredit();
-
+    try
+    {
+        calc_->CalcCredit(data);
+        itog = calc_->GetCredit();
+    }
+    catch(const std::exception& e)
+    {
+        ui->textBrowser->setText(e.what());
+    }
     QString qsum = QString::number(itog[summa]);
     QString qmonth = QString::number(itog[monthly]);
     QString qover = QString::number(itog[pereplata]);
-
     ui->label_7->setText(qsum);
     ui->label_6->setText(qover);
     ui->textBrowser->setText("Ежемесячный платеж - " + qmonth + " рублей");
   } else if (ui->differen->isChecked()) {
-    // itog = 0;
-    // ui->textBrowser->clear();
-    // int debt_sum = summa / srok;
-    // for (int i = 1; i <= srok; i++) {
-    //     monthly = (summa * percent / 100 * 31/365) + debt_sum;
-    //     QString qmonth = QString::number(monthly);
-    //     QString qi = QString::number(i);
-    //     ui->textBrowser->setText(ui->textBrowser->toPlainText() + qi+"-й
-    //     месяц: "+ qmonth + "руб." + '\n'); summa -= debt_sum; itog +=
-    //     monthly;
-    // }
-    // pereplata = itog - debt_sum * srok;
-    // QString qsum = QString::number(itog, 'g', 10);
-    // QString qover = QString::number(pereplata, 'g', 10);
-    // ui->label_7->setText(qsum);
-    // ui->label_6->setText(qover);
+    double itog = 0;
+    ui->textBrowser->clear();
+    int debt_sum = summa / srok;
+    for (int i = 1; i <= srok; i++) {
+        monthly = (summa * percent / 100 * 31/365) + debt_sum;
+        QString qmonth = QString::number(monthly);
+        QString qi = QString::number(i);
+        ui->textBrowser->setText(ui->textBrowser->toPlainText() + qi+"-й
+        месяц: "+ qmonth + "руб." + '\n'); summa -= debt_sum; itog +=
+        monthly;
+    }
+    pereplata = itog - debt_sum * srok;
+    QString qsum = QString::number(itog, 'g', 10);
+    QString qover = QString::number(pereplata, 'g', 10);
+    ui->label_7->setText(qsum);
+    ui->label_6->setText(qover);
   }
 }
 

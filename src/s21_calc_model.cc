@@ -44,6 +44,11 @@ bool CalcModel::ValidationEqual(const std::string &str) const noexcept {
   return valid;
 }
 
+void CalcModel::DifferenCalc(std::array<double, 3>) {
+  DifferentCredit out;
+  
+}
+
 double CalcModel::Calc(const std::string &calc_src, double X_num) {
   int position = 0;
   while (calc_src[position]) {  //  Главный цикл вычисления
