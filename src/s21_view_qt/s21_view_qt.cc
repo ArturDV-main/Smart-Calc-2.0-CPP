@@ -1,7 +1,7 @@
 #include "s21_view_qt.h"
-#include "s21_credit_view_qt.h"
-#include "./ui_s21_view_qt.h"
 
+#include "./ui_s21_view_qt.h"
+#include "s21_credit_view_qt.h"
 
 MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
     : QMainWindow(parent), calc_(calc_controller), ui_(new Ui::MainWindow) {
@@ -69,7 +69,7 @@ void MainWindow::BackspaseLogic() {
   if (error_ || calc_done_) {
     ACButton();
   } else if (result_code_.back() == 'M') {
-    for(int i = 3; i > 0 ; i--) {
+    for (int i = 3; i > 0; i--) {
       ui_->result->backspace();
     }
     result_code_.chop(1);
@@ -128,7 +128,7 @@ void MainWindow::EqualsLogic() {
 void MainWindow::XButtonPush() {}
 
 void MainWindow::DigitNumbers() {
-  if(error_) ACButton();
+  if (error_) ACButton();
   QPushButton *button = (QPushButton *)sender();
   LineInput(button->text());
 }
@@ -157,7 +157,8 @@ void MainWindow::ACButton() {
 void MainWindow::CButton() { BackspaseLogic(); }
 
 void MainWindow::GrafButton() {
-  if (error_ || ui_->result->text().isEmpty()) ACButton();
+  if (error_ || ui_->result->text().isEmpty())
+    ACButton();
   else if (ui_->result->text() != '0') {
     x_.clear();
     y_.clear();
@@ -168,17 +169,15 @@ void MainWindow::GrafButton() {
     double X_from = ui_->line_Y_to->text().toDouble();
     ui_->widget_graf->xAxis->setRange(x_begin_, x_end_);
     ui_->widget_graf->yAxis->setRange(Y_from, X_from);
-    try
-    {
-      for (x2_ = x_begin_; x2_ <= x_end_; x2_ += h_) { //  Заполняем координаты
-      x_.push_back(x2_);
-      y_.push_back(calc_->StartCalc(result_code_.toStdString(), x2_)); //  Формула для заполнения у
-    }
+    try {
+      for (x2_ = x_begin_; x2_ <= x_end_; x2_ += h_) {  //  Заполняем координаты
+        x_.push_back(x2_);
+        calc_->StartCalc(result_code_.toStdString(), x2_);
+        y_.push_back(calc_->GetResult());  //  Формула для заполнения у
+      }
       ui_->widget_graf->graph(0)->addData(x_, y_);
       calc_done_ = true;
-    }
-    catch(const std::exception& e)
-    {
+    } catch (const std::exception &e) {
       ui_->result->setText(e.what());
       error_ = true;
     }
@@ -196,10 +195,9 @@ void MainWindow::FuncButton() {
 }
 
 void MainWindow::SimpMathButton() {
-  if(error_) ACButton();
+  if (error_) ACButton();
   QPushButton *button = (QPushButton *)sender();
-  if (button->text() == "mod")
-  {
+  if (button->text() == "mod") {
     LineInput(button->text(), "M");
   } else {
     LineInput(button->text());
@@ -207,7 +205,7 @@ void MainWindow::SimpMathButton() {
 }
 
 void MainWindow::OnCredButtonClicked() {
-  Credit credit_okno;
+  Credit credit_okno(calc_);
   credit_okno.setModal(true);
   credit_okno.exec();
 }
@@ -253,5 +251,6 @@ void MainWindow::ConnectsRelise() {
   //  Точка
   connect(ui_->push_dot, SIGNAL(clicked()), this, SLOT(DigitNumbers()));
   //  Input lines
-  connect(ui_->cred_Button, SIGNAL(clicked()), this, SLOT(OnCredButtonClicked()));
+  connect(ui_->cred_Button, SIGNAL(clicked()), this,
+          SLOT(OnCredButtonClicked()));
 }

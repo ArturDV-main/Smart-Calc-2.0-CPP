@@ -17,14 +17,16 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
+  friend class Credit;
+  friend class QDialog;
 
  public:
+  s21::CalcValid calc_valid_;
   MainWindow(QWidget *parent = nullptr,
              s21::CalcController *calc_controller = nullptr);
   ~MainWindow();
 
  private:
-  s21::CalcValid calc_valid_;
   s21::CalcController *calc_;
   Ui::MainWindow *ui_;
   QDoubleValidator double_valid_;

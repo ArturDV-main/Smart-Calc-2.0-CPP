@@ -21,6 +21,15 @@ void CalcModel::StartCalc(const std::string &src_str, double X_num) {
   }
 }
 
+void CalcModel::CalcCredit(std::array<double, 3> data) {
+  data[percent] = data[percent] / 1200;
+  credit_data_[monthly] =
+      data[summa] * (data[percent] * pow((1 + data[percent]), data[srok]) /
+                     (pow((1 + data[percent]), data[srok]) - 1));
+  credit_data_[itog] = credit_data_[monthly] * data[srok];
+  credit_data_[pereplata] = credit_data_[itog] - data[summa];
+}
+
 bool CalcModel::ValidationEqual(const std::string &str) const noexcept {
   bool valid(false);
   std::string tmp("+-/*M^@ABCDEFGH)(1234567890.eX");
@@ -92,9 +101,8 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
 }
 
 //  Парсер одной лексеммы
-CalcModel::StackType CalcModel::ParserUno(
-    const std::string &calc_src, int *position,
-    double X_num) {
+CalcModel::StackType CalcModel::ParserUno(const std::string &calc_src,
+                                          int *position, double X_num) {
   StackType stack1{};
   int prio = PrioCheck(calc_src[*position]);
   if (prio) {
@@ -116,7 +124,7 @@ CalcModel::StackType CalcModel::ParserUno(
 }
 
 //  Определение приоритета опреатора
-int CalcModel::PrioCheck( const char src_string) const noexcept {
+int CalcModel::PrioCheck(const char src_string) const noexcept {
   int prior{};
   int position_num = PositionCounter(src_string);
   if (position_num > 16)
@@ -134,8 +142,8 @@ int CalcModel::PrioCheck( const char src_string) const noexcept {
   return prior;
 }
 
-int CalcModel::PositionCounter(
-    char src_string) const noexcept {  //  Подсчёт позиции операции строке приоритетов
+int CalcModel::PositionCounter(char src_string)
+    const noexcept {  //  Подсчёт позиции операции строке приоритетов
   const char *operators = ")+-/*M^@ABCDEFGH(";
   int counter{};
   while (operators[counter]) {
