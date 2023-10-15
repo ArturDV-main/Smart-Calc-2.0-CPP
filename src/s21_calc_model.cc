@@ -44,9 +44,17 @@ bool CalcModel::ValidationEqual(const std::string &str) const noexcept {
   return valid;
 }
 
-void CalcModel::DifferenCalc(std::array<double, 3>) {
-  DifferentCredit out;
-  
+void CalcModel::DifferenCalc(std::array<double, 3> data) {
+  int debt_sum = data[summa] / data[srok];
+  different_data_.clear();
+  different_data_.resize(3 + data[srok]);
+  for (int i = 0; i < data[srok]; i++) {
+    different_data_[monthly + i] =
+        (data[summa] * data[percent] / 100 * 31 / 365) + debt_sum;
+    data[summa] -= debt_sum;
+    different_data_[itog] += different_data_[monthly + i];
+  }
+  different_data_[pereplata] = different_data_[itog] - debt_sum * data[srok];
 }
 
 double CalcModel::Calc(const std::string &calc_src, double X_num) {

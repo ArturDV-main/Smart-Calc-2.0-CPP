@@ -16,7 +16,7 @@ QT_END_NAMESPACE
 class Credit : public QDialog {
   Q_OBJECT
   enum ForData { summa = 0, srok, percent };
-  enum ForItog { monthly = 0, itog, pereplata };
+  enum ForItog { itog = 0, pereplata, monthly };
 
  public:
   explicit Credit(s21::CalcController *calc_controller = nullptr,

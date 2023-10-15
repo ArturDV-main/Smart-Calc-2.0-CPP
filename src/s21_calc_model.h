@@ -2,13 +2,13 @@
 #define SRC_S21_CALC_MODEL_H_
 
 #include <array>
-#include <vector>
 #include <cmath>
 #include <cstring>
 #include <iostream>
 #include <memory>
 #include <stack>
 #include <stdexcept>
+#include <vector>
 
 namespace s21 {
 
@@ -27,15 +27,8 @@ class CalcModel {
   };
 
   enum ForData { summa = 0, srok, percent };
-  enum ForItog { monthly = 0, itog, pereplata };
+  enum ForItog { itog = 0, pereplata, monthly };
 
-  struct DifferentCredit
-  {
-    std::vector<double> monthly;
-    double itogo;
-    double pereplat;
-  };
-  
   struct StackType {
     double val_dub{};
     char oper_val{};
@@ -46,19 +39,20 @@ class CalcModel {
   CalcModel();
   ~CalcModel();
   void StartCalc(const std::string &src_str, double X_num);
-  void CalcCredit(std::array<double, 3> data);
   bool ValidationEqual(const std::string &str) const noexcept;
   double GetData() const noexcept { return result_; }
+  void CalcCredit(std::array<double, 3> data);
   std::array<double, 3> GetCredit() { return credit_data_; }
   void Reset() noexcept { result_ = 0.0; }
-  void DifferenCalc();
-
+  void DifferenCalc(std::array<double, 3> data);
+  std::vector<double> GetDifferent() { return different_data_; }
 
  private:
   std::stack<StackType> oper_stack_{};
   std::stack<double> num_stack_{};
   double result_{};
   std::array<double, 3> credit_data_;
+  std::vector<double> different_data_;
   //  Metods
   double Calc(const std::string &calc_src, double X_num);
   StackType ParserUno(const std::string &calc_src, int *position, double X_num);

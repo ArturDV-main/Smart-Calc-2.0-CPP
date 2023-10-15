@@ -14,6 +14,10 @@ class CalcController {
   double GetResult() const noexcept { return calc_model->GetData(); }
   void CalcCredit(std::array<double, 3> data) { calc_model->CalcCredit(data); }
   std::array<double, 3> GetCredit() { return calc_model->GetCredit(); }
+  void DifferenCalc(std::array<double, 3> data) {
+    calc_model->DifferenCalc(data);
+  }
+  std::vector<double> GetDifferent() { return calc_model->GetDifferent(); }
 
  private:
   s21::CalcModel *calc_model;
