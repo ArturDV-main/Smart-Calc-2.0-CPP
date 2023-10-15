@@ -32,7 +32,7 @@ class Credit : public QDialog {
  private:
   QDoubleValidator double_valid_;
   s21::CalcController *calc_;
-  Ui::Credit *ui;
+  Ui::Credit *ui_;
 };
 
 #endif  // CREDIT_H
