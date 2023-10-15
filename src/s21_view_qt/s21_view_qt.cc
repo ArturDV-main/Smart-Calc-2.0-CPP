@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
 MainWindow::~MainWindow() { delete ui_; }
 
 void MainWindow::DoubleValidInit() {
+  double_valid_.setLocale(QLocale::English);
   double_valid_.setNotation(QDoubleValidator::StandardNotation);
   ui_->line_X->setValidator(&double_valid_);
   ui_->line_X_from->setValidator(&double_valid_);

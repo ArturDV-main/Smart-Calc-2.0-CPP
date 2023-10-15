@@ -9,6 +9,7 @@ Credit::Credit(s21::CalcController *calc_controller, QWidget *parent)
 }
 
 void Credit::DoubleValidInit() {
+  double_valid_.setLocale(QLocale::English);
   double_valid_.setNotation(QDoubleValidator::StandardNotation);
   ui->srokcredit->setValidator(&double_valid_);
   ui->percentcredit->setValidator(&double_valid_);
