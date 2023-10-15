@@ -5,6 +5,7 @@
 Credit::Credit(s21::CalcController *calc_controller, QWidget *parent)
     : QDialog(parent), calc_(calc_controller), ui(new Ui::Credit) {
   ui->setupUi(this);
+  connect(ui->credcalc_Button, SIGNAL(clicked()), this, SLOT(OnCredcalcButtonClicked()));
   DoubleValidInit();
 }
 
@@ -18,7 +19,7 @@ void Credit::DoubleValidInit() {
 
 Credit::~Credit() { delete ui; }
 
-void Credit::on_credcalc_Button_clicked() {
+void Credit::OnCredcalcButtonClicked() {
   std::array<double, 3> data;
   data[summa] = ui->sumcredit->text().toDouble();
   data[srok] = ui->srokcredit->text().toInt();
@@ -46,7 +47,7 @@ void Credit::on_credcalc_Button_clicked() {
         ui->textBrowser->setText(ui->textBrowser->toPlainText() + qi +
                                  "-й месяц: " + qmonth + "руб." + '\n');
       }
-      QString qsum = QString::number(itog_vector[itog], 'g', 10);
+      QString qsum = QString::number(itog_vector[itog], 'g', 12);
       QString qover = QString::number(itog_vector[pereplata], 'g', 12);
       ui->label_7->setText(qsum);
       ui->label_6->setText(qover);

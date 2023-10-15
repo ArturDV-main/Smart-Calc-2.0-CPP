@@ -27,7 +27,7 @@ class Credit : public QDialog {
 
  private slots:
 
-  void on_credcalc_Button_clicked();
+  void OnCredcalcButtonClicked();
 
  private:
   QDoubleValidator double_valid_;
