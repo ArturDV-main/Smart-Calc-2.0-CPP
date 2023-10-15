@@ -207,57 +207,6 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLineEdit" name="sumcredit_2">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>50</y>
-     <width>0</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="layoutDirection">
-    <enum>Qt::LeftToRight</enum>
-   </property>
-   <property name="text">
-    <string>10</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="srokcredit_2">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>90</y>
-     <width>0</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>10</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="percentcredit_2">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>120</y>
-     <width>0</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>10</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -5,6 +5,7 @@
 
 #include <QDialog>
 #include <vector>
+#include <QDoubleValidator>
 
 #include "../s21_calc_controller.h"
 
@@ -21,19 +22,15 @@ class Credit : public QDialog {
  public:
   explicit Credit(s21::CalcController *calc_controller = nullptr,
                   QWidget *parent = nullptr);
+  void DoubleValidInit();
   ~Credit();
 
  private slots:
 
   void on_credcalc_Button_clicked();
 
-  void on_sumcredit_cursorPositionChanged();
-
-  void on_srokcredit_cursorPositionChanged();
-
-  void on_percentcredit_cursorPositionChanged();
-
  private:
+  QDoubleValidator double_valid_;
   s21::CalcController *calc_;
   Ui::Credit *ui;
 };
