@@ -38,14 +38,14 @@ class CalcModel {
  public:
   CalcModel();
   ~CalcModel();
-  void StartCalc(const std::string &src_str, double X_num);
-  bool ValidationEqual(const std::string &str) const noexcept;
-  double GetData() const noexcept { return result_; }
-  void CalcCredit(std::array<double, 3> data);
-  std::array<double, 3> GetCredit() { return credit_data_; }
   void Reset() noexcept { result_ = 0.0; }
+  bool ValidationEqual(const std::string &str) const noexcept;
+  void StartCalc(const std::string &src_str, double X_num);
+  void CalcCredit(std::array<double, 3> data);
   void DifferenCalc(std::array<double, 3> data);
-  std::vector<double> GetDifferent() { return different_data_; }
+  double GetData() const noexcept { return result_; }
+  std::array<double, 3> GetCredit() const noexcept { return credit_data_; }
+  std::vector<double> GetDifferent() const noexcept { return different_data_; }
 
  private:
   std::stack<StackType> oper_stack_{};
