@@ -17,14 +17,16 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
+  friend class Credit;
+  friend class QDialog;
 
  public:
+  s21::CalcValid calc_valid_;
   MainWindow(QWidget *parent = nullptr,
              s21::CalcController *calc_controller = nullptr);
   ~MainWindow();
 
  private:
-  s21::CalcValid calc_valid_;
   s21::CalcController *calc_;
   Ui::MainWindow *ui_;
   QDoubleValidator double_valid_;
@@ -41,10 +43,10 @@ class MainWindow : public QMainWindow {
 
   void ConnectsRelise();
   void DoubleValidInit();
-  void LineEditEvent(char key);  // TODO
+  void LineEditEvent(const char key);
   void BackspaseLogic();
   void LineInput(QString str, QString code_str = 0);
-  size_t TrigonCheck();
+  size_t TrigonCheck() const noexcept;
 
  protected:
   void keyPressEvent(QKeyEvent *event) override;

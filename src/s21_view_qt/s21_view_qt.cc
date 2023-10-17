@@ -1,17 +1,20 @@
 #include "s21_view_qt.h"
 
 #include "./ui_s21_view_qt.h"
+#include "s21_credit_view_qt.h"
 
 MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
     : QMainWindow(parent), calc_(calc_controller), ui_(new Ui::MainWindow) {
   ui_->setupUi(this);
   ConnectsRelise();
   DoubleValidInit();
+  ui_->widget_graf->addGraph();
 }
 
 MainWindow::~MainWindow() { delete ui_; }
 
 void MainWindow::DoubleValidInit() {
+  double_valid_.setLocale(QLocale::English);
   double_valid_.setNotation(QDoubleValidator::StandardNotation);
   ui_->line_X->setValidator(&double_valid_);
   ui_->line_X_from->setValidator(&double_valid_);
@@ -39,7 +42,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
   }
 }
 
-void MainWindow::LineEditEvent(char key) {
+void MainWindow::LineEditEvent(const char key) {
   QString tmp_str("1234567890-+*/.");
   if (tmp_str.contains(key)) {
     LineInput((QString)key);
@@ -67,7 +70,7 @@ void MainWindow::BackspaseLogic() {
   if (error_ || calc_done_) {
     ACButton();
   } else if (result_code_.back() == 'M') {
-    for(int i = 3; i > 0 ; i--) {
+    for (int i = 3; i > 0; i--) {
       ui_->result->backspace();
     }
     result_code_.chop(1);
@@ -88,7 +91,7 @@ void MainWindow::BackspaseLogic() {
   }
 }
 
-size_t MainWindow::TrigonCheck() {
+size_t MainWindow::TrigonCheck() const noexcept {
   size_t count = 0;
   QString ch3 = "@ABM";
   QString ch4 = "CDEF";
@@ -126,7 +129,7 @@ void MainWindow::EqualsLogic() {
 void MainWindow::XButtonPush() {}
 
 void MainWindow::DigitNumbers() {
-  if(error_) ACButton();
+  if (error_) ACButton();
   QPushButton *button = (QPushButton *)sender();
   LineInput(button->text());
 }
@@ -154,9 +157,10 @@ void MainWindow::ACButton() {
 
 void MainWindow::CButton() { BackspaseLogic(); }
 
-void MainWindow::GrafButton() { // TODO
-  if (calc_done_ || error_) ACButton();
-  if (ui_->result->text() != '0') {
+void MainWindow::GrafButton() {
+  if (error_ || ui_->result->text().isEmpty())
+    ACButton();
+  else if (ui_->result->text() != '0') {
     x_.clear();
     y_.clear();
     h_ = 0.03;
@@ -166,26 +170,21 @@ void MainWindow::GrafButton() { // TODO
     double X_from = ui_->line_Y_to->text().toDouble();
     ui_->widget_graf->xAxis->setRange(x_begin_, x_end_);
     ui_->widget_graf->yAxis->setRange(Y_from, X_from);
-    try
-    {
-      for (x2_ = x_begin_; x2_ <= x_end_; x2_ += h_) { //  Заполняем координаты
-      x_.push_back(x2_);
-      y_.push_back(calc_->StartCalc(result_code_.toStdString(), x2_)); //  Формула для заполнения у
-    }
-    }
-    catch(const std::exception& e)
-    {
+    try {
+      for (x2_ = x_begin_; x2_ <= x_end_; x2_ += h_) {  //  Заполняем координаты
+        x_.push_back(x2_);
+        calc_->StartCalc(result_code_.toStdString(), x2_);
+        y_.push_back(calc_->GetResult());  //  Формула для заполнения у
+      }
+      ui_->widget_graf->graph(0)->addData(x_, y_);
+      calc_done_ = true;
+    } catch (const std::exception &e) {
       ui_->result->setText(e.what());
       error_ = true;
     }
-    ui_->widget_graf->addGraph();
-    ui_->widget_graf->graph(0)->addData(x_, y_);
     ui_->widget_graf->replot();
     ui_->widget_graf->graph(0)->data()->clear();
     //  Очищаем координаты
-    x_.clear();
-    y_.clear();
-    calc_done_ = true;
   }
 }
 
@@ -197,17 +196,20 @@ void MainWindow::FuncButton() {
 }
 
 void MainWindow::SimpMathButton() {
-  if(error_) ACButton();
+  if (error_) ACButton();
   QPushButton *button = (QPushButton *)sender();
-  if (button->text() == "mod")
-  {
+  if (button->text() == "mod") {
     LineInput(button->text(), "M");
   } else {
     LineInput(button->text());
   }
 }
 
-void MainWindow::OnCredButtonClicked() {}
+void MainWindow::OnCredButtonClicked() {
+  Credit credit_okno(calc_);
+  credit_okno.setModal(true);
+  credit_okno.exec();
+}
 
 void MainWindow::ConnectsRelise() {
   //  Кнопки с цифрами
@@ -250,4 +252,6 @@ void MainWindow::ConnectsRelise() {
   //  Точка
   connect(ui_->push_dot, SIGNAL(clicked()), this, SLOT(DigitNumbers()));
   //  Input lines
+  connect(ui_->cred_Button, SIGNAL(clicked()), this,
+          SLOT(OnCredButtonClicked()));
 }

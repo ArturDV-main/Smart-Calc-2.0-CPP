@@ -7,7 +7,6 @@ CalcModel::CalcModel() {}
 CalcModel::~CalcModel() {}
 
 void CalcModel::StartCalc(const std::string &src_str, double X_num) {
-  expression = src_str;
   CleanStacks();
   setlocale(LC_NUMERIC, "C");
   if (ValidationEqual(src_str)) {
@@ -18,12 +17,22 @@ void CalcModel::StartCalc(const std::string &src_str, double X_num) {
       PushError(e.what());
     }
   } else {
-    std::cout << expression << std::endl;
     throw std::invalid_argument("expression error");
   }
 }
 
-bool CalcModel::ValidationEqual(const std::string &str) {
+void CalcModel::CalcCredit(std::array<double, 3> data) {
+  if(data[summa] < 1 || data[srok] < 1 || data[percent] < 0) PushError("uncorrect data");
+  if(data[summa] > 1000000000000 || data[srok] > 420 || data[percent] > 100) PushError("redundant data");
+  data[percent] = data[percent] / 1200;
+  credit_data_[monthly] =
+      data[summa] * (data[percent] * pow((1 + data[percent]), data[srok]) /
+                     (pow((1 + data[percent]), data[srok]) - 1));
+  credit_data_[itog] = credit_data_[monthly] * data[srok];
+  credit_data_[pereplata] = credit_data_[itog] - data[summa];
+}
+
+bool CalcModel::ValidationEqual(const std::string &str) const noexcept {
   bool valid(false);
   std::string tmp("+-/*M^@ABCDEFGH)(1234567890.eX");
   for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
@@ -35,6 +44,21 @@ bool CalcModel::ValidationEqual(const std::string &str) {
     valid = true;
   }
   return valid;
+}
+
+void CalcModel::DifferenCalc(std::array<double, 3> data) {
+  if(data[summa] < 1 || data[srok] < 1 || data[percent] < 0) PushError("uncorrect data");
+  if(data[summa] > 1000000000000 || data[srok] > 420 || data[percent] > 100) PushError("redundant data");
+  int debt_sum = data[summa] / data[srok];
+  different_data_.clear();
+  different_data_.resize(3 + data[srok]);
+  for (int i = 0; i < data[srok]; i++) {
+    different_data_[monthly + i] =
+        (data[summa] * data[percent] / 100 * 31 / 365) + debt_sum;
+    data[summa] -= debt_sum;
+    different_data_[itog] += different_data_[monthly + i];
+  }
+  different_data_[pereplata] = different_data_[itog] - debt_sum * data[srok];
 }
 
 double CalcModel::Calc(const std::string &calc_src, double X_num) {
@@ -93,9 +117,9 @@ double CalcModel::Calc(const std::string &calc_src, double X_num) {
   return result;
 }
 
-CalcModel::StackType CalcModel::ParserUno(
-    const std::string &calc_src, int *position,
-    double X_num) {  //  Парсер одной лексеммы
+//  Парсер одной лексеммы
+CalcModel::StackType CalcModel::ParserUno(const std::string &calc_src,
+                                          int *position, double X_num) {
   StackType stack1{};
   int prio = PrioCheck(calc_src[*position]);
   if (prio) {
@@ -116,8 +140,8 @@ CalcModel::StackType CalcModel::ParserUno(
   return stack1;
 }
 
-int CalcModel::PrioCheck(
-    char src_string) {  //  Определение приоритета опреатора
+//  Определение приоритета опреатора
+int CalcModel::PrioCheck(const char src_string) const noexcept {
   int prior{};
   int position_num = PositionCounter(src_string);
   if (position_num > 16)
@@ -135,9 +159,9 @@ int CalcModel::PrioCheck(
   return prior;
 }
 
-int CalcModel::PositionCounter(
-    char src_string) {  //  Подсчёт позиции операции строке приоритетов
-  const char *operators = OPERATIONS;
+int CalcModel::PositionCounter(char src_string)
+    const noexcept {  //  Подсчёт позиции операции строке приоритетов
+  const char *operators = ")+-/*M^@ABCDEFGH(";
   int counter{};
   while (operators[counter]) {
     if (operators[counter] == src_string) {
@@ -280,7 +304,6 @@ void CalcModel::CleanStacks() {
 }
 
 void CalcModel::PushError(std::string error) {
-  std::cout << expression << std::endl;
   throw std::runtime_error(error);
 }
 
