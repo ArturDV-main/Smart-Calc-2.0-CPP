@@ -22,8 +22,10 @@ void CalcModel::StartCalc(const std::string &src_str, double X_num) {
 }
 
 void CalcModel::CalcCredit(std::array<double, 3> data) {
-  if(data[summa] < 1 || data[srok] < 1 || data[percent] < 0) PushError("uncorrect data");
-  if(data[summa] > 1000000000000 || data[srok] > 420 || data[percent] > 100) PushError("redundant data");
+  if (data[summa] < 1 || data[srok] < 1 || data[percent] < 0)
+    PushError("uncorrect data");
+  if (data[summa] > 1000000000000 || data[srok] > 420 || data[percent] > 100)
+    PushError("redundant data");
   data[percent] = data[percent] / 1200;
   credit_data_[monthly] =
       data[summa] * (data[percent] * pow((1 + data[percent]), data[srok]) /
@@ -47,8 +49,10 @@ bool CalcModel::ValidationEqual(const std::string &str) const noexcept {
 }
 
 void CalcModel::DifferenCalc(std::array<double, 3> data) {
-  if(data[summa] < 1 || data[srok] < 1 || data[percent] < 0) PushError("uncorrect data");
-  if(data[summa] > 1000000000000 || data[srok] > 420 || data[percent] > 100) PushError("redundant data");
+  if (data[summa] < 1 || data[srok] < 1 || data[percent] < 0)
+    PushError("uncorrect data");
+  if (data[summa] > 1000000000000 || data[srok] > 420 || data[percent] > 100)
+    PushError("redundant data");
   int debt_sum = data[summa] / data[srok];
   different_data_.clear();
   different_data_.resize(3 + data[srok]);

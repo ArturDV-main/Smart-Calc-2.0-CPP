@@ -38,7 +38,12 @@ class CalcModel {
  public:
   CalcModel();
   ~CalcModel();
-  void Reset() noexcept { result_ = 0.0; }
+  void Reset() noexcept {
+    result_ = 0.0;
+    CleanStacks();
+    different_data_.clear();
+    credit_data_ = {0, 0, 0};
+  }
   bool ValidationEqual(const std::string &str) const noexcept;
   void StartCalc(const std::string &src_str, double X_num);
   void CalcCredit(std::array<double, 3> data);

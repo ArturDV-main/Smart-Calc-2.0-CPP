@@ -4,8 +4,8 @@
 #include <math.h>
 
 #include <QDialog>
-#include <vector>
 #include <QDoubleValidator>
+#include <vector>
 
 #include "../s21_calc_controller.h"
 
