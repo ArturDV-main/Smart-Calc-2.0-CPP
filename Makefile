@@ -91,8 +91,10 @@ else
 endif
 
 gcov_report: clean tests
-	lcov -t "test" --no-external -o $(BUILD_DIR)/src/Google_tests/test.info -c -d .
-	# genhtml -o report $(BUILD_DIR)/src/Google_tests/test.info
+	cd $(BUILD_DIR)/src/google_tests && lcov -t "test" -o ../../test.info -c -d .
+	genhtml -o report $(BUILD_DIR)/test.info
 	open report/index.html
 
 # sudo update-alternatives --install /usr/bin/qmake qmake /lib/qt6/bin/qmake 100 --ignore-errors mismatch
+
+# cd build && lcov -t "test"
