@@ -42,13 +42,22 @@ dist: all
 	rm -rf archive_smart_calc_2_0
 	mkdir -p archive_smart_calc_2_0
 	mkdir -p archive_smart_calc_2_0/src
+	mkdir -p archive_smart_calc_2_0/src/google_tests
+	mkdir -p archive_smart_calc_2_0/src/s21_view_qt
 	cp $(BUILD_DIR)/$(APPLICATION) ./archive_smart_calc_2_0/
+	cp ./src/google_tests/*.cc ./archive_smart_calc_2_0/src/google_tests/
+	cp ./src/s21_view_qt/*.cc ./archive_smart_calc_2_0/src/s21_view_qt/
+	cp ./src/s21_view_qt/*.cpp ./archive_smart_calc_2_0/src/s21_view_qt/
+	cp ./src/s21_view_qt/*.ui ./archive_smart_calc_2_0/src/s21_view_qt/
+	cp ./src/s21_view_qt/*.h ./archive_smart_calc_2_0/src/s21_view_qt/
+	cp ./src/s21_view_qt/*.icns ./archive_smart_calc_2_0/src/s21_view_qt/
+	cp ./src/s21_view_qt/*.pro ./archive_smart_calc_2_0/src/s21_view_qt/
 	cp ./src/*.cc ./archive_smart_calc_2_0/src
 	cp ./src/*.h ./archive_smart_calc_2_0/src
 	cp ./Makefile archive_smart_calc_2_0/src
 	cp ./*.html ./archive_smart_calc_2_0/
 	cp ./*.md ./archive_smart_calc_2_0/
-	# tar cvzf archive_smart_calc_2_0.tgz archive_smart_calc_2_0
+	tar cvzf archive_smart_calc_2_0.tgz archive_smart_calc_2_0
 	rm -rf archive_smart_calc_2_0/
 
 
