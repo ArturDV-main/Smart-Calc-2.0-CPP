@@ -49,7 +49,7 @@ dist: all
 	cp ./*.html ./archive_smart_calc_2_0/
 	cp ./*.md ./archive_smart_calc_2_0/
 	# tar cvzf archive_smart_calc_2_0.tgz archive_smart_calc_2_0
-	# rm -rf archive_smart_calc_2_0/
+	rm -rf archive_smart_calc_2_0/
 
 
 #  SmartCallc2.0 application
