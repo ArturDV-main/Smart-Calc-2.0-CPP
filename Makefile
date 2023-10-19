@@ -30,10 +30,16 @@ endif
 all: apple
 
 install: apple
-	cp build/$(APPLICATION) .
+	mkdir -p SmartCalc
+	cp build/$(APPLICATION) ./SmartCalc/
 
 uninstall:
-	rm -rf $(APPLICATION)
+	rm -rf ./SmartCalc/
+
+.PHONY: clean
+clean:
+	rm -rf $(BUILD_DIR) test.info report src/s21_view_qt/.qmake.stash \
+	src/build-SmartCalc2_0-Desktop-Debug build-SmartCalc2_0-Desktop_x86_darwin_generic_mach_o_64bit-Debug
 
 dvi:
 	open dvi.html
@@ -43,33 +49,27 @@ dist: all
 	mkdir -p archive_smart_calc_2_0
 	mkdir -p archive_smart_calc_2_0/src
 	cp $(BUILD_DIR)/$(APPLICATION) ./archive_smart_calc_2_0/
-	cp ./src/ ./archive_smart_calc_2_0/src
+	cp -r ./src ./archive_smart_calc_2_0/
 	cp ./*.html ./archive_smart_calc_2_0/
 	cp ./*.md ./archive_smart_calc_2_0/
 	tar cvzf archive_smart_calc_2_0.tgz archive_smart_calc_2_0
 	rm -rf archive_smart_calc_2_0/
 
+#  Google tests
+tests: clean $(GT_OBJS)
+	mkdir -p $(BUILD_DIR)
+	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
+	./$(BUILD_DIR)/gtest.out
 
 #  SmartCallc2.0 application
 apple:
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && qmake CONFIG+=qtquickcompiler ../src/s21_view_qt/SmartCalc2_0.pro && make
 
-#  Google tests
-test: clean $(GT_OBJS)
-	mkdir -p $(BUILD_DIR)
-	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
-	./$(BUILD_DIR)/gtest.out
-
 # Build step for C++ source
 $(BUILD_DIR)/%.cc.o: %.cc
 	mkdir -p $(dir $@)
 	$(CXX) $(CPP_STD) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
-
-.PHONY: clean
-clean:
-	rm -rf $(BUILD_DIR) test.info report src/s21_view_qt/.qmake.stash \
-	src/build-SmartCalc2_0-Desktop-Debug build-SmartCalc2_0-Desktop_x86_darwin_generic_mach_o_64bit-Debug
 
 clang:
 	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
