@@ -42,19 +42,8 @@ dist: all
 	rm -rf archive_smart_calc_2_0
 	mkdir -p archive_smart_calc_2_0
 	mkdir -p archive_smart_calc_2_0/src
-	mkdir -p archive_smart_calc_2_0/src/google_tests
-	mkdir -p archive_smart_calc_2_0/src/s21_view_qt
 	cp $(BUILD_DIR)/$(APPLICATION) ./archive_smart_calc_2_0/
-	cp ./src/google_tests/*.cc ./archive_smart_calc_2_0/src/google_tests/
-	cp ./src/s21_view_qt/*.cc ./archive_smart_calc_2_0/src/s21_view_qt/
-	cp ./src/s21_view_qt/*.cpp ./archive_smart_calc_2_0/src/s21_view_qt/
-	cp ./src/s21_view_qt/*.ui ./archive_smart_calc_2_0/src/s21_view_qt/
-	cp ./src/s21_view_qt/*.h ./archive_smart_calc_2_0/src/s21_view_qt/
-	cp ./src/s21_view_qt/*.icns ./archive_smart_calc_2_0/src/s21_view_qt/
-	cp ./src/s21_view_qt/*.pro ./archive_smart_calc_2_0/src/s21_view_qt/
-	cp ./src/*.cc ./archive_smart_calc_2_0/src
-	cp ./src/*.h ./archive_smart_calc_2_0/src
-	cp ./Makefile archive_smart_calc_2_0/src
+	cp ./src/ ./archive_smart_calc_2_0/src
 	cp ./*.html ./archive_smart_calc_2_0/
 	cp ./*.md ./archive_smart_calc_2_0/
 	tar cvzf archive_smart_calc_2_0.tgz archive_smart_calc_2_0
@@ -63,20 +52,14 @@ dist: all
 
 #  SmartCallc2.0 application
 apple:
-	cd src/s21_view_qt && qmake6 CONFIG+=qtquickcompiler && make
 	mkdir -p $(BUILD_DIR)
-	rm -rf build/$(APPLICATION)
-	mv src/s21_view_qt/$(APPLICATION) build/
+	cd $(BUILD_DIR) && qmake CONFIG+=qtquickcompiler ../src/s21_view_qt/SmartCalc2_0.pro && make
 
 #  Google tests
 test: clean $(GT_OBJS)
 	mkdir -p $(BUILD_DIR)
 	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
-
-
-# app: $(OBJS)
-# 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(BUILD_DIR)/$(TARGET)
 
 # Build step for C++ source
 $(BUILD_DIR)/%.cc.o: %.cc
@@ -85,8 +68,7 @@ $(BUILD_DIR)/%.cc.o: %.cc
 
 .PHONY: clean
 clean:
-	cd src/s21_view_qt && make clean
-	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash \
+	rm -rf $(BUILD_DIR) test.info report src/s21_view_qt/.qmake.stash \
 	src/build-SmartCalc2_0-Desktop-Debug build-SmartCalc2_0-Desktop_x86_darwin_generic_mach_o_64bit-Debug
 
 clang:
