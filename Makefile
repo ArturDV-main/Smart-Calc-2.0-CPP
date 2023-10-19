@@ -29,6 +29,30 @@ endif
 
 all: apple
 
+install: apple
+	cp build/$(APPLICATION) .
+
+uninstall:
+	rm -rf $(APPLICATION)
+
+dvi:
+	open dvi.html
+
+dist: all
+	rm -rf archive_smart_calc_2_0
+	mkdir -p archive_smart_calc_2_0
+	mkdir -p archive_smart_calc_2_0/src
+	cp $(BUILD_DIR)/$(APPLICATION) ./archive_smart_calc_2_0/
+	cp ./src/*.cc ./archive_smart_calc_2_0/src
+	cp ./src/*.h ./archive_smart_calc_2_0/src
+	cp ./Makefile archive_smart_calc_2_0/src
+	cp ./*.html ./archive_smart_calc_2_0/
+	cp ./*.md ./archive_smart_calc_2_0/
+	# tar cvzf archive_smart_calc_2_0.tgz archive_smart_calc_2_0
+	# rm -rf archive_smart_calc_2_0/
+
+
+#  SmartCallc2.0 application
 apple:
 	cd src/s21_view_qt && qmake6 CONFIG+=qtquickcompiler && make
 	mkdir -p $(BUILD_DIR)
@@ -41,9 +65,9 @@ test: clean $(GT_OBJS)
 	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
 
-#  SmartCallc2.0 application
-app: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(BUILD_DIR)/$(TARGET)
+
+# app: $(OBJS)
+# 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(BUILD_DIR)/$(TARGET)
 
 # Build step for C++ source
 $(BUILD_DIR)/%.cc.o: %.cc
@@ -79,7 +103,5 @@ gcov_report: clean test
 	lcov -t "test" --ignore-errors mismatch --no-external -o $(BUILD_DIR)/src/Google_tests/test.info -c -d .
 	genhtml -o report $(BUILD_DIR)/src/Google_tests/test.info
 	open report/index.html
-
-t: clean clang app valgrind
 
 # sudo update-alternatives --install /usr/bin/qmake qmake /lib/qt6/bin/qmake 100
