@@ -1,10 +1,10 @@
 CXX = gcc
 CPP_STD = -std=c++17
-# CPPFLAGS = --coverage
+CPPFLAGS = --coverage
 TARGET = SmartCalc2_0
 CXXFLAGS = -g -Wall -Wextra -Werror --coverage -lstdc++
 GT_FLAGS = -lgtest -lgtest_main -lm
-GCOV = --coverage
+
 #  Project directories
 BUILD_DIR = build
 SRC_DIRS = src src/s21_view_qt
@@ -90,9 +90,9 @@ else
 	grep errors $(BUILD_DIR)/RESULT_VALGRIND.txt
 endif
 
-gcov_report: clean test
-	lcov -t "test" --ignore-errors mismatch --no-external -o $(BUILD_DIR)/src/Google_tests/test.info -c -d .
-	genhtml -o report $(BUILD_DIR)/src/Google_tests/test.info
+gcov_report: clean tests
+	lcov -t "test" --no-external -o $(BUILD_DIR)/src/Google_tests/test.info -c -d .
+	# genhtml -o report $(BUILD_DIR)/src/Google_tests/test.info
 	open report/index.html
 
-# sudo update-alternatives --install /usr/bin/qmake qmake /lib/qt6/bin/qmake 100
+# sudo update-alternatives --install /usr/bin/qmake qmake /lib/qt6/bin/qmake 100 --ignore-errors mismatch
