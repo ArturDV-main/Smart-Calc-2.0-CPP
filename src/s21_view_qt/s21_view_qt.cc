@@ -1,8 +1,5 @@
 #include "s21_view_qt.h"
 
-#include "./ui_s21_view_qt.h"
-#include "s21_credit_view_qt.h"
-
 MainWindow::MainWindow(QWidget *parent, s21::CalcController *calc_controller)
     : QMainWindow(parent), calc_(calc_controller), ui_(new Ui::MainWindow) {
   ui_->setupUi(this);

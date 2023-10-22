@@ -1,6 +1,7 @@
 #ifndef SRC_S21_CALC_CONTROLLER_H_
 #define SRC_S21_CALC_CONTROLLER_H_
 #include <array>
+#include <stdexcept>
 
 #include "s21_calc_model.h"
 

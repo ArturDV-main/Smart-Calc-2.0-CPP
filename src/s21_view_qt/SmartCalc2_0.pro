@@ -14,7 +14,7 @@ SOURCES += \
     ../main.cc \
     ../s21_calc_controller.cc \
     ../s21_calc_model.cc \
-    ../s21_calc_valid_model.cc \
+    s21_view_valid.cc \
     qcustomplot.cpp \
     s21_credit_view_qt.cc \
     s21_view_qt.cc
@@ -22,7 +22,7 @@ SOURCES += \
 HEADERS += \
     ../s21_calc_controller.h \
     ../s21_calc_model.h \
-    ../s21_calc_valid_model.h \
+    s21_view_valid.h \
     qcustomplot.h \
     s21_credit_view_qt.h \
     s21_view_qt.h

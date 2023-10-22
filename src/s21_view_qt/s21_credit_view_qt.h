@@ -1,5 +1,5 @@
-#ifndef CREDIT_H
-#define CREDIT_H
+#ifndef CREDIT_H_
+#define CREDIT_H_
 
 #include <math.h>
 
@@ -35,4 +35,4 @@ class Credit : public QDialog {
   Ui::Credit *ui_;
 };
 
-#endif  // CREDIT_H
+#endif  // CREDIT_H_
