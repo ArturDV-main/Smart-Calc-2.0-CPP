@@ -90,7 +90,7 @@ else
 endif
 
 gcov_report: clean tests
-	cd $(BUILD_DIR) && lcov -t "test" --ignore-errors mismatch -o test.info -c -d . 
+	cd $(BUILD_DIR) && lcov -t "test"  -o test.info -c -d . 
 	cd $(BUILD_DIR) && lcov --remove test.info '/usr/local/include/*' -o test.info
 	cd $(BUILD_DIR) && genhtml -o report test.info
 	open $(BUILD_DIR)/report/index.html

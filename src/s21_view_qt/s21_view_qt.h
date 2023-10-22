@@ -7,9 +7,9 @@
 #include <exception>
 
 #include "../s21_calc_controller.h"
-#include "s21_view_valid.h"
 #include "./ui_s21_view_qt.h"
 #include "s21_credit_view_qt.h"
+#include "s21_view_valid.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
