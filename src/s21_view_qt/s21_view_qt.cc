@@ -42,9 +42,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
   }
 }
 
-
 void MainWindow::LineEditEvent(const QString key) {
-  qDebug() << key;
   QString tmp_str("1234567890-+*/.e");
   if (tmp_str.contains(key)) {
     LineInput(key);
@@ -57,8 +55,7 @@ void MainWindow::LineInput(QString str, QString code_str) {
   QString tmp_str("-+*/");
   if (code_str.isEmpty()) code_str = str;
   if (error_) ACButton();
-  if ((calc_done_ || result_code_.isEmpty()) &&
-      !tmp_str.contains(str)) {
+  if ((calc_done_ || result_code_.isEmpty()) && !tmp_str.contains(str)) {
     ui_->result->setText(str);
     result_code_ = code_str;
   } else {
@@ -132,7 +129,6 @@ void MainWindow::EqualsLogic() {
 void MainWindow::XButtonPush() {}
 
 void MainWindow::DigitNumbers() {
-  if (error_) ACButton();
   QPushButton *button = (QPushButton *)sender();
   LineInput(button->text());
 }
