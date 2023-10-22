@@ -38,14 +38,16 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
       EqualsButton();
       break;
     default:
-      LineEditEvent(char(event->key()));
+      LineEditEvent(event->text());
   }
 }
 
-void MainWindow::LineEditEvent(const char key) {
-  QString tmp_str("1234567890-+*/.");
+
+void MainWindow::LineEditEvent(const QString key) {
+  qDebug() << key;
+  QString tmp_str("1234567890-+*/.e");
   if (tmp_str.contains(key)) {
-    LineInput((QString)key);
+    LineInput(key);
   } else if (key == '(' || key == ')') {
     Skobki();
   }
@@ -54,7 +56,8 @@ void MainWindow::LineEditEvent(const char key) {
 void MainWindow::LineInput(QString str, QString code_str) {
   QString tmp_str("-+*/");
   if (code_str.isEmpty()) code_str = str;
-  if ((error_ || calc_done_ || result_code_.isEmpty()) &&
+  if (error_) ACButton();
+  if ((calc_done_ || result_code_.isEmpty()) &&
       !tmp_str.contains(str)) {
     ui_->result->setText(str);
     result_code_ = code_str;

@@ -43,7 +43,7 @@ class MainWindow : public QMainWindow {
 
   void ConnectsRelise();
   void DoubleValidInit();
-  void LineEditEvent(const char key);
+  void LineEditEvent(const QString key);
   void BackspaseLogic();
   void LineInput(QString str, QString code_str = 0);
   size_t TrigonCheck() const noexcept;
