@@ -4,7 +4,6 @@
 #include <array>
 #include <cmath>
 #include <cstring>
-#include <iostream>
 #include <memory>
 #include <stack>
 #include <stdexcept>
@@ -13,7 +12,6 @@
 namespace s21 {
 
 class CalcModel {
-  // #define OPERATIONS ")+-/*M^@ABCDEFGH("
   enum TrigonCode {
     COS = '@',
     SIN = 'A',
