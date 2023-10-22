@@ -1,7 +1,7 @@
 CXX = gcc
 CPP_STD = -std=c++17
 TARGET = SmartCalc2_0
-CXXFLAGS = -g -Wall -Wextra -Werror --coverage -lstdc++
+CXXFLAGS = -g -Wall -Wextra -Werror -lstdc++
 GT_FLAGS = -lgtest -lgtest_main -lm
 
 #  Project directories
@@ -57,7 +57,7 @@ dist: all
 #  Google tests
 tests: clean $(GT_OBJS)
 	mkdir -p $(BUILD_DIR)
-	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
+	$(CXX) $(CPP_STD) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
 
 #  SmartCallc2.0 application
@@ -68,7 +68,7 @@ apple:
 # Build step for C++ source
 $(BUILD_DIR)/%.cc.o: %.cc
 	mkdir -p $(dir $@)
-	$(CXX) $(CPP_STD) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPP_STD) $(CXXFLAGS) -c $< -o $@
 
 clang:
 	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
@@ -89,8 +89,15 @@ else
 	grep errors $(BUILD_DIR)/RESULT_VALGRIND.txt
 endif
 
-gcov_report: clean tests
-	cd $(BUILD_DIR) && lcov -t "test"  -o test.info -c -d . 
+lcov_report: clean tests
+	cd $(BUILD_DIR) && lcov -t "test"  -o test.info -c -d .
 	cd $(BUILD_DIR) && lcov --remove test.info '/usr/local/include/*' -o test.info
 	cd $(BUILD_DIR) && genhtml -o report test.info
 	open $(BUILD_DIR)/report/index.html
+
+gcov_report:
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && $(CXX) $(CPP_STD) $(GT_FLAGS) $(CXXFLAGS) -c ../src/google_tests/s21_calc_model_tests.cc
+	cd $(BUILD_DIR) && $(CXX) $(CPP_STD) $(CXXFLAGS) -fprofile-arcs -ftest-coverage ../src/s21_calc_model.cc s21_calc_model_tests.o -o gtest.out
+	cd $(BUILD_DIR) && ./gtest.out
+	cd $(BUILD_DIR) && gcov ../src/s21_calc_model.cc
