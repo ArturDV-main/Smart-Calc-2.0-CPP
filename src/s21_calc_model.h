@@ -3,11 +3,12 @@
 
 #include <array>
 #include <cmath>
-#include <cstring>
+#include <string>
 #include <memory>
 #include <stack>
 #include <stdexcept>
 #include <vector>
+#include <clocale>
 
 namespace s21 {
 

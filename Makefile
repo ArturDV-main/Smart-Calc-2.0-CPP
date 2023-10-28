@@ -1,7 +1,7 @@
 CXX = gcc
 CPP_STD = -std=c++17
 TARGET = SmartCalc2_0
-CXXFLAGS = -g -Wall -Wextra -Werror -lstdc++
+CXXFLAGS = -lm -g -Wall -Wextra -Werror -lstdc++ --coverage
 GT_FLAGS = -lgtest -lgtest_main -lm
 
 #  Project directories
@@ -89,15 +89,9 @@ else
 	grep errors $(BUILD_DIR)/RESULT_VALGRIND.txt
 endif
 
-lcov_report: clean tests
-	cd $(BUILD_DIR) && lcov -t "test"  -o test.info -c -d .
+gcov_report: clean tests
+	cd $(BUILD_DIR) && lcov --ignore-errors mismatch -t "test"  -o test.info -c -d .
 	cd $(BUILD_DIR) && lcov --remove test.info '/usr/local/include/*' -o test.info
 	cd $(BUILD_DIR) && genhtml -o report test.info
 	open $(BUILD_DIR)/report/index.html
 
-gcov_report:
-	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) && $(CXX) $(CPP_STD) $(GT_FLAGS) $(CXXFLAGS) -c ../src/google_tests/s21_calc_model_tests.cc
-	cd $(BUILD_DIR) && $(CXX) $(CPP_STD) $(CXXFLAGS) -fprofile-arcs -ftest-coverage ../src/s21_calc_model.cc s21_calc_model_tests.o -o gtest.out
-	cd $(BUILD_DIR) && ./gtest.out
-	cd $(BUILD_DIR) && gcov ../src/s21_calc_model.cc
