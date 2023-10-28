@@ -29,11 +29,19 @@ endif
 all: apple
 
 install: apple
+ifeq ($(OS), Darwin)
+	cp -r build/$(APPLICATION) ~/Desktop/
+else
 	mkdir -p SmartCalc
 	cp build/$(APPLICATION) ./SmartCalc/
+endif
 
 uninstall:
+ifeq ($(OS), Darwin)
+	rm -rf ~/Desktop/$(APPLICATION)
+else
 	rm -rf ./SmartCalc/
+endif
 
 .PHONY: clean
 clean:
