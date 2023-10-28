@@ -68,6 +68,12 @@ tests: clean $(GT_OBJS)
 	$(CXX) $(CPP_STD) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
 
+gcov_report: clean tests
+	cd $(BUILD_DIR) && lcov --ignore-errors mismatch -t "test"  -o test.info -c -d .
+	cd $(BUILD_DIR) && lcov --remove test.info '/usr/local/include/*' -o test.info
+	cd $(BUILD_DIR) && genhtml -o report test.info
+	open $(BUILD_DIR)/report/index.html
+
 #  SmartCallc2.0 application
 apple:
 	mkdir -p $(BUILD_DIR)
@@ -96,10 +102,3 @@ else
 	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=$(BUILD_DIR)/RESULT_VALGRIND.txt $(BUILD_DIR)/$(APPLICATION)
 	grep errors $(BUILD_DIR)/RESULT_VALGRIND.txt
 endif
-
-gcov_report: clean tests
-	cd $(BUILD_DIR) && lcov --ignore-errors mismatch -t "test"  -o test.info -c -d .
-	cd $(BUILD_DIR) && lcov --remove test.info '/usr/local/include/*' -o test.info
-	cd $(BUILD_DIR) && genhtml -o report test.info
-	open $(BUILD_DIR)/report/index.html
-
