@@ -69,7 +69,11 @@ tests: clean $(GT_OBJS)
 	./$(BUILD_DIR)/gtest.out
 
 gcov_report: clean tests
+ifeq ($(OS), Darwin)
 	cd $(BUILD_DIR) && lcov --ignore-errors mismatch -t "test"  -o test.info -c -d .
+else
+	cd $(BUILD_DIR) && lcov -t "test"  -o test.info -c -d .
+endif
 	cd $(BUILD_DIR) && lcov --remove test.info '/usr/local/include/*' -o test.info
 	cd $(BUILD_DIR) && genhtml -o report test.info
 	open $(BUILD_DIR)/report/index.html

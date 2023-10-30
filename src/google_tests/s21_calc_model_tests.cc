@@ -58,5 +58,4 @@ TEST(CalcTest, Exeptions) {
   data[1] = -10.1;
   EXPECT_ANY_THROW(a.DifferenCalc(data););
   EXPECT_ANY_THROW(a.CalcCredit(data););
-
 }
