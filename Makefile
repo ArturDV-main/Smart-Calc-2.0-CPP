@@ -1,10 +1,9 @@
 CXX = gcc
 CPP_STD = -std=c++17
-# CPPFLAGS = --coverage
 TARGET = SmartCalc2_0
-CXXFLAGS = -g -Wall -Wextra -Werror --coverage -lstdc++
+CXXFLAGS = -lm -g -Wall -Wextra -Werror -lstdc++ --coverage
 GT_FLAGS = -lgtest -lgtest_main -lm
-GCOV = --coverage
+
 #  Project directories
 BUILD_DIR = build
 SRC_DIRS = src src/s21_view_qt
@@ -29,32 +28,65 @@ endif
 
 all: apple
 
-apple:
-	cd src/s21_view_qt && qmake6 CONFIG+=qtquickcompiler && make
-	mkdir -p $(BUILD_DIR)
-	rm -rf build/$(APPLICATION)
-	mv src/s21_view_qt/$(APPLICATION) build/
+install: apple
+ifeq ($(OS), Darwin)
+	cp -r build/$(APPLICATION) ~/Desktop/
+else
+	mkdir -p SmartCalc
+	cp build/$(APPLICATION) ./SmartCalc/
+endif
+
+uninstall:
+ifeq ($(OS), Darwin)
+	rm -rf ~/Desktop/$(APPLICATION)
+else
+	rm -rf ./SmartCalc/
+endif
+
+.PHONY: clean
+clean:
+	rm -rf $(BUILD_DIR) test.info report src/s21_view_qt/.qmake.stash \
+	src/build-SmartCalc2_0-Desktop-Debug build-SmartCalc2_0-Desktop_x86_darwin_generic_mach_o_64bit-Debug
+
+dvi:
+	open dvi.html
+
+dist: all
+	rm -rf archive_smart_calc_2_0
+	mkdir -p archive_smart_calc_2_0
+	mkdir -p archive_smart_calc_2_0/src
+	cp $(BUILD_DIR)/$(APPLICATION) ./archive_smart_calc_2_0/
+	cp -r ./src ./archive_smart_calc_2_0/
+	cp ./*.html ./archive_smart_calc_2_0/
+	cp ./*.md ./archive_smart_calc_2_0/
+	tar cvzf archive_smart_calc_2_0.tgz archive_smart_calc_2_0
+	rm -rf archive_smart_calc_2_0/
 
 #  Google tests
-test: clean $(GT_OBJS)
+tests: clean $(GT_OBJS)
 	mkdir -p $(BUILD_DIR)
-	$(CXX) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
+	$(CXX) $(CPP_STD) $(GT_OBJS) $(GT_FLAGS) $(CXXFLAGS) -o $(BUILD_DIR)/gtest.out
 	./$(BUILD_DIR)/gtest.out
 
+gcov_report: clean tests
+ifeq ($(OS), Darwin)
+	cd $(BUILD_DIR) && lcov --ignore-errors mismatch -t "test"  -o test.info -c -d .
+else
+	cd $(BUILD_DIR) && lcov -t "test"  -o test.info -c -d .
+endif
+	cd $(BUILD_DIR) && lcov --remove test.info '/usr/local/include/*' -o test.info
+	cd $(BUILD_DIR) && genhtml -o report test.info
+	open $(BUILD_DIR)/report/index.html
+
 #  SmartCallc2.0 application
-app: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(BUILD_DIR)/$(TARGET)
+apple:
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && qmake CONFIG+=qtquickcompiler ../src/s21_view_qt/SmartCalc2_0.pro && make
 
 # Build step for C++ source
 $(BUILD_DIR)/%.cc.o: %.cc
 	mkdir -p $(dir $@)
-	$(CXX) $(CPP_STD) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
-
-.PHONY: clean
-clean:
-	cd src/s21_view_qt && make clean
-	rm -rf $(BUILD_DIR)/* test.info report src/s21_view_qt/.qmake.stash \
-	src/build-SmartCalc2_0-Desktop-Debug build-SmartCalc2_0-Desktop_x86_darwin_generic_mach_o_64bit-Debug
+	$(CXX) $(CPP_STD) $(CXXFLAGS) -c $< -o $@
 
 clang:
 	clang-format -style=file:materials/linters/.clang-format -n src/*.cc src/google_tests/*.cc src/*h src/s21_view_qt/*.cc src/s21_view_qt/*.h
@@ -74,12 +106,3 @@ else
 	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=$(BUILD_DIR)/RESULT_VALGRIND.txt $(BUILD_DIR)/$(APPLICATION)
 	grep errors $(BUILD_DIR)/RESULT_VALGRIND.txt
 endif
-
-gcov_report: clean test
-	lcov -t "test" --ignore-errors mismatch --no-external -o $(BUILD_DIR)/src/Google_tests/test.info -c -d .
-	genhtml -o report $(BUILD_DIR)/src/Google_tests/test.info
-	open report/index.html
-
-t: clean clang app valgrind
-
-# sudo update-alternatives --install /usr/bin/qmake qmake /lib/qt6/bin/qmake 100

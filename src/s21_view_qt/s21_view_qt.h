@@ -7,7 +7,9 @@
 #include <exception>
 
 #include "../s21_calc_controller.h"
-#include "../s21_calc_valid_model.h"
+#include "./ui_s21_view_qt.h"
+#include "s21_credit_view_qt.h"
+#include "s21_view_valid.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -43,7 +45,7 @@ class MainWindow : public QMainWindow {
 
   void ConnectsRelise();
   void DoubleValidInit();
-  void LineEditEvent(const char key);
+  void LineEditEvent(const QString key);
   void BackspaseLogic();
   void LineInput(QString str, QString code_str = 0);
   size_t TrigonCheck() const noexcept;

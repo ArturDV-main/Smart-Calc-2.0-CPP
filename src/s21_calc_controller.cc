@@ -1,7 +1,5 @@
 #include "s21_calc_controller.h"
 
-#include <stdexcept>
-
 namespace s21 {
 
 void s21::CalcController::StartCalc(const std::string& a, const double x) {

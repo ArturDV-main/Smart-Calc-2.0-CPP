@@ -1,6 +1,7 @@
 #ifndef SRC_S21_CALC_CONTROLLER_H_
 #define SRC_S21_CALC_CONTROLLER_H_
 #include <array>
+#include <stdexcept>
 
 #include "s21_calc_model.h"
 
@@ -11,13 +12,17 @@ class CalcController {
   CalcController(s21::CalcModel *m) : calc_model(m){};
   void Reset() noexcept { calc_model->Reset(); }
   void StartCalc(const std::string &a, const double x);
-  double GetResult() const noexcept { return calc_model->GetData(); }
   void CalcCredit(std::array<double, 3> data) { calc_model->CalcCredit(data); }
-  std::array<double, 3> GetCredit() { return calc_model->GetCredit(); }
   void DifferenCalc(std::array<double, 3> data) {
     calc_model->DifferenCalc(data);
   }
-  std::vector<double> GetDifferent() { return calc_model->GetDifferent(); }
+  double GetResult() const noexcept { return calc_model->GetData(); }
+  std::array<double, 3> GetCredit() const noexcept {
+    return calc_model->GetCredit();
+  }
+  std::vector<double> GetDifferent() const noexcept {
+    return calc_model->GetDifferent();
+  }
 
  private:
   s21::CalcModel *calc_model;

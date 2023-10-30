@@ -1589,10 +1589,13 @@ QPushButton:pressed {
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="acceptDrops">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="C" country="AnyTerritory"/>
     </property>
     <property name="inputMask">
      <string/>
