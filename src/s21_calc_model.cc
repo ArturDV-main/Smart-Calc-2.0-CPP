@@ -283,7 +283,7 @@ double CalcModel::TrigonCalc(double x, char operation) {
       buf_num = atan(x);
       break;
     case SQRT:
-      if (x < -1 || x > 1) PushError("error: interval > 1");
+      if (x < 0) PushError("error: interval < 0");
       buf_num = sqrt(x);
       break;
     case LN:
