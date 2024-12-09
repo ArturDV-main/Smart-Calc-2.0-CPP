@@ -159,13 +159,20 @@ void MainWindow::GrafButton() {
   else if (ui_->result->text() != '0') {
     x_.clear();
     y_.clear();
-    h_ = 0.03;
     x_begin_ = ui_->line_X_from->text().toDouble();
     x_end_ = ui_->line_X_to->text().toDouble();
+    if(x_begin_ > x_end_) {
+      double tmp = x_begin_;
+      x_begin_ = x_end_;
+      x_end_ = tmp;
+    }
+    double diff = std::fabs(x_end_ - x_begin_);
+    int step = 5000;
+    h_ = diff/step;
     double Y_from = ui_->line_Y_from->text().toDouble();
-    double X_from = ui_->line_Y_to->text().toDouble();
+    double Y_to = ui_->line_Y_to->text().toDouble();
     ui_->widget_graf->xAxis->setRange(x_begin_, x_end_);
-    ui_->widget_graf->yAxis->setRange(Y_from, X_from);
+    ui_->widget_graf->yAxis->setRange(Y_from, Y_to);
     try {
       for (x2_ = x_begin_; x2_ <= x_end_; x2_ += h_) {  //  Заполняем координаты
         x_.push_back(x2_);
